@@ -19,7 +19,7 @@ FORMS += \
     mainwindow.ui
 
 TRANSLATIONS += \
-    MT589-simulator_ru_RU.ts
+    MT589_ru_RU.ts
 CONFIG += lrelease
 CONFIG += embed_translations
 
