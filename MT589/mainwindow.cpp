@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("MT589");
     QRegularExpression reg("[0-1]+");
     QRegularExpressionValidator* validator = new QRegularExpressionValidator(reg, this);
+
     ui->functionLineEdit->setValidator(validator);
     ui->ciLineEdit->setValidator(validator);
     ui->iLineEdit->setValidator(validator);
@@ -39,37 +40,50 @@ void MainWindow::clearInputs() {
 
 void MainWindow::on_stepButton_clicked()
 {
-
+    if ((model.currentCommandIndex > model.listitems.size() - 1) && !model.isExecuting) {
+        return;
+    }
+    CommandItem command = model.listitems[model.currentCommandIndex];
+    cpe.fetch(command.f, command.i, command.k, command.m, command.ci, command.ri);
+    cpe.decode();
+    cpe.execute();
+    model.currentCommandIndex += 1;
 }
 
 
 void MainWindow::on_minusButton_clicked()
 {
-    ui->listWidget->removeItemWidget(ui->listWidget->itemAt(listitems.size() - 1, 0));
-    listitems.pop_back();
+    ui->listWidget->removeItemWidget(ui->listWidget->itemAt(model.listitems.size() - 1, 0));
+    model.listitems.pop_back();
 }
-
-
-void MainWindow::on_plusButton_clicked()
-{
-    std::cout << "hello";
-//    int f = ui->functionLineEdit->text().toInt();
-//    int i = ui->iLineEdit->text().toInt();
-//    int k = ui->kLineEdit->text().toInt();
-//    int m = ui->mLineEdit->text().toInt();
-//    int ri = ui->riLineEdit->text().toInt();
-//    int ci = ui->ciLineEdit->text().toInt();
-    CommandItem command = CommandItem(0, 0, 0, 0, 0, 0);
-    command.setText(QString(command.prepareText().c_str()));
-    listitems.push_back(command);
-    ui->listWidget->addItem(&command);
-}
-
 
 void MainWindow::on_runButton_clicked()
 {
 
 }
 
+void MainWindow::on_plusButton_clicked()
+{
+    std::string fstr = ui->functionLineEdit->text().toStdString();
+    std::vector<BYTE> fvec= {};
+    for (char&  ch: fstr) {
+        std::string str = "";
+        str += ch;
+        int i = std::stoi(str);
+        fvec.insert(fvec.begin(), i);
+    }
+    int i = ui->iLineEdit->text().toInt();
+    int k = ui->kLineEdit->text().toInt();
+    int m = ui->mLineEdit->text().toInt();
+    int ri = ui->riLineEdit->text().toInt();
+    int ci = ui->ciLineEdit->text().toInt();
 
+    CommandItem command = CommandItem(fvec, i, k, ci, ri, m);
+    command.setText(QString(command.prepareText().c_str()));
+
+    model.listitems.push_back(command);
+    ui->listWidget->addItem(command.prepareText().c_str());
+
+
+}
 
