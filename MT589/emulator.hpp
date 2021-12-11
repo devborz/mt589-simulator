@@ -3,7 +3,7 @@
 
 #include <vector>
 
-using BYTE = uint8_t;
+using BYTE = int;
 constexpr BYTE AC = 0xB;
 constexpr BYTE T = 0xA;
 
@@ -12,7 +12,7 @@ constexpr BYTE T = 0xA;
 struct CPE
 {
     CPE();
-    void fetch(std::vector<BYTE> f, BYTE i, BYTE k, BYTE m, BYTE CI,
+    void fetch(const std::vector<BYTE>& f, BYTE i, BYTE k, BYTE m, BYTE CI,
             BYTE RI);
     void decode();
     void execute();
