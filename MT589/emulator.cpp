@@ -7,8 +7,7 @@ CPE::CPE() {
     MAR = 0b00;
 }
 
-void CPE::fetch(const std::vector<BYTE>& f, BYTE i, BYTE k, 
-        BYTE m, BYTE CI, BYTE RI) {
+void CPE::fetch(const std::vector<BYTE>& f, BYTE i, BYTE k, BYTE m, BYTE CI, BYTE RI) {
     this->F = f;
     this->I = i;
     this->K = k;
@@ -98,8 +97,8 @@ void CPE::execute_f0() {
             }
             break;
         case 2:
-            buf = M + (AC ^ K) + CI;
-            MEMORY[addr] = buf;
+            BUF = M + (AC ^ K) + CI;
+            MEM[ADR] = BUF;
             break;
         case 3:
             break;
