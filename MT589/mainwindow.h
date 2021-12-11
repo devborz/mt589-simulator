@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QListWidgetItem>
+#include <emulator.hpp>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -10,14 +11,14 @@ QT_END_NAMESPACE
 
 class CommandItem: public QListWidgetItem {
 public:
-    int f;
+    std::vector<int> f;
     int i;
     int k;
     int ci;
     int ri;
     int m;
 
-    CommandItem(int f, int i, int k, int ci, int ri, int m) {
+    CommandItem(std::vector<int> f, int i, int k, int ci, int ri, int m) {
         this->f = f;
         this->i= i;
         this->k = k;
@@ -30,19 +31,33 @@ public:
     std::string prepareText()  {
         std::string result = "";
         result += "F=";
-        result += std::to_string(f);
-        result += "I=";
+        for (const auto& fi : f) {
+            result += std::to_string(fi);
+        }
+        result += " I=";
         result += std::to_string(i);
-        result += "K=";
+        result += " K=";
         result += std::to_string(k);
-        result += "CI=";
+        result += " CI=";
         result += std::to_string(ci);
-        result += "RI=";
+        result += " RI=";
         result += std::to_string(ri);
-        result += "M=";
+        result += " M=";
         result += std::to_string(m);
         return result;
     }
+};
+
+class Model {
+
+public:
+    Model() { }
+
+    std::vector<CommandItem> listitems = {};
+
+    size_t currentCommandIndex = 0;
+
+    bool isExecuting = false;
 };
 
 class MainWindow : public QMainWindow
@@ -58,15 +73,17 @@ private slots:
 
     void on_minusButton_clicked();
 
-    void on_plusButton_clicked();
-
     void on_runButton_clicked();
 
     void clearInputs();
 
+    void on_plusButton_clicked();
+
 private:
     Ui::MainWindow *ui;
+    CPE cpe = CPE();
 
-    std::vector<CommandItem> listitems = {};
+    Model model = Model();
 };
+
 #endif // MAINWINDOW_H
