@@ -1,6 +1,10 @@
 #include "emulator.hpp"
 
 CPE::CPE() {
+    this->reset();
+}
+
+void CPE::reset() {
     for (size_t i = 0x0; i < 0xE; ++i) {
         CPE::MEM[i] = 0b00;
     }
@@ -70,16 +74,22 @@ void CPE::execute() {
             f_group7(); 
             break;
     }
+    // set buses output
     A = MAR;
     D = MEM[AC];
 }
 void CPE::propogate() {
-    BYTE a1 = (opA >> 1) & 0b1;
-    BYTE a0 = opA & 0b1;
-    BYTE b0 = opB & 0b1;
-    BYTE b1 = (opB >> 1) & 0b1;
-    X = (a1 & b1) | (a0 | b0);
-    Y = (a1 & b1) | ((a1 | b1) & (a0 | b0));
+    if (f_group > 3) {
+        Y = 1;
+        X = CO;
+    } else {
+        BYTE a1 = (opA >> 1) & 0b1;
+        BYTE a0 = opA & 0b1;
+        BYTE b0 = opB & 0b1;
+        BYTE b1 = (opB >> 1) & 0b1;
+        X = (a1 & b1) | (a0 | b0);
+        Y = (a1 & b1) | ((a1 | b1) & (a0 | b0));
+    }
 }
 void CPE::compute_CO() {
     CO = (CI & Y) | (X & Y);
@@ -91,21 +101,26 @@ void CPE::execute_f0() {
             opB = (MEM[AC] & K);
             propogate();
             compute_CO();
-            BUF = opA + opB + CI;
-            MEM[ADR] = BUF;
-            MEM[AC] = BUF;
+            BUF2 = opA + opB + CI;
+            MEM[ADR] = BUF2;
+            MEM[AC] = BUF2;
             break;
         case 2:
             opA = M;
             opB = (MEM[AC] & K);
             propogate();
             compute_CO();
-            BUF = opA + opB + CI;
-            MEM[ADR] = BUF;
+            BUF2 = opA + opB + CI;
+            MEM[ADR] = BUF2;
             break;
         case 3:
+            // CO? XY? => inclompleted
+            RO = get_lb(MEM[ADR]) & (get_lb(I) & get_lb(K)); // inverse before 2nd brackets
+            BUF1 = (get_lb(MEM[ADR]) & (get_lb(I) & get_lb(K))) | (get_hb(MEM[ADR]) | (get_hb(I) & get_hb(K)));
+            MEM[ADR] = MEM[ADR] & BUF1;
+            BUF1 = LI | ((get_hb(I) & get_hb(K)) & get_hb(MEM[ADR]));
+            MEM[ADR] = MEM[ADR] | (BUF1 << 1);
             break;
-
     }
 }
 void CPE::f_group1() {
@@ -116,8 +131,8 @@ void CPE::f_group1() {
             opB = K;
             propogate();
             compute_CO();
-            BUF = opA + opB + CI;
-            MEM[ADR] = BUF;
+            BUF2 = opA + opB + CI;
+            MEM[ADR] = BUF2;
             break;
         case 2:
             MAR = K | M;
@@ -125,197 +140,158 @@ void CPE::f_group1() {
             opB = K;
             propogate();
             compute_CO();
-            BUF = opA + opB + CI;
-            MEM[ADR] = BUF;
+            BUF2 = opA + opB + CI;
+            MEM[ADR] = BUF2;
             break;
         case 3:
-
+            // CO? XY? => inclompleted
+            BUF2 = (~MEM[ADR] | K) + (MEM[ADR] & K) + CI;
+            MEM[ADR] = BUF2;
             break;
     }
 }
+// how to propogate and compute carry out?????
 void CPE::f_group2() {
     switch(r_group) {
         case 1:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF2 = (MEM[AC] & K) - 1 + CI;
+            MEM[ADR] = BUF2;
             break;
         case 2:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF2 = (MEM[AC] & K) - 1 + CI;
+            MEM[ADR] = BUF2;
             break;
         case 3:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF2 = (I & K) - 1 + CI;
+            MEM[ADR] = BUF2;
             break;
     }
 }
-void CPE::f_group3() {
+void CPE::execute_f3() {
     switch(r_group) {
         case 1:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            opA = MEM[ADR];
+            opB = (MEM[AC] & K);
+            propogate();
+            compute_CO();
+            BUF2 = opA + opB + CI;
+            MEM[ADR] = BUF2;
             break;
         case 2:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            opA = M;
+            opB = (MEM[AC] & K);
+            propogate();
+            compute_CO();
+            BUF2 = opA + opB + CI;
+            MEM[ADR] = BUF2;
             break;
         case 3:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            opA = MEM[ADR];
+            opB = I & K;
+            propogate();
+            compute_CO();
+            BUF2 = opA + opB + CI;
+            MEM[ADR] = BUF2;
             break;
     }
 }
-void CPE::f_group4() {
+void CPE::execute_f4() {
     switch(r_group) {
         case 1:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = CI | (MEM[ADR] & MEM[AC] & K); // incorrect OR
+            BUF2 = MEM[ADR] & (MEM[AC] & K);
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
         case 2:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = CI | (M & MEM[AC] & K); // incorrect OR
+            BUF2 = M & (MEM[AC] & K);
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
         case 3:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = CI | (I & MEM[ADR] & K); // incorrect OR
+            BUF2 = MEM[ADR] & (I & K);
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
     }
 }
-void CPE::f_group5() {
+void CPE::execute_f5() {
     switch(r_group) {
         case 1:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = (MEM[ADR] & K) | CI; // incorrect OR
+            BUF2 = MEM[ADR] & K;
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
         case 2:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = (M & K) | CI; // incorrect OR
+            BUF2 = M & K;
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
         case 3:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = (MEM[ADR] & K) | CI; // incorrect OR
+            BUF2 = MEM[ADR] & K;
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
     }
 }
-void CPE::f_group6() {
+void CPE::execute_f6() {
     switch(r_group) {
         case 1:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = (MEM[AC] & K) | CI; // incorrect OR
+            BUF2 = (MEM[AC] & K) | MEM[ADR];
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
         case 2:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = (MEM[AC] & K) | CI; // incorrect OR
+            BUF2 = (MEM[AC] & K) | M;
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
         case 3:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = (I & K) | CI; // incorrect OR
+            BUF2 = (I & K) | MEM[ADR];
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
     }
 }
-void CPE::f_group7() {
+void CPE::execute_f7() {
     switch(r_group) {
         case 1:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = (MEM[AC] & MEM[ADR] & K) | CI // incorrect OR;
+            BUF2 = ~((MEM[AC] & K) ^ MEM[ADR]);
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
         case 2:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = (MEM[AC] & M & K) | CI; // incorrect OR
+            BUF2 = ~((MEM[AC] & K) ^ M);
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
         case 3:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = (MEM[ADR] & I & K) | CI; // incorrect OR
+            BUF2 = ~((I & K) ^ MEM[ADR]);
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
     }
 }
