@@ -70,34 +70,37 @@ void CPE::execute() {
             f_group7(); 
             break;
     }
+    A = MAR;
+    D = MEM[AC];
 }
 void CPE::propogate() {
-
+    BYTE a1 = (opA >> 1) & 0b1;
+    BYTE a0 = opA & 0b1;
+    BYTE b0 = opB & 0b1;
+    BYTE b1 = (opB >> 1) & 0b1;
+    X = (a1 & b1) | (a0 | b0);
+    Y = (a1 & b1) | ((a1 | b1) & (a0 | b0));
 }
 void CPE::compute_CO() {
-
+    CO = (CI & Y) | (X & Y);
 }
 void CPE::execute_f0() {
     switch(r_group) {
         case 1:
-            // я хз как делать !!!!!!!!!!!!!!!!!! 
-            // либо  отдельно  каждый случай - будет длинно
-            // коротко - не могу придумать как сделать красиво и четко
-            // тяжело просто впихнуть сюда генерацию X и Y и CO
-            if (K == 0b00) { // ILR
-                BUF = MEM[ADR] + CI;
-                MEM[ADR] = BUF;
-                MEM[AC] = BUF;
-            } else if (K == 0b11){ // ALR
-                BUF = MEM[ADR] + MEM[AC] + CI;
-                MEM[ADR] = BUF;
-                MEM[AC] = BUF;
-            } else {
-
-            }
+            opA = MEM[ADR];
+            opB = (MEM[AC] & K);
+            propogate();
+            compute_CO();
+            BUF = opA + opB + CI;
+            MEM[ADR] = BUF;
+            MEM[AC] = BUF;
             break;
         case 2:
-            BUF = M + (AC ^ K) + CI;
+            opA = M;
+            opB = (MEM[AC] & K);
+            propogate();
+            compute_CO();
+            BUF = opA + opB + CI;
             MEM[ADR] = BUF;
             break;
         case 3:
@@ -108,31 +111,25 @@ void CPE::execute_f0() {
 void CPE::f_group1() {
     switch(r_group) {
         case 1:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            MAR = K | MEM[ADR];
+            opA = MEM[ADR];
+            opB = K;
+            propogate();
+            compute_CO();
+            BUF = opA + opB + CI;
+            MEM[ADR] = BUF;
             break;
         case 2:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            MAR = K | M;
+            opA = M;
+            opB = K;
+            propogate();
+            compute_CO();
+            BUF = opA + opB + CI;
+            MEM[ADR] = BUF;
             break;
         case 3:
-            if (K == 0b00) { // opcode
 
-            } else if (K == 0b11){
-
-            } else {
-
-            }
             break;
     }
 }

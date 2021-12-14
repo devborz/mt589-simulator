@@ -15,7 +15,8 @@ SOURCES += \
 
 HEADERS += \
     emulator.hpp \
-    mainwindow.h
+    mainwindow.h \
+    util.hpp
 
 FORMS += \
     mainwindow.ui

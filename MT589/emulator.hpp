@@ -3,12 +3,13 @@
 
 #include <vector>
 
-using BYTE = int;
+using BYTE = uint8_t;
 constexpr BYTE AC = 0xB;
 constexpr BYTE T = 0xA;
 
 // r group    | F GROUP
 // F0,F1,F2,F3, F4,F5,F6
+
 struct CPE
 {
     CPE();

@@ -1,9 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
-#include "emulator.hpp"
-#include <string>
-#include <iostream>
+#include <util.hpp>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -21,6 +18,19 @@ MainWindow::MainWindow(QWidget *parent)
     ui->kLineEdit->setValidator(validator);
     ui->riLineEdit->setValidator(validator);
 
+    regLCDs.push_back(ui->lcdReg0);
+    regLCDs.push_back(ui->lcdReg1);
+    regLCDs.push_back(ui->lcdReg2);
+    regLCDs.push_back(ui->lcdReg3);
+    regLCDs.push_back(ui->lcdReg4);
+    regLCDs.push_back(ui->lcdReg5);
+    regLCDs.push_back(ui->lcdReg6);
+    regLCDs.push_back(ui->lcdReg7);
+    regLCDs.push_back(ui->lcdReg8);
+    regLCDs.push_back(ui->lcdReg9);
+    regLCDs.push_back(ui->lcdReg10);
+    regLCDs.push_back(ui->lcdReg11);
+    update_on_cpu_data();
 }
 
 MainWindow::~MainWindow()
@@ -38,6 +48,20 @@ void MainWindow::clearInputs() {
     ui->riLineEdit->setText("");
 }
 
+void MainWindow::update_on_cpu_data() {
+    for (size_t i = 0; i < 12; ++i) {
+        regLCDs[i]->display(cpe.MEM[i]);
+    }
+    ui->lcdReg12->display(cpe.MAR);
+    ui->aLcd->display(cpe.A);
+    ui->dLcd->display(cpe.D);
+    ui->r0Lcd->display(cpe.RO);
+    ui->c0Lcd->display(cpe.CO);
+    ui->xLcd->display(cpe.X);
+    ui->yLcd->display(cpe.Y);
+}
+
+
 void MainWindow::on_stepButton_clicked()
 {
     if ((model.currentCommandIndex > model.listitems.size() - 1) && !model.isExecuting) {
@@ -47,6 +71,7 @@ void MainWindow::on_stepButton_clicked()
     cpe.fetch(command.f, command.i, command.k, command.m, command.ci, command.ri);
     cpe.decode();
     cpe.execute();
+    update_on_cpu_data();
     model.currentCommandIndex += 1;
 }
 
@@ -72,11 +97,11 @@ void MainWindow::on_plusButton_clicked()
         int i = std::stoi(str);
         fvec.insert(fvec.begin(), i);
     }
-    int i = ui->iLineEdit->text().toInt();
-    int k = ui->kLineEdit->text().toInt();
-    int m = ui->mLineEdit->text().toInt();
-    int ri = ui->riLineEdit->text().toInt();
-    int ci = ui->ciLineEdit->text().toInt();
+    int i = fromStringBin(ui->iLineEdit->text().toStdString());
+    int k = fromStringBin(ui->kLineEdit->text().toStdString());
+    int m = fromStringBin(ui->mLineEdit->text().toStdString());
+    int ri = fromStringBin(ui->riLineEdit->text().toStdString());
+    int ci = fromStringBin(ui->ciLineEdit->text().toStdString());
 
     CommandItem command = CommandItem(fvec, i, k, ci, ri, m);
     command.setText(QString(command.prepareText().c_str()));
@@ -84,6 +109,4 @@ void MainWindow::on_plusButton_clicked()
     model.listitems.push_back(command);
     ui->listWidget->addItem(command.prepareText().c_str());
 
-
 }
-

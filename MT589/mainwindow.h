@@ -4,21 +4,23 @@
 #include <QMainWindow>
 #include <QListWidgetItem>
 #include <emulator.hpp>
+#include <QLCDNumber>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+
 class CommandItem: public QListWidgetItem {
 public:
-    std::vector<int> f;
+    std::vector<BYTE> f;
     int i;
     int k;
     int ci;
     int ri;
     int m;
 
-    CommandItem(std::vector<int> f, int i, int k, int ci, int ri, int m) {
+    CommandItem(std::vector<BYTE> f, int i, int k, int ci, int ri, int m) {
         this->f = f;
         this->i= i;
         this->k = k;
@@ -77,11 +79,14 @@ private slots:
 
     void clearInputs();
 
+    void update_on_cpu_data();
     void on_plusButton_clicked();
 
 private:
     Ui::MainWindow *ui;
     CPE cpe = CPE();
+
+    std::vector<QLCDNumber*> regLCDs = {};
 
     Model model = Model();
 };

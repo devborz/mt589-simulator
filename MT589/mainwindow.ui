@@ -33,28 +33,6 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLCDNumber" name="resultLcd">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>390</y>
-      <width>371</width>
-      <height>111</height>
-     </rect>
-    </property>
-    <property name="autoFillBackground">
-     <bool>true</bool>
-    </property>
-    <property name="smallDecimalPoint">
-     <bool>false</bool>
-    </property>
-    <property name="digitCount">
-     <number>7</number>
-    </property>
-    <property name="mode">
-     <enum>QLCDNumber::Bin</enum>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="functionLineEdit">
     <property name="geometry">
      <rect>
@@ -261,7 +239,7 @@
          <item>
           <widget class="QLabel" name="label_107">
            <property name="text">
-            <string>AC</string>
+            <string>T</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -804,7 +782,7 @@
          <item>
           <widget class="QLabel" name="label_115">
            <property name="text">
-            <string>T</string>
+            <string>AC</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -1017,7 +995,7 @@
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>560</y>
+      <y>440</y>
       <width>45</width>
       <height>30</height>
      </rect>
@@ -1030,7 +1008,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>560</y>
+      <y>440</y>
       <width>45</width>
       <height>30</height>
      </rect>
@@ -1043,7 +1021,7 @@
     <property name="geometry">
      <rect>
       <x>650</x>
-      <y>560</y>
+      <y>440</y>
       <width>45</width>
       <height>30</height>
      </rect>
@@ -1056,7 +1034,7 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>560</y>
+      <y>440</y>
       <width>45</width>
       <height>30</height>
      </rect>
@@ -1069,7 +1047,7 @@
     <property name="geometry">
      <rect>
       <x>770</x>
-      <y>560</y>
+      <y>440</y>
       <width>45</width>
       <height>30</height>
      </rect>
@@ -1082,7 +1060,7 @@
     <property name="geometry">
      <rect>
       <x>830</x>
-      <y>560</y>
+      <y>440</y>
       <width>45</width>
       <height>30</height>
      </rect>
@@ -1095,7 +1073,7 @@
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>540</y>
+      <y>420</y>
       <width>45</width>
       <height>16</height>
      </rect>
@@ -1111,7 +1089,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>540</y>
+      <y>420</y>
       <width>45</width>
       <height>16</height>
      </rect>
@@ -1127,13 +1105,13 @@
     <property name="geometry">
      <rect>
       <x>650</x>
-      <y>540</y>
+      <y>420</y>
       <width>45</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>C0</string>
+     <string>CO</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1143,13 +1121,13 @@
     <property name="geometry">
      <rect>
       <x>710</x>
-      <y>540</y>
+      <y>420</y>
       <width>45</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>R0</string>
+     <string>RO</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1159,7 +1137,7 @@
     <property name="geometry">
      <rect>
       <x>770</x>
-      <y>540</y>
+      <y>420</y>
       <width>45</width>
       <height>16</height>
      </rect>
@@ -1175,7 +1153,7 @@
     <property name="geometry">
      <rect>
       <x>830</x>
-      <y>540</y>
+      <y>420</y>
       <width>45</width>
       <height>16</height>
      </rect>
@@ -1231,6 +1209,19 @@
      </layout>
     </widget>
    </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>400</y>
+      <width>58</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Outputs</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -1238,7 +1229,7 @@
      <x>0</x>
      <y>0</y>
      <width>900</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
