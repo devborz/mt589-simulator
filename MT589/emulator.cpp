@@ -1,18 +1,35 @@
 #include "emulator.hpp"
 
 CPE::CPE() {
+    this->reset();
+}
+
+void CPE::reset() {
     for (size_t i = 0x0; i < 0xE; ++i) {
         CPE::MEM[i] = 0b00;
     }
     MAR = 0b00;
 }
 
-void CPE::fetch(const std::vector<BYTE>& f, BYTE i, BYTE k, BYTE m, BYTE CI, BYTE RI) {
+const BYTE CPE::word_wise_or(BYTE op) {
+    return get_lb(op) | get_hb(op);
+}
+
+const BYTE CPE::get_lb(BYTE src) {
+    BUF1 = src & 0b01;
+    return BUF1;
+}
+const BYTE CPE::get_hb(BYTE src) {
+    BUF1 = (src >> 1) & 0b01;
+    return BUF1;
+}
+
+void CPE::fetch(const std::vector<BYTE>& f, BYTE i, BYTE k, BYTE m, BYTE CI, BYTE LI) {
     this->F = f;
     this->I = i;
     this->K = k;
     this->CI = CI;
-    this->RI = RI;
+    this->LI = LI;
     this->M = m;
 }
 
@@ -55,31 +72,37 @@ void CPE::execute() {
             f_group2(); 
             break;
         case 3:
-            f_group3(); 
+            execute_f3(); 
             break;
         case 4:
-            f_group4(); 
+            execute_f4(); 
             break;
         case 5:
-            f_group5(); 
+            execute_f5(); 
             break;
         case 6:
-            f_group6(); 
+            execute_f6(); 
             break;
         case 7:
-            f_group7(); 
+            execute_f7(); 
             break;
     }
+    // set buses output
     A = MAR;
     D = MEM[AC];
 }
 void CPE::propogate() {
-    BYTE a1 = (opA >> 1) & 0b1;
-    BYTE a0 = opA & 0b1;
-    BYTE b0 = opB & 0b1;
-    BYTE b1 = (opB >> 1) & 0b1;
-    X = (a1 & b1) | (a0 | b0);
-    Y = (a1 & b1) | ((a1 | b1) & (a0 | b0));
+    if (f_group > 3) {
+        Y = 1;
+        X = CO;
+    } else {
+        BYTE a1 = (opA >> 1) & 0b1;
+        BYTE a0 = opA & 0b1;
+        BYTE b0 = opB & 0b1;
+        BYTE b1 = (opB >> 1) & 0b1;
+        X = (a1 & b1) | (a0 | b0);
+        Y = (a1 & b1) | ((a1 | b1) & (a0 | b0));
+    }
 }
 void CPE::compute_CO() {
     CO = (CI & Y) | (X & Y);
@@ -91,21 +114,26 @@ void CPE::execute_f0() {
             opB = (MEM[AC] & K);
             propogate();
             compute_CO();
-            BUF = opA + opB + CI;
-            MEM[ADR] = BUF;
-            MEM[AC] = BUF;
+            BUF2 = opA + opB + CI;
+            MEM[ADR] = BUF2;
+            MEM[AC] = BUF2;
             break;
         case 2:
             opA = M;
             opB = (MEM[AC] & K);
             propogate();
             compute_CO();
-            BUF = opA + opB + CI;
-            MEM[ADR] = BUF;
+            BUF2 = opA + opB + CI;
+            MEM[ADR] = BUF2;
             break;
         case 3:
+            // CO? XY? => inclompleted
+            RO = get_lb(MEM[ADR]) & (get_lb(I) & get_lb(K)); // inverse before 2nd brackets
+            BUF1 = (get_lb(MEM[ADR]) & (get_lb(I) & get_lb(K))) | (get_hb(MEM[ADR]) | (get_hb(I) & get_hb(K)));
+            MEM[ADR] = MEM[ADR] & BUF1;
+            BUF1 = LI | ((get_hb(I) & get_hb(K)) & get_hb(MEM[ADR]));
+            MEM[ADR] = MEM[ADR] | (BUF1 << 1);
             break;
-
     }
 }
 void CPE::f_group1() {
@@ -116,8 +144,8 @@ void CPE::f_group1() {
             opB = K;
             propogate();
             compute_CO();
-            BUF = opA + opB + CI;
-            MEM[ADR] = BUF;
+            BUF2 = opA + opB + CI;
+            MEM[ADR] = BUF2;
             break;
         case 2:
             MAR = K | M;
@@ -125,197 +153,158 @@ void CPE::f_group1() {
             opB = K;
             propogate();
             compute_CO();
-            BUF = opA + opB + CI;
-            MEM[ADR] = BUF;
+            BUF2 = opA + opB + CI;
+            MEM[ADR] = BUF2;
             break;
         case 3:
-
+            // CO? XY? => inclompleted
+            BUF2 = (~MEM[ADR] | K) + (MEM[ADR] & K) + CI;
+            MEM[ADR] = BUF2;
             break;
     }
 }
+// how to propogate and compute carry out?????
 void CPE::f_group2() {
     switch(r_group) {
         case 1:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF2 = (MEM[AC] & K) - 1 + CI;
+            MEM[ADR] = BUF2;
             break;
         case 2:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF2 = (MEM[AC] & K) - 1 + CI;
+            MEM[ADR] = BUF2;
             break;
         case 3:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF2 = (I & K) - 1 + CI;
+            MEM[ADR] = BUF2;
             break;
     }
 }
-void CPE::f_group3() {
+void CPE::execute_f3() {
     switch(r_group) {
         case 1:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            opA = MEM[ADR];
+            opB = (MEM[AC] & K);
+            propogate();
+            compute_CO();
+            BUF2 = opA + opB + CI;
+            MEM[ADR] = BUF2;
             break;
         case 2:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            opA = M;
+            opB = (MEM[AC] & K);
+            propogate();
+            compute_CO();
+            BUF2 = opA + opB + CI;
+            MEM[ADR] = BUF2;
             break;
         case 3:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            opA = MEM[ADR];
+            opB = I & K;
+            propogate();
+            compute_CO();
+            BUF2 = opA + opB + CI;
+            MEM[ADR] = BUF2;
             break;
     }
 }
-void CPE::f_group4() {
+void CPE::execute_f4() {
     switch(r_group) {
         case 1:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = CI | word_wise_or(MEM[ADR] & MEM[AC] & K);
+            BUF2 = MEM[ADR] & (MEM[AC] & K);
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
         case 2:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = CI | word_wise_or(M & MEM[AC] & K);
+            BUF2 = M & (MEM[AC] & K);
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
         case 3:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = CI | word_wise_or(I & MEM[ADR] & K);
+            BUF2 = MEM[ADR] & (I & K);
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
     }
 }
-void CPE::f_group5() {
+void CPE::execute_f5() {
     switch(r_group) {
         case 1:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = word_wise_or(MEM[ADR] & K) | CI;
+            BUF2 = MEM[ADR] & K;
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
         case 2:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = word_wise_or(M & K) | CI;
+            BUF2 = M & K;
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
         case 3:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = word_wise_or(MEM[ADR] & K) | CI;
+            BUF2 = MEM[ADR] & K;
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
     }
 }
-void CPE::f_group6() {
+void CPE::execute_f6() {
     switch(r_group) {
         case 1:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = word_wise_or(MEM[AC] & K) | CI;
+            BUF2 = (MEM[AC] & K) | MEM[ADR];
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
         case 2:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = word_wise_or(MEM[AC] & K) | CI;
+            BUF2 = (MEM[AC] & K) | M;
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
         case 3:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = word_wise_or(I & K) | CI;
+            BUF2 = (I & K) | MEM[ADR];
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
     }
 }
-void CPE::f_group7() {
+void CPE::execute_f7() {
     switch(r_group) {
         case 1:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = word_wise_or(MEM[AC] & MEM[ADR] & K) | CI;
+            BUF2 = ~((MEM[AC] & K) ^ MEM[ADR]);
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
         case 2:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = word_wise_or(MEM[AC] & M & K) | CI;
+            BUF2 = ~((MEM[AC] & K) ^ M);
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
         case 3:
-            if (K == 0b00) { // opcode
-
-            } else if (K == 0b11){
-
-            } else {
-
-            }
+            BUF1 = word_wise_or(MEM[ADR] & I & K) | CI;
+            BUF2 = ~((I & K) ^ MEM[ADR]);
+            MEM[ADR] = BUF2;
+            CO = BUF1;
+            propogate();
             break;
     }
 }
