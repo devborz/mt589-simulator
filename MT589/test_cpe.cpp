@@ -9,7 +9,7 @@ void print_out(const CPE& cpe) {
 }
 
 int main() {
-   CPE cpe();
+   CPE cpe{};
 
    return 0;
 }

@@ -11,12 +11,25 @@ void CPE::reset() {
     MAR = 0b00;
 }
 
-void CPE::fetch(const std::vector<BYTE>& f, BYTE i, BYTE k, BYTE m, BYTE CI, BYTE RI) {
+const BYTE CPE::word_wise_or(BYTE op) {
+    return get_lb(op) | get_hb(op);
+}
+
+const BYTE CPE::get_lb(BYTE src) {
+    BUF1 = src & 0b01;
+    return BUF1;
+}
+const BYTE CPE::get_hb(BYTE src) {
+    BUF1 = (src >> 1) & 0b01;
+    return BUF1;
+}
+
+void CPE::fetch(const std::vector<BYTE>& f, BYTE i, BYTE k, BYTE m, BYTE CI, BYTE LI) {
     this->F = f;
     this->I = i;
     this->K = k;
     this->CI = CI;
-    this->RI = RI;
+    this->LI = LI;
     this->M = m;
 }
 
@@ -59,19 +72,19 @@ void CPE::execute() {
             f_group2(); 
             break;
         case 3:
-            f_group3(); 
+            execute_f3(); 
             break;
         case 4:
-            f_group4(); 
+            execute_f4(); 
             break;
         case 5:
-            f_group5(); 
+            execute_f5(); 
             break;
         case 6:
-            f_group6(); 
+            execute_f6(); 
             break;
         case 7:
-            f_group7(); 
+            execute_f7(); 
             break;
     }
     // set buses output
@@ -198,21 +211,21 @@ void CPE::execute_f3() {
 void CPE::execute_f4() {
     switch(r_group) {
         case 1:
-            BUF1 = CI | (MEM[ADR] & MEM[AC] & K); // incorrect OR
+            BUF1 = CI | word_wise_or(MEM[ADR] & MEM[AC] & K);
             BUF2 = MEM[ADR] & (MEM[AC] & K);
             MEM[ADR] = BUF2;
             CO = BUF1;
             propogate();
             break;
         case 2:
-            BUF1 = CI | (M & MEM[AC] & K); // incorrect OR
+            BUF1 = CI | word_wise_or(M & MEM[AC] & K);
             BUF2 = M & (MEM[AC] & K);
             MEM[ADR] = BUF2;
             CO = BUF1;
             propogate();
             break;
         case 3:
-            BUF1 = CI | (I & MEM[ADR] & K); // incorrect OR
+            BUF1 = CI | word_wise_or(I & MEM[ADR] & K);
             BUF2 = MEM[ADR] & (I & K);
             MEM[ADR] = BUF2;
             CO = BUF1;
@@ -223,21 +236,21 @@ void CPE::execute_f4() {
 void CPE::execute_f5() {
     switch(r_group) {
         case 1:
-            BUF1 = (MEM[ADR] & K) | CI; // incorrect OR
+            BUF1 = word_wise_or(MEM[ADR] & K) | CI;
             BUF2 = MEM[ADR] & K;
             MEM[ADR] = BUF2;
             CO = BUF1;
             propogate();
             break;
         case 2:
-            BUF1 = (M & K) | CI; // incorrect OR
+            BUF1 = word_wise_or(M & K) | CI;
             BUF2 = M & K;
             MEM[ADR] = BUF2;
             CO = BUF1;
             propogate();
             break;
         case 3:
-            BUF1 = (MEM[ADR] & K) | CI; // incorrect OR
+            BUF1 = word_wise_or(MEM[ADR] & K) | CI;
             BUF2 = MEM[ADR] & K;
             MEM[ADR] = BUF2;
             CO = BUF1;
@@ -248,21 +261,21 @@ void CPE::execute_f5() {
 void CPE::execute_f6() {
     switch(r_group) {
         case 1:
-            BUF1 = (MEM[AC] & K) | CI; // incorrect OR
+            BUF1 = word_wise_or(MEM[AC] & K) | CI;
             BUF2 = (MEM[AC] & K) | MEM[ADR];
             MEM[ADR] = BUF2;
             CO = BUF1;
             propogate();
             break;
         case 2:
-            BUF1 = (MEM[AC] & K) | CI; // incorrect OR
+            BUF1 = word_wise_or(MEM[AC] & K) | CI;
             BUF2 = (MEM[AC] & K) | M;
             MEM[ADR] = BUF2;
             CO = BUF1;
             propogate();
             break;
         case 3:
-            BUF1 = (I & K) | CI; // incorrect OR
+            BUF1 = word_wise_or(I & K) | CI;
             BUF2 = (I & K) | MEM[ADR];
             MEM[ADR] = BUF2;
             CO = BUF1;
@@ -273,21 +286,21 @@ void CPE::execute_f6() {
 void CPE::execute_f7() {
     switch(r_group) {
         case 1:
-            BUF1 = (MEM[AC] & MEM[ADR] & K) | CI // incorrect OR;
+            BUF1 = word_wise_or(MEM[AC] & MEM[ADR] & K) | CI;
             BUF2 = ~((MEM[AC] & K) ^ MEM[ADR]);
             MEM[ADR] = BUF2;
             CO = BUF1;
             propogate();
             break;
         case 2:
-            BUF1 = (MEM[AC] & M & K) | CI; // incorrect OR
+            BUF1 = word_wise_or(MEM[AC] & M & K) | CI;
             BUF2 = ~((MEM[AC] & K) ^ M);
             MEM[ADR] = BUF2;
             CO = BUF1;
             propogate();
             break;
         case 3:
-            BUF1 = (MEM[ADR] & I & K) | CI; // incorrect OR
+            BUF1 = word_wise_or(MEM[ADR] & I & K) | CI;
             BUF2 = ~((I & K) ^ MEM[ADR]);
             MEM[ADR] = BUF2;
             CO = BUF1;

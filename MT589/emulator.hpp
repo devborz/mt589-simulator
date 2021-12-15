@@ -7,17 +7,9 @@ using BYTE = uint8_t;
 constexpr BYTE AC = 0xB;
 constexpr BYTE T = 0xA;
 
-const get_lb(BYTE src) {
-    BUF1 = src & 0b01;
-    return BUF1;
-}
-const get_hb(BYTE src) {
-    BUF1 = (src >> 1) & 0b01;
-    return BUF1;
-}
+
 // r group    | F GROUP
 // F0,F1,F2,F3, F4,F5,F6
-
 struct CPE
 {
     CPE();
@@ -41,6 +33,12 @@ struct CPE
     void execute_f6();
     void execute_f7();
 
+    // Utility
+    //
+    const BYTE word_wise_or(BYTE op);
+    const BYTE get_lb(BYTE src);
+    const BYTE get_hb(BYTE src);
+
     // Memory
     BYTE MAR : 2;
     BYTE MEM[0xC];
@@ -50,7 +48,7 @@ struct CPE
     BYTE I : 2;
     BYTE K : 2;
     BYTE CI : 1;
-    BYTE RI : 1;
+    BYTE LI : 1;
     BYTE M : 2;
 
     // outputs
