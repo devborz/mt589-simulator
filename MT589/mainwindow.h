@@ -5,6 +5,7 @@
 #include <QListWidgetItem>
 #include <emulator.hpp>
 #include <QLCDNumber>
+#include <map>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -80,6 +81,7 @@ private slots:
     void clearInputs();
 
     void update_on_cpu_data();
+
     void on_plusButton_clicked();
 
 private:
@@ -87,6 +89,8 @@ private:
     CPE cpe = CPE();
 
     std::vector<QLCDNumber*> regLCDs = {};
+
+    std::map<std::string, int> cpeFuncs;
 
     Model model = Model();
 };

@@ -18,18 +18,18 @@ MainWindow::MainWindow(QWidget *parent)
     ui->kLineEdit->setValidator(validator);
     ui->riLineEdit->setValidator(validator);
 
-    regLCDs.push_back(ui->lcdReg0);
-    regLCDs.push_back(ui->lcdReg1);
-    regLCDs.push_back(ui->lcdReg2);
-    regLCDs.push_back(ui->lcdReg3);
-    regLCDs.push_back(ui->lcdReg4);
-    regLCDs.push_back(ui->lcdReg5);
-    regLCDs.push_back(ui->lcdReg6);
-    regLCDs.push_back(ui->lcdReg7);
-    regLCDs.push_back(ui->lcdReg8);
-    regLCDs.push_back(ui->lcdReg9);
-    regLCDs.push_back(ui->lcdReg10);
-    regLCDs.push_back(ui->lcdReg11);
+//    regLCDs.push_back(ui->lcdReg0);
+//    regLCDs.push_back(ui->lcdReg1);
+//    regLCDs.push_back(ui->lcdReg2);
+//    regLCDs.push_back(ui->lcdReg3);
+//    regLCDs.push_back(ui->lcdReg4);
+//    regLCDs.push_back(ui->lcdReg5);
+//    regLCDs.push_back(ui->lcdReg6);
+//    regLCDs.push_back(ui->lcdReg7);
+//    regLCDs.push_back(ui->lcdReg8);
+//    regLCDs.push_back(ui->lcdReg9);
+//    regLCDs.push_back(ui->lcdReg10);
+//    regLCDs.push_back(ui->lcdReg11);
     update_on_cpu_data();
 }
 
@@ -49,16 +49,7 @@ void MainWindow::clearInputs() {
 }
 
 void MainWindow::update_on_cpu_data() {
-    for (size_t i = 0; i < 12; ++i) {
-        regLCDs[i]->display(cpe.MEM[i]);
-    }
-    ui->lcdReg12->display(cpe.MAR);
-    ui->aLcd->display(cpe.A);
-    ui->dLcd->display(cpe.D);
-    ui->r0Lcd->display(cpe.RO);
-    ui->c0Lcd->display(cpe.CO);
-    ui->xLcd->display(cpe.X);
-    ui->yLcd->display(cpe.Y);
+  
 }
 
 
