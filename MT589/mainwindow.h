@@ -2,61 +2,19 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QListWidgetItem>
-#include <emulator.hpp>
 #include <QLCDNumber>
-#include <map>
+#include <ListModels.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
-
-
-class CommandItem: public QListWidgetItem {
-public:
-    std::vector<BYTE> f;
-    int i;
-    int k;
-    int ci;
-    int ri;
-    int m;
-
-    CommandItem(std::vector<BYTE> f, int i, int k, int ci, int ri, int m) {
-        this->f = f;
-        this->i= i;
-        this->k = k;
-        this->ci = ci;
-        this->ri = ri;
-        this->m = m;
-    }
-
-
-    std::string prepareText()  {
-        std::string result = "";
-        result += "F=";
-        for (const auto& fi : f) {
-            result += std::to_string(fi);
-        }
-        result += " I=";
-        result += std::to_string(i);
-        result += " K=";
-        result += std::to_string(k);
-        result += " CI=";
-        result += std::to_string(ci);
-        result += " RI=";
-        result += std::to_string(ri);
-        result += " M=";
-        result += std::to_string(m);
-        return result;
-    }
-};
 
 class Model {
 
 public:
     Model() { }
 
-    std::vector<CommandItem> listitems = {};
+    std::vector<CommandItem*> listitems = {};
 
     size_t currentCommandIndex = 0;
 
@@ -92,7 +50,17 @@ private slots:
 
     void on_plusButton_clicked();
 
+    void on_funcList_itemActivated(QListWidgetItem *item);
 
+    void on_funcList_itemClicked(QListWidgetItem *item);
+
+    void on_listWidget_itemClicked(QListWidgetItem *item);
+
+    void on_listWidget_pressed(const QModelIndex &index);
+
+    void on_listWidget_currentRowChanged(int currentRow);
+
+    void on_funcList_currentRowChanged(int currentRow);
 
 private:
     Ui::MainWindow *ui;
@@ -100,13 +68,7 @@ private:
 
     std::vector<QLCDNumber*> regLCDs = {};
 
-    std::map<std::string, int> cpe_funcs;
-
-     std::map<std::string, int> fc1_funcs;
-
-      std::map<std::string, int> fc2_funcs;
-
-       std::map<std::string, int> jump_funcs;
+    int selectedCommand = -1;
 
     Model model = Model();
 };
