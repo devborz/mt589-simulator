@@ -71,6 +71,18 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void add_cpe_funcs();
+
+    void add_fc1_funcs();
+
+    void add_fc2_funcs();
+
+    void add_jump_funcs();
+
+    void clearInputs();
+
+    void update_on_cpu_data();
+
 private slots:
     void on_stepButton_clicked();
 
@@ -78,11 +90,9 @@ private slots:
 
     void on_runButton_clicked();
 
-    void clearInputs();
-
-    void update_on_cpu_data();
-
     void on_plusButton_clicked();
+
+
 
 private:
     Ui::MainWindow *ui;
@@ -90,7 +100,13 @@ private:
 
     std::vector<QLCDNumber*> regLCDs = {};
 
-    std::map<std::string, int> cpeFuncs;
+    std::map<std::string, int> cpe_funcs;
+
+     std::map<std::string, int> fc1_funcs;
+
+      std::map<std::string, int> fc2_funcs;
+
+       std::map<std::string, int> jump_funcs;
 
     Model model = Model();
 };
