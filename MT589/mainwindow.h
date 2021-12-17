@@ -37,6 +37,14 @@ public:
 
     void add_jump_funcs();
 
+    // Help functions
+
+    void setupRegs();
+
+    void setLCDsColor();
+
+    void setupBoxes();
+
     void clearInputs();
 
     void update_on_cpu_data();
@@ -50,17 +58,17 @@ private slots:
 
     void on_plusButton_clicked();
 
-    void on_funcList_itemActivated(QListWidgetItem *item);
-
-    void on_funcList_itemClicked(QListWidgetItem *item);
-
-    void on_listWidget_itemClicked(QListWidgetItem *item);
-
-    void on_listWidget_pressed(const QModelIndex &index);
-
     void on_listWidget_currentRowChanged(int currentRow);
 
-    void on_funcList_currentRowChanged(int currentRow);
+    void on_boxCPE_currentIndexChanged(int index);
+
+    void on_boxREG_currentIndexChanged(int index);
+
+    void on_boxFC1_currentIndexChanged(int index);
+
+    void on_boxFC2_currentIndexChanged(int index);
+
+    void on_boxJUMP_currentIndexChanged(int index);
 
 private:
     Ui::MainWindow *ui;

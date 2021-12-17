@@ -16,6 +16,7 @@ SOURCES += \
 
 HEADERS += \
     ListModels.h \
+    Models.h \
     emulator.hpp \
     mainwindow.h \
     util.hpp

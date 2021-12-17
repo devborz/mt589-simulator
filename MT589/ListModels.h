@@ -6,7 +6,7 @@
 
 
 //// Jump list item
-class JumpListItem: public QListWidgetItem {
+class JumpListItem {
 public:
     JumpListItem(const std::string& name,
                  const std::vector<int> value) {
@@ -32,7 +32,7 @@ public:
 };
 
 // CPE functions list item
-class FuncListItem: public QListWidgetItem {
+class FuncListItem {
 public:
     FuncListItem(const std::string& name,
                  std::vector<int> func,

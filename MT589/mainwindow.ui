@@ -45,27 +45,11 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="functionLineEdit">
-    <property name="geometry">
-     <rect>
-      <x>540</x>
-      <y>540</y>
-      <width>110</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="maxLength">
-     <number>7</number>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="iLineEdit">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>600</y>
+      <x>680</x>
+      <y>100</y>
       <width>50</width>
       <height>30</height>
      </rect>
@@ -83,8 +67,8 @@
    <widget class="QLineEdit" name="kLineEdit">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>600</y>
+      <x>740</x>
+      <y>100</y>
       <width>51</width>
       <height>30</height>
      </rect>
@@ -99,8 +83,8 @@
    <widget class="QLineEdit" name="mLineEdit">
     <property name="geometry">
      <rect>
-      <x>640</x>
-      <y>600</y>
+      <x>800</x>
+      <y>100</y>
       <width>51</width>
       <height>30</height>
      </rect>
@@ -127,6 +111,9 @@
     <property name="text">
      <string>Run</string>
     </property>
+    <property name="default">
+     <bool>true</bool>
+    </property>
    </widget>
    <widget class="QPushButton" name="stepButton">
     <property name="geometry">
@@ -144,8 +131,8 @@
    <widget class="QLineEdit" name="riLineEdit">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>600</y>
+      <x>860</x>
+      <y>100</y>
       <width>51</width>
       <height>30</height>
      </rect>
@@ -163,8 +150,8 @@
    <widget class="QLineEdit" name="ciLineEdit">
     <property name="geometry">
      <rect>
-      <x>740</x>
-      <y>600</y>
+      <x>920</x>
+      <y>100</y>
       <width>51</width>
       <height>30</height>
      </rect>
@@ -182,8 +169,8 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>580</y>
+      <x>680</x>
+      <y>80</y>
       <width>51</width>
       <height>16</height>
      </rect>
@@ -198,8 +185,8 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>580</y>
+      <x>740</x>
+      <y>80</y>
       <width>51</width>
       <height>20</height>
      </rect>
@@ -214,8 +201,8 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>640</x>
-      <y>580</y>
+      <x>800</x>
+      <y>80</y>
       <width>51</width>
       <height>20</height>
      </rect>
@@ -230,8 +217,8 @@
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>580</y>
+      <x>860</x>
+      <y>80</y>
       <width>51</width>
       <height>20</height>
      </rect>
@@ -246,8 +233,8 @@
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>740</x>
-      <y>580</y>
+      <x>920</x>
+      <y>80</y>
       <width>51</width>
       <height>20</height>
      </rect>
@@ -259,17 +246,17 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="plusButton">
+   <widget class="QPushButton" name="saveButton">
     <property name="geometry">
      <rect>
       <x>880</x>
-      <y>580</y>
+      <y>150</y>
       <width>101</width>
-      <height>50</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Add</string>
+     <string>Save</string>
     </property>
    </widget>
    <widget class="QFrame" name="frame_36">
@@ -316,42 +303,12 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
-    <property name="geometry">
-     <rect>
-      <x>650</x>
-      <y>540</y>
-      <width>110</width>
-      <height>30</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
-    <property name="geometry">
-     <rect>
-      <x>760</x>
-      <y>540</y>
-      <width>110</width>
-      <height>30</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_3">
-    <property name="geometry">
-     <rect>
-      <x>870</x>
-      <y>540</y>
-      <width>110</width>
-      <height>30</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>520</y>
-      <width>111</width>
+      <x>520</x>
+      <y>20</y>
+      <width>91</width>
       <height>16</height>
      </rect>
     </property>
@@ -365,9 +322,9 @@
    <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
-      <x>650</x>
-      <y>520</y>
-      <width>111</width>
+      <x>700</x>
+      <y>20</y>
+      <width>91</width>
       <height>16</height>
      </rect>
     </property>
@@ -381,9 +338,9 @@
    <widget class="QLabel" name="label_11">
     <property name="geometry">
      <rect>
-      <x>760</x>
-      <y>520</y>
-      <width>111</width>
+      <x>790</x>
+      <y>20</y>
+      <width>91</width>
       <height>16</height>
      </rect>
     </property>
@@ -397,9 +354,9 @@
    <widget class="QLabel" name="label_12">
     <property name="geometry">
      <rect>
-      <x>870</x>
-      <y>520</y>
-      <width>111</width>
+      <x>880</x>
+      <y>20</y>
+      <width>91</width>
       <height>16</height>
      </rect>
     </property>
@@ -410,298 +367,609 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QListWidget" name="funcList">
-    <property name="geometry">
-     <rect>
-      <x>540</x>
-      <y>10</y>
-      <width>110</width>
-      <height>501</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QListWidget" name="fc1List">
-    <property name="geometry">
-     <rect>
-      <x>650</x>
-      <y>10</y>
-      <width>110</width>
-      <height>501</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QListWidget" name="fc2List">
-    <property name="geometry">
-     <rect>
-      <x>760</x>
-      <y>10</y>
-      <width>110</width>
-      <height>501</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QListWidget" name="jumpList">
-    <property name="geometry">
-     <rect>
-      <x>870</x>
-      <y>10</y>
-      <width>110</width>
-      <height>501</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLCDNumber" name="reg0">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>610</y>
+      <x>530</x>
+      <y>290</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="reg1">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>610</y>
+      <x>590</x>
+      <y>290</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="reg2">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>610</y>
+      <x>650</x>
+      <y>290</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="reg3">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>610</y>
+      <x>710</x>
+      <y>290</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="reg4">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>610</y>
+      <x>770</x>
+      <y>290</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="reg5">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>660</y>
+      <x>530</x>
+      <y>340</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="reg7">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>660</y>
+      <x>650</x>
+      <y>340</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="reg8">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>660</y>
+      <x>710</x>
+      <y>340</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="reg6">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>660</y>
+      <x>590</x>
+      <y>340</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="reg9">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>660</y>
+      <x>770</x>
+      <y>340</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="regMAR">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>710</y>
+      <x>530</x>
+      <y>390</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="regAC">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>710</y>
+      <x>650</x>
+      <y>390</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+      <underline>false</underline>
+      <strikeout>false</strikeout>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="regT">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>710</y>
+      <x>590</x>
+      <y>390</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="Xlcd">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>710</y>
+      <x>530</x>
+      <y>480</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="Ylcd">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>710</y>
+      <x>590</x>
+      <y>480</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="COlcd">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>710</y>
+      <x>650</x>
+      <y>480</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="ROlcd">
     <property name="geometry">
      <rect>
-      <x>530</x>
-      <y>710</y>
+      <x>710</x>
+      <y>480</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="Alcd">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>710</y>
+      <x>770</x>
+      <y>480</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLCDNumber" name="Dlcd">
     <property name="geometry">
      <rect>
-      <x>650</x>
-      <y>710</y>
+      <x>830</x>
+      <y>480</y>
       <width>64</width>
       <height>23</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="lineWidth">
+     <number>0</number>
+    </property>
     <property name="mode">
      <enum>QLCDNumber::Bin</enum>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>590</y>
+      <x>530</x>
+      <y>270</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -716,8 +984,8 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>590</y>
+      <x>590</x>
+      <y>270</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -732,11 +1000,16 @@
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>590</y>
+      <x>650</x>
+      <y>270</y>
       <width>61</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <stylestrategy>PreferDefault</stylestrategy>
+     </font>
     </property>
     <property name="text">
      <string>REG2</string>
@@ -748,8 +1021,8 @@
    <widget class="QLabel" name="label_13">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>590</y>
+      <x>710</x>
+      <y>270</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -764,8 +1037,8 @@
    <widget class="QLabel" name="label_14">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>590</y>
+      <x>770</x>
+      <y>270</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -780,8 +1053,8 @@
    <widget class="QLabel" name="label_15">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>640</y>
+      <x>530</x>
+      <y>320</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -796,8 +1069,8 @@
    <widget class="QLabel" name="label_16">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>640</y>
+      <x>590</x>
+      <y>320</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -812,8 +1085,8 @@
    <widget class="QLabel" name="label_17">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>640</y>
+      <x>650</x>
+      <y>320</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -828,8 +1101,8 @@
    <widget class="QLabel" name="label_18">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>640</y>
+      <x>710</x>
+      <y>320</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -844,8 +1117,8 @@
    <widget class="QLabel" name="label_19">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>640</y>
+      <x>770</x>
+      <y>320</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -860,8 +1133,8 @@
    <widget class="QLabel" name="label_20">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>690</y>
+      <x>530</x>
+      <y>370</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -876,8 +1149,8 @@
    <widget class="QLabel" name="label_21">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>690</y>
+      <x>590</x>
+      <y>370</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -892,8 +1165,8 @@
    <widget class="QLabel" name="label_22">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>690</y>
+      <x>650</x>
+      <y>370</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -908,8 +1181,8 @@
    <widget class="QLabel" name="label_23">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>690</y>
+      <x>530</x>
+      <y>460</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -924,8 +1197,8 @@
    <widget class="QLabel" name="label_24">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>690</y>
+      <x>590</x>
+      <y>460</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -940,8 +1213,8 @@
    <widget class="QLabel" name="label_25">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>690</y>
+      <x>650</x>
+      <y>460</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -956,8 +1229,8 @@
    <widget class="QLabel" name="label_26">
     <property name="geometry">
      <rect>
-      <x>530</x>
-      <y>690</y>
+      <x>710</x>
+      <y>460</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -972,8 +1245,8 @@
    <widget class="QLabel" name="label_27">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>690</y>
+      <x>770</x>
+      <y>460</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -988,8 +1261,8 @@
    <widget class="QLabel" name="label_28">
     <property name="geometry">
      <rect>
-      <x>650</x>
-      <y>690</y>
+      <x>830</x>
+      <y>460</y>
       <width>61</width>
       <height>20</height>
      </rect>
@@ -1004,11 +1277,14 @@
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>580</y>
+      <x>520</x>
+      <y>260</y>
       <width>321</width>
       <height>161</height>
      </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
     </property>
     <property name="frameShape">
      <enum>QFrame::Box</enum>
@@ -1023,8 +1299,8 @@
    <widget class="QLabel" name="label_29">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>560</y>
+      <x>530</x>
+      <y>240</y>
       <width>58</width>
       <height>16</height>
      </rect>
@@ -1036,8 +1312,8 @@
    <widget class="QFrame" name="frame_2">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>680</y>
+      <x>520</x>
+      <y>450</y>
       <width>381</width>
       <height>61</height>
      </rect>
@@ -1055,8 +1331,8 @@
    <widget class="QLabel" name="label_30">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>660</y>
+      <x>530</x>
+      <y>430</y>
       <width>58</width>
       <height>16</height>
      </rect>
@@ -1070,12 +1346,144 @@
      <rect>
       <x>20</x>
       <y>520</y>
-      <width>51</width>
+      <width>91</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>-</string>
+     <string>Delete</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="boxCPE">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>40</y>
+      <width>91</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::ActionsContextMenu</enum>
+    </property>
+    <property name="editable">
+     <bool>false</bool>
+    </property>
+    <property name="frame">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="boxREG">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>40</y>
+      <width>91</width>
+      <height>32</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="boxFC1">
+    <property name="geometry">
+     <rect>
+      <x>700</x>
+      <y>40</y>
+      <width>91</width>
+      <height>32</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="boxFC2">
+    <property name="geometry">
+     <rect>
+      <x>790</x>
+      <y>40</y>
+      <width>91</width>
+      <height>32</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="boxJUMP">
+    <property name="geometry">
+     <rect>
+      <x>880</x>
+      <y>40</y>
+      <width>91</width>
+      <height>32</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_31">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>20</y>
+      <width>91</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>REG</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="plusButton">
+    <property name="geometry">
+     <rect>
+      <x>780</x>
+      <y>150</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string>Add</string>
+    </property>
+    <property name="autoDefault">
+     <bool>false</bool>
+    </property>
+    <property name="default">
+     <bool>true</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="commandAddressEdit">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>100</y>
+      <width>141</width>
+      <height>30</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_32">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>80</y>
+      <width>141</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>COMMAND ADDR</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
@@ -1085,7 +1493,7 @@
      <x>0</x>
      <y>0</y>
      <width>1000</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
