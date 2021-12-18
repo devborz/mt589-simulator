@@ -72,13 +72,26 @@ private slots:
 
     void on_boxJUMP_currentIndexChanged(int index);
 
+    void on_commandAddressEdit_textEdited(const QString &arg1);
+
+    void on_iLineEdit_textEdited(const QString &arg1);
+
+    void on_kLineEdit_textEdited(const QString &arg1);
+
+    void on_mLineEdit_textEdited(const QString &arg1);
+
+    void on_riLineEdit_textEdited(const QString &arg1);
+
+    void on_ciLineEdit_textEdited(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
-    CPE cpe = CPE();
+
+    MK589 mk;
 
     std::vector<QLCDNumber*> regLCDs = {};
 
-    int selectedCommand = -1;
+    int selectedCommand = 0;
 
     Model model = Model();
 };

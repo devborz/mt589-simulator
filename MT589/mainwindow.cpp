@@ -13,7 +13,9 @@ MainWindow::MainWindow(QWidget *parent)
     setupRegs();
     setLCDsColor();
     setupBoxes();
-    update_on_cpu_data();
+//    update_on_cpu_data();
+
+    handleInputState();
 }
 
 MainWindow::~MainWindow()
@@ -23,13 +25,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_stepButton_clicked()
 {
-    if ((model.currentCommandIndex > model.listitems.size() - 1) && !model.isExecuting) {
+
+    if ((model.currentCommandIndex > model.listitems.size() - 1) || model.isExecuting) {
         return;
     }
     CommandItem* command = model.listitems[model.currentCommandIndex];
-//    cpe.fetch(command->f, command->i, command->k, command->m, command->ci, command->ri);
-    cpe.decode();
-    cpe.execute();
+    mk.execute_cpe(command->f, command->k.to_ulong(), command->i.to_ulong(), command->m.to_ulong(), command->ri.to_ulong());
     update_on_cpu_data();
     model.currentCommandIndex += 1;
 }
@@ -54,13 +55,30 @@ void MainWindow::on_minusButton_clicked()
 
 void MainWindow::on_runButton_clicked()
 {
-
 }
 
 void MainWindow::on_plusButton_clicked()
 {
+    std::bitset<7> cpeFunc = getFromFunc(ui->boxCPE->currentText().toStdString());
+    std::bitset<4> reg = getFromReg(ui->boxREG->currentText().toStdString(), getRGroup(ui->boxREG->currentIndex()));
+    std::bitset<2> fic = getFromFIC(ui->boxFC1->currentText().toStdString());
+    std::bitset<2> foc = getFromFOC(ui->boxFC2->currentText().toStdString());
+    std::bitset<7> jumpMask = getFromJump(ui->boxJUMP->currentText().toStdString());
+    std::bitset<7> command_adress = std::bitset<7>(ui->commandAddressEdit->text().toStdString());
+    std::bitset<8> i = std::bitset<8>(ui->iLineEdit->text().toStdString());
+    std::bitset<8> k = std::bitset<8>(ui->kLineEdit->text().toStdString());
+    std::bitset<8> m = std::bitset<8>(ui->mLineEdit->text().toStdString());
+    std::bitset<1> ri   = std::bitset<1>(ui->riLineEdit->text().toStdString());
+    std::bitset<1> ci = std::bitset<1>(ui->ciLineEdit->text().toStdString());
 
+    std::bitset<7> buf(reg.to_string());
+    CommandItem* item = new CommandItem(buf | cpeFunc, i, k, m, ci, ri);
+    item->setText(item->prepareText().c_str());
+    model.listitems.push_back(item);
+    ui->listWidget->addItem(item);
+    clearInputs();
 }
+
 
 void MainWindow::on_listWidget_currentRowChanged(int currentRow)
 {
@@ -117,21 +135,6 @@ void MainWindow::setupBoxes() {
     }
     ui->boxCPE->addItems(list);
 
-    ui->boxREG->addItems({
-                             "R0",
-                             "R1",
-                             "R2",
-                             "R3",
-                             "R4",
-                             "R5",
-                             "R6",
-                             "R7",
-                             "R8",
-                             "R9",
-                             "MAR",
-                             "T",
-                             "AC"
-                         });
     ui->boxFC1->addItems({
                              "SCZ",
                              "STZ",
@@ -154,7 +157,6 @@ void MainWindow::setupBoxes() {
 }
 
 void MainWindow::clearInputs() {
-//    ui->functionLineEdit->setText("");
     ui->ciLineEdit->setText("");
     ui->iLineEdit->setText("");
     ui->mLineEdit->setText("");
@@ -164,20 +166,33 @@ void MainWindow::clearInputs() {
 
 void MainWindow::update_on_cpu_data() {
   for (size_t i = 0; i < 10; ++i) {
-      regLCDs[i]->display(cpe.MEM[i]);
+      regLCDs[i]->display(mk.MEM[i]);
   }
-  ui->regMAR->display(cpe.MAR);
-  ui->regT->display(cpe.MEM[T]);
-  ui->regAC->display(cpe.MEM[AC]);
-  ui->Xlcd->display(cpe.X);
-  ui->Ylcd->display(cpe.Y);
-  ui->COlcd->display(cpe.CO);
-  ui->ROlcd->display(cpe.RO);
+  ui->regMAR->display(mk.MAR);
+  ui->regT->display(mk.MEM[T]);
+  ui->regAC->display(mk.MEM[AC]);
+  ui->COlcd->display(mk.CO);
+  ui->ROlcd->display(mk.RO);
+
+  std::cout << mk.MAR << " " << mk.MEM[T] << " " << mk.MEM[AC] << " " << mk.CO << " " << mk.RO;
 }
 
 void MainWindow::on_boxCPE_currentIndexChanged(int index)
 {
+    int r_group = getRGroup(index);
+    std::vector<std::string> regs;
+    std::vector<std::string> addresses;
+    getRGroupRegs(r_group, regs, addresses);
 
+    QStringList list;
+    for (auto& reg: regs) {
+        list << reg.c_str();
+    }
+    for (int i = ui->boxREG->count() - 1; i >= 0; --i) {
+        ui->boxREG->removeItem(i);
+    }
+    ui->boxREG->addItems(list);
+    ui->kLineEdit->setText(getKFromFunc(index).c_str());
 }
 
 
@@ -221,8 +236,42 @@ void MainWindow::handleInputState() {
     std::string ri   = ui->riLineEdit->text().toStdString();
     std::string ci = ui->ciLineEdit->text().toStdString();
 
-    haveEmptyLineEdit = command_adress.empty() or i.empty() or k.empty() or m.empty() or ri.empty() or ci.empty();
+    haveEmptyLineEdit = command_adress.size() < 7
+            or i.size() < 8 or k.size() < 8 or m.size() < 8 or ri.empty() or ci.empty();
     ui->plusButton->setEnabled(!haveEmptyLineEdit);
 }
 
+void MainWindow::on_commandAddressEdit_textEdited(const QString &arg1)
+{
+    handleInputState();
+}
 
+
+void MainWindow::on_iLineEdit_textEdited(const QString &arg1)
+{
+    handleInputState();
+}
+
+
+void MainWindow::on_kLineEdit_textEdited(const QString &arg1)
+{
+    handleInputState();
+}
+
+
+void MainWindow::on_mLineEdit_textEdited(const QString &arg1)
+{
+    handleInputState();
+}
+
+
+void MainWindow::on_riLineEdit_textEdited(const QString &arg1)
+{
+    handleInputState();
+}
+
+
+void MainWindow::on_ciLineEdit_textEdited(const QString &arg1)
+{
+    handleInputState();
+}

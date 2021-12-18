@@ -104,14 +104,15 @@ public:
 // Programm commands list item
 class CommandItem: public QListWidgetItem {
 public:
-    std::vector<BYTE> f;
-    int i;
-    int k;
-    int ci;
-    int ri;
-    int m;
+    std::bitset<7> f;
+    std::bitset<8> i;
+    std::bitset<8> k;
+    std::bitset<8> m;
+    std::bitset<1> ci;
+    std::bitset<1> ri;
 
-    CommandItem(std::vector<BYTE> f, int i, int k, int ci, int ri, int m) {
+    CommandItem(std::bitset<7> f, std::bitset<8> i, std::bitset<8> k,
+                std::bitset<8> m, std::bitset<1> ci, std::bitset<1> ri) {
         this->f = f;
         this->i= i;
         this->k = k;
@@ -123,19 +124,17 @@ public:
     std::string prepareText()  {
         std::string result = "";
         result += "F=";
-        for (const auto& fi : f) {
-            result += std::to_string(fi);
-        }
+        result += f.to_string();
         result += " I=";
-        result += std::to_string(i);
+        result += i.to_string();
         result += " K=";
-        result += std::to_string(k);
+        result += k.to_string();
         result += " CI=";
-        result += std::to_string(ci);
+        result += ci.to_string();
         result += " RI=";
-        result += std::to_string(ri);
+        result += ri.to_string();
         result += " M=";
-        result += std::to_string(m);
+        result += m.to_string();
         return result;
     }
 };
