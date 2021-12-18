@@ -174,7 +174,7 @@ struct MCU
     JUMP cur_jmp;
 
     static constexpr size_t total_jmps = 11;
-    BYTE signals[total_jmps] = {
+    BYTE _signals[total_jmps] = {
         0b0011111, // JCC
         0b0101111, // JZR
         0b0111111, // JCR
