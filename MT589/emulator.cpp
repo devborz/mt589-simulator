@@ -113,7 +113,7 @@ void CPE::propogate() {
     }
 }
 void CPE::compute_CO() {
-    CO = (CI & Y) | (X & Y);
+    CO = ~(~(CI & Y) | (X & Y));
 }
 void CPE::execute_f0() {
     switch(r_group) {
@@ -345,7 +345,7 @@ void MCU::connect_data(std::bitset<7> ac, std::bitset<8> x, BYTE fi, BYTE fc ) {
 }
 void MCU::decode_jmp() {
     for (size_t i = 0; i < total_jmps; ++i ){
-        if ((AC & std::bitset<7> {signals[i]}) == AC) {
+        if ((AC & std::bitset<7> {_signals[i]}) == AC) {
             cur_jmp = static_cast<JUMP>(i);
             break;
         }
@@ -491,6 +491,8 @@ microcommand ROM::read(size_t row, size_t col) {
 }
 MK589::MK589() {
     cpe_arr.resize(cpe_amount);
+    CO = 0b0;
+    RO = 0b0;
 }
 
 void MK589::execute_cpe(std::bitset<7> F, BYTE K, BYTE I, BYTE M, BYTE LI) {
