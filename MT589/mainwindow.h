@@ -93,6 +93,8 @@ private slots:
 
     void on_loadButton_clicked();
 
+    void on_ramcLineEdit_textEdited(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
 

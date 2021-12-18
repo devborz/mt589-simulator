@@ -10,6 +10,16 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setWindowTitle("MT589");
 
+    QStringList horlist;
+    for (size_t i = 0; i < 16; ++i) {
+        horlist << std::to_string(i).c_str();
+    }
+    QStringList verlist;
+    for (size_t i = 0; i < 32; ++i) {
+        verlist << std::to_string(i).c_str();
+    }
+    ui->tableWidget->setHorizontalHeaderLabels(horlist);
+    ui->tableWidget->setVerticalHeaderLabels(verlist);
     clearInputs();
     setupRegs();
     setLCDsColor();
@@ -41,7 +51,7 @@ void MainWindow::on_stepButton_clicked()
         nextCol = startColumn;
     }
     microcommand command = mk.rom.read(nextRow, nextCol);
-    mk.execute_cpe(command.F, command.K, 0, 0, command.CI);
+    mk.execute_cpe(command.F, command.K, 0, command.M, command.CI);
     mk.mcu.connect_data(command.AC, 0, mk.CO, command.FC);
     mk.mcu.execute();
     mk.mcu.decode_adr();
@@ -75,7 +85,7 @@ void MainWindow::setupRegs() {
     QRegularExpressionValidator* validator = new QRegularExpressionValidator(reg, this);
 
     ui->ciLineEdit->setValidator(validator);
-    ui->iLineEdit->setValidator(validator);
+//    ui->iLineEdit->setValidator(validator);
     ui->mLineEdit->setValidator(validator);
     ui->kLineEdit->setValidator(validator);
     ui->riLineEdit->setValidator(validator);
@@ -147,8 +157,8 @@ void MainWindow::setupBoxes() {
 
 void MainWindow::clearInputs() {
     ui->ciLineEdit->setText("0");
-    ui->iLineEdit->setText("00000000");
-    ui->mLineEdit->setText("00");
+    ui->mLineEdit->setText("00000000");
+    ui->ramcLineEdit->setText("00");
     ui->kLineEdit->setText("");
     ui->riLineEdit->setText("0");
 }
@@ -224,14 +234,14 @@ void MainWindow::handleInputState() {
 
     bool haveEmptyLineEdit = false;
     std::string address_control = ui->commandAddressEdit->text().toStdString();
-    std::string i = ui->iLineEdit->text().toStdString();
+//    std::string i = ui->iLineEdit->text().toStdString();
     std::string k = ui->kLineEdit->text().toStdString();
     std::string m = ui->mLineEdit->text().toStdString();
     std::string ri  = ui->riLineEdit->text().toStdString();
     std::string ci = ui->ciLineEdit->text().toStdString();
 
     haveEmptyLineEdit = address_control.size() < 7
-            or i.size() < 8 or k.size() < 8 or m.size() < 2 or ri.empty() or ci.empty();
+             or k.size() < 8 or m.size() < 8 or ri.empty() or ci.empty();
     ui->saveButton->setEnabled(!haveEmptyLineEdit);
 }
 
@@ -289,6 +299,7 @@ void MainWindow::fillInputs() {
     ui->kLineEdit->setText(std::bitset<8>(command.K).to_string().c_str());
     ui->commandAddressEdit->setText(command.address_control.c_str());
     ui->ciLineEdit->setText(std::to_string(command.CI).c_str());
+    ui->mLineEdit->setText(std::bitset<8>(command.M).to_string().c_str());
 }
 
 
@@ -300,7 +311,7 @@ void MainWindow::on_saveButton_clicked()
     std::bitset<2> foc = getFromFOC(ui->boxFC2->currentText().toStdString());
     std::bitset<7> jumpMask = getFromJump(ui->boxJUMP->currentText().toStdString());
     std::bitset<7> address_control = std::bitset<7>(ui->commandAddressEdit->text().toStdString());
-    std::bitset<8> i = std::bitset<8>(ui->iLineEdit->text().toStdString());
+//    std::bitset<8> i = std::bitset<8>(ui->iLineEdit->text().toStdString());
     std::bitset<8> k = std::bitset<8>(ui->kLineEdit->text().toStdString());
     std::bitset<8> m = std::bitset<8>(ui->mLineEdit->text().toStdString());
     std::bitset<1> ri   = std::bitset<1>(ui->riLineEdit->text().toStdString());
@@ -318,6 +329,7 @@ void MainWindow::on_saveButton_clicked()
     command.index_Jump = ui->boxJUMP->currentIndex();
     command.address_control = address_control.to_string();
     command.index_REG = ui->boxREG->currentIndex();
+    command.M = m.to_ulong();
     command.CI = ci.to_ulong();
 
     std::bitset<4> fc_buf(foc.to_string());
@@ -371,5 +383,12 @@ void MainWindow::on_loadButton_clicked()
     startRow = mk.mcu.get_row_adr();
     startColumn = mk.mcu.get_col_adr();
     items[startRow][startColumn]->setBackground(QBrush(Qt::yellow));
+    ui->tableWidget->clearSelection();
+}
+
+
+void MainWindow::on_ramcLineEdit_textEdited(const QString &arg1)
+{
+    handleInputState();
 }
 

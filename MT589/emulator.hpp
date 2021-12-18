@@ -91,6 +91,7 @@ struct microcommand {
     //BYTE RAM_ACCESS : 1;
     //BYTE WR : 2;
     BYTE CI : 1;
+    BYTE M;
 
     bool empty = true;
     // Input indexes

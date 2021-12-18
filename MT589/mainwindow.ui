@@ -1098,6 +1098,11 @@
     <column/>
     <column/>
     <column/>
+    <item row="0" column="0">
+     <property name="flags">
+      <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
+     </property>
+    </item>
    </widget>
    <widget class="QFrame" name="frame_3">
     <property name="geometry">
@@ -1273,7 +1278,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>I</string>
+      <string>M</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1337,7 +1342,7 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLineEdit" name="mLineEdit">
+    <widget class="QLineEdit" name="ramcLineEdit">
      <property name="geometry">
       <rect>
        <x>180</x>
@@ -1369,7 +1374,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QLineEdit" name="iLineEdit">
+    <widget class="QLineEdit" name="mLineEdit">
      <property name="geometry">
       <rect>
        <x>20</x>
