@@ -10,12 +10,23 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setWindowTitle("MT589");
 
+    clearInputs();
     setupRegs();
     setLCDsColor();
     setupBoxes();
 //    update_on_cpu_data();
 
     handleInputState();
+
+    for (size_t i = 0; i < 32; ++i) {
+        std::vector<QTableWidgetItem*> row;
+        for (size_t j = 0; j < 16; ++j) {
+            QTableWidgetItem* item = new QTableWidgetItem();
+            row.push_back(item);
+            ui->tableWidget->setItem(i, j, item);
+        }
+        items.push_back(row);
+    }
 }
 
 MainWindow::~MainWindow()
@@ -25,60 +36,32 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_stepButton_clicked()
 {
-
-    if ((model.currentCommandIndex > model.listitems.size() - 1) || model.isExecuting) {
-        return;
+    if (nextCol == -1 && nextRow == - 1) {
+        nextRow = startRow;
+        nextCol = startColumn;
     }
-    CommandItem* command = model.listitems[model.currentCommandIndex];
-    mk.execute_cpe(command->f, command->k.to_ulong(), command->i.to_ulong(), command->m.to_ulong(), command->ri.to_ulong());
+    microcommand command = mk.rom.read(nextRow, nextCol);
+    mk.execute_cpe(command.F, command.K, 0, 0, command.CI);
+    mk.mcu.connect_data(command.AC, 0, mk.CO, command.FC);
+    mk.mcu.execute();
+    mk.mcu.decode_adr();
+
+    if (command.empty) {
+        items[nextRow][nextCol]->setBackground(QBrush(Qt::transparent));
+    } else {
+        items[nextRow][nextCol]->setBackground(QBrush(Qt::blue));
+    }
+
+    nextRow = mk.mcu.get_row_adr();
+    nextCol = mk.mcu.get_col_adr();
+    items[nextRow][nextCol]->setBackground(QBrush(Qt::yellow));
     update_on_cpu_data();
-    model.currentCommandIndex += 1;
-}
 
-
-void MainWindow::on_minusButton_clicked()
-{
-
-    if (selectedCommand < model.listitems.size() && selectedCommand != -1) {
-        CommandItem* item = model.listitems[selectedCommand];
-        model.listitems.erase(model.listitems.begin() + selectedCommand);
-
-        delete item;
-        if (selectedCommand < model.listitems.size()) {
-
-        } else {
-            selectedCommand = -1;
-            ui->listWidget->clearSelection();
-        }
-    }
 }
 
 void MainWindow::on_runButton_clicked()
 {
 }
-
-void MainWindow::on_plusButton_clicked()
-{
-    std::bitset<7> cpeFunc = getFromFunc(ui->boxCPE->currentText().toStdString());
-    std::bitset<4> reg = getFromReg(ui->boxREG->currentText().toStdString(), getRGroup(ui->boxREG->currentIndex()));
-    std::bitset<2> fic = getFromFIC(ui->boxFC1->currentText().toStdString());
-    std::bitset<2> foc = getFromFOC(ui->boxFC2->currentText().toStdString());
-    std::bitset<7> jumpMask = getFromJump(ui->boxJUMP->currentText().toStdString());
-    std::bitset<7> command_adress = std::bitset<7>(ui->commandAddressEdit->text().toStdString());
-    std::bitset<8> i = std::bitset<8>(ui->iLineEdit->text().toStdString());
-    std::bitset<8> k = std::bitset<8>(ui->kLineEdit->text().toStdString());
-    std::bitset<8> m = std::bitset<8>(ui->mLineEdit->text().toStdString());
-    std::bitset<1> ri   = std::bitset<1>(ui->riLineEdit->text().toStdString());
-    std::bitset<1> ci = std::bitset<1>(ui->ciLineEdit->text().toStdString());
-
-    std::bitset<7> buf(reg.to_string());
-    CommandItem* item = new CommandItem(buf | cpeFunc, i, k, m, ci, ri);
-    item->setText(item->prepareText().c_str());
-    model.listitems.push_back(item);
-    ui->listWidget->addItem(item);
-    clearInputs();
-}
-
 
 void MainWindow::on_listWidget_currentRowChanged(int currentRow)
 {
@@ -96,6 +79,7 @@ void MainWindow::setupRegs() {
     ui->mLineEdit->setValidator(validator);
     ui->kLineEdit->setValidator(validator);
     ui->riLineEdit->setValidator(validator);
+    ui->startAddressEdit->setValidator(validator);
 
    regLCDs.push_back(ui->reg0);
    regLCDs.push_back(ui->reg1);
@@ -118,8 +102,6 @@ void MainWindow::setLCDsColor() {
     ui->regMAR->setPalette(palette);
     ui->regT->setPalette(palette);
     ui->regAC->setPalette(palette);
-    ui->Xlcd->setPalette(palette);
-    ui->Ylcd->setPalette(palette);
     ui->COlcd->setPalette(palette);
     ui->ROlcd->setPalette(palette);
     ui->Alcd->setPalette(palette);
@@ -154,14 +136,21 @@ void MainWindow::setupBoxes() {
                               "JCR",
                               "JCE"
                           });
+    std::vector<std::string> acs = {
+        "0000000",
+        "0100000",
+        "0110000",
+        "1110000"
+    };
+    ui->commandAddressEdit->setText(acs[0].c_str());
 }
 
 void MainWindow::clearInputs() {
-    ui->ciLineEdit->setText("");
-    ui->iLineEdit->setText("");
-    ui->mLineEdit->setText("");
+    ui->ciLineEdit->setText("0");
+    ui->iLineEdit->setText("00000000");
+    ui->mLineEdit->setText("00");
     ui->kLineEdit->setText("");
-    ui->riLineEdit->setText("");
+    ui->riLineEdit->setText("0");
 }
 
 void MainWindow::update_on_cpu_data() {
@@ -173,8 +162,8 @@ void MainWindow::update_on_cpu_data() {
   ui->regAC->display(mk.MEM[AC]);
   ui->COlcd->display(mk.CO);
   ui->ROlcd->display(mk.RO);
-
-  std::cout << mk.MAR << " " << mk.MEM[T] << " " << mk.MEM[AC] << " " << mk.CO << " " << mk.RO;
+  ui->Dlcd->display(mk.MEM[AC]);
+  ui->Alcd->display(mk.MAR);
 }
 
 void MainWindow::on_boxCPE_currentIndexChanged(int index)
@@ -216,12 +205,17 @@ void MainWindow::on_boxFC2_currentIndexChanged(int index)
 
 void MainWindow::on_boxJUMP_currentIndexChanged(int index)
 {
-
+    std::vector<std::string> acs = {
+        "0000000",
+        "0100000",
+        "0110000",
+        "1110000",
+    };
+    ui->commandAddressEdit->setText(acs[index].c_str());
 }
 
 void MainWindow::handleInputState() {
     std::string cpeFunc = ui->boxCPE->currentText().toStdString();
-    // fetch r group and change regs list if needed
 
     std::string reg = ui->boxREG->currentText().toStdString();
     std::string fic = ui->boxFC1->currentText().toStdString();
@@ -229,16 +223,16 @@ void MainWindow::handleInputState() {
     std::string jump = ui->boxJUMP->currentText().toStdString();
 
     bool haveEmptyLineEdit = false;
-    std::string command_adress = ui->commandAddressEdit->text().toStdString();
+    std::string address_control = ui->commandAddressEdit->text().toStdString();
     std::string i = ui->iLineEdit->text().toStdString();
     std::string k = ui->kLineEdit->text().toStdString();
     std::string m = ui->mLineEdit->text().toStdString();
-    std::string ri   = ui->riLineEdit->text().toStdString();
+    std::string ri  = ui->riLineEdit->text().toStdString();
     std::string ci = ui->ciLineEdit->text().toStdString();
 
-    haveEmptyLineEdit = command_adress.size() < 7
-            or i.size() < 8 or k.size() < 8 or m.size() < 8 or ri.empty() or ci.empty();
-    ui->plusButton->setEnabled(!haveEmptyLineEdit);
+    haveEmptyLineEdit = address_control.size() < 7
+            or i.size() < 8 or k.size() < 8 or m.size() < 2 or ri.empty() or ci.empty();
+    ui->saveButton->setEnabled(!haveEmptyLineEdit);
 }
 
 void MainWindow::on_commandAddressEdit_textEdited(const QString &arg1)
@@ -275,3 +269,107 @@ void MainWindow::on_ciLineEdit_textEdited(const QString &arg1)
 {
     handleInputState();
 }
+
+void MainWindow::on_tableWidget_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn)
+{
+    fillInputs();
+}
+
+void MainWindow::fillInputs() {
+    int currentRow = ui->tableWidget->currentRow();
+    int currentColumn = ui->tableWidget->currentColumn();
+
+    microcommand command = mk.rom.read(currentRow, currentColumn);
+
+    ui->boxCPE->setCurrentIndex(command.index_F);
+    ui->boxFC1->setCurrentIndex(command.index_FIC);
+    ui->boxFC2->setCurrentIndex(command.index_FOC);
+    ui->boxJUMP->setCurrentIndex(command.index_Jump);
+
+    ui->kLineEdit->setText(std::bitset<8>(command.K).to_string().c_str());
+    ui->commandAddressEdit->setText(command.address_control.c_str());
+    ui->ciLineEdit->setText(std::to_string(command.CI).c_str());
+}
+
+
+void MainWindow::on_saveButton_clicked()
+{
+    std::bitset<7> cpeFunc = getFromFunc(ui->boxCPE->currentText().toStdString());
+    std::bitset<4> reg = getFromReg(ui->boxREG->currentText().toStdString(), getRGroup(ui->boxREG->currentIndex()));
+    std::bitset<2> fic = getFromFIC(ui->boxFC1->currentText().toStdString());
+    std::bitset<2> foc = getFromFOC(ui->boxFC2->currentText().toStdString());
+    std::bitset<7> jumpMask = getFromJump(ui->boxJUMP->currentText().toStdString());
+    std::bitset<7> address_control = std::bitset<7>(ui->commandAddressEdit->text().toStdString());
+    std::bitset<8> i = std::bitset<8>(ui->iLineEdit->text().toStdString());
+    std::bitset<8> k = std::bitset<8>(ui->kLineEdit->text().toStdString());
+    std::bitset<8> m = std::bitset<8>(ui->mLineEdit->text().toStdString());
+    std::bitset<1> ri   = std::bitset<1>(ui->riLineEdit->text().toStdString());
+    std::bitset<1> ci = std::bitset<1>(ui->ciLineEdit->text().toStdString());
+
+    std::bitset<7> buf("111" + reg.to_string());
+
+    clearInputs();
+    microcommand command;
+    command.F = buf & cpeFunc;
+
+    command.index_F = ui->boxCPE->currentIndex();
+    command.index_FIC = ui->boxFC1->currentIndex();
+    command.index_FOC = ui->boxFC2->currentIndex();
+    command.index_Jump = ui->boxJUMP->currentIndex();
+    command.address_control = address_control.to_string();
+    command.index_REG = ui->boxREG->currentIndex();
+    command.CI = ci.to_ulong();
+
+    std::bitset<4> fc_buf(foc.to_string());
+    fc_buf = (fc_buf << 2) | std::bitset<4>(fic.to_string());
+    command.FC = fc_buf.to_ulong();
+
+    command.AC = jumpMask | address_control;
+
+    command.K = k.to_ulong();
+    command.empty = false;
+
+    int currentRow = ui->tableWidget->currentRow();
+    int currentColumn = ui->tableWidget->currentColumn();
+    if (currentRow >= 0 and currentRow < 32 and currentColumn >= 0 and currentColumn < 16) {
+        if (currentRow != startRow || currentColumn != startColumn) {
+            items[currentRow][currentColumn]->setBackground(QBrush(Qt::blue));
+        }
+        mk.rom.write(currentRow, currentColumn, command);
+    }
+
+    ui->tableWidget->clearSelection();
+}
+
+void MainWindow::on_clearButton_clicked()
+{
+    microcommand command;
+    int currentRow = ui->tableWidget->currentRow();
+    int currentColumn = ui->tableWidget->currentColumn();
+    if (currentRow >= 0 and currentRow < 32 and currentColumn >= 0 and currentColumn < 16) {
+        if (currentRow != startRow || currentColumn != startColumn) {
+            items[currentRow][currentColumn]->setBackground(QBrush(Qt::transparent));
+        }
+        mk.rom.write(currentRow, currentColumn, command);
+    }
+}
+
+void MainWindow::on_startAddressEdit_textEdited(const QString &arg1)
+{
+
+}
+
+void MainWindow::on_loadButton_clicked()
+{
+    std::bitset<8> addr = std::bitset<8>(ui->startAddressEdit->text().toStdString());
+    mk.mcu.connect_data(std::bitset<7>(), addr, 0, 0);
+    mk.mcu.load();
+    mk.mcu.decode_adr();
+    if (!(startRow == -1 && startColumn == -1)) {
+        items[startRow][startColumn]->setBackground(QBrush(Qt::transparent));
+    }
+    startRow = mk.mcu.get_row_adr();
+    startColumn = mk.mcu.get_col_adr();
+    items[startRow][startColumn]->setBackground(QBrush(Qt::yellow));
+}
+

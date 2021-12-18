@@ -495,16 +495,19 @@ MK589::MK589() {
     RO = 0b0;
 }
 
-void MK589::execute_cpe(std::bitset<7> F, BYTE K, BYTE I, BYTE M, BYTE LI) {
+void MK589::execute_cpe(std::bitset<7> F, BYTE K, BYTE I, BYTE M, BYTE CI) {
 
+    cpe_arr[0].CI = CI;
     for (size_t i = 0; i < 4; ++i) {
         cpe_arr[i].fetch(F, ((I >> (i*2)) & 0b11), ((K >> (i*2)) & 0b11),
-                ((M >> (i*2)) & 0b11), CO, LI);
+                ((M >> (i*2)) & 0b11), cpe_arr[i].CI, 0);
         cpe_arr[i].decode();
         cpe_arr[i].execute();
-        CO = cpe_arr[i].CO;
+        if (i < 3)
+            cpe_arr[i + 1].CI = cpe_arr[i].CO;
     }
     unite_registers();
+    CO = cpe_arr[3].CO;
 
 }
 

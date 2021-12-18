@@ -26,6 +26,7 @@ int fromStringBin(std::string input) {
     }
     return result;
 }
+
 int getRGroup(int index) {
   std::vector<int> r_groups = {
     1,
@@ -74,6 +75,7 @@ int getRGroup(int index) {
 
 std::bitset<7> getFromFunc(const std::string& mnemonic) {
     std::bitset<7> func(getFunc(mnemonic));
+    std::cout << func.to_string() << std::endl;
     return func;
 }
 
@@ -83,6 +85,8 @@ std::bitset<4> getFromReg(const std::string& mnemonic, int rGroup) {
     getRGroupRegs(rGroup, mnemonics, addresses);
     for (size_t i = 0; i < mnemonics.size(); ++i) {
         if (mnemonics[i] == mnemonic) {
+            std::bitset<4> bitset(addresses[i]);
+            std::cout << bitset.to_string() << std::endl;
             return std::bitset<4>(addresses[i]);
         }
     }
@@ -145,10 +149,8 @@ std::string getKFromFunc(int index) {
     std::vector<std::string> funcs;
     std::vector<std::string> ks;
     fillArrays(mnemonics, funcs, ks);
-    return ks[index];
+    return ks[index] + ks[index] + ks[index] + ks[index];
 }
-
-
 
 void fillArrays(std::vector<std::string>& mnemonics,
                             std::vector<std::string>& funcs,

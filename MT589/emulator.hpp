@@ -84,12 +84,22 @@ public:
 };
 
 struct microcommand {
-    std::bitset<7> F;
+    std::bitset<7> F = {0b1100000};
     BYTE FC : 4;
     std::bitset<7> AC;
     BYTE K;
     //BYTE RAM_ACCESS : 1;
     //BYTE WR : 2;
+    BYTE CI : 1;
+
+    bool empty = true;
+    // Input indexes
+    int index_F;
+    int index_REG;
+    int index_FIC;
+    int index_FOC;
+    int index_Jump;
+    std::string address_control = "0000000";
 };
 
 template<std::size_t N>
@@ -236,7 +246,7 @@ public:
     BYTE ADR : 4;
 
     void execute_microprogram();
-    void execute_cpe(std::bitset<7> F, BYTE K, BYTE I, BYTE M, BYTE LI);
+    void execute_cpe(std::bitset<7> F, BYTE K, BYTE I, BYTE M, BYTE CI);
 
     void unite_registers();
 };

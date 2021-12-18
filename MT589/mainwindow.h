@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QLCDNumber>
 #include <ListModels.h>
+#include <QTableWidgetItem>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -51,14 +52,12 @@ public:
 
     void handleInputState();
 
+    void fillInputs();
+
 private slots:
     void on_stepButton_clicked();
 
-    void on_minusButton_clicked();
-
     void on_runButton_clicked();
-
-    void on_plusButton_clicked();
 
     void on_listWidget_currentRowChanged(int currentRow);
 
@@ -84,6 +83,16 @@ private slots:
 
     void on_ciLineEdit_textEdited(const QString &arg1);
 
+    void on_tableWidget_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
+
+    void on_saveButton_clicked();
+
+    void on_clearButton_clicked();
+
+    void on_startAddressEdit_textEdited(const QString &arg1);
+
+    void on_loadButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 
@@ -94,6 +103,16 @@ private:
     int selectedCommand = 0;
 
     Model model = Model();
+
+    std::vector<std::vector<QTableWidgetItem*>> items;
+
+    int startRow = -1;
+
+    int startColumn = -1 ;
+
+    int nextRow = -1;
+
+    int nextCol = -1;
 };
 
 #endif // MAINWINDOW_H
