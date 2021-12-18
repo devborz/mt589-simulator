@@ -27,7 +27,7 @@ void MainWindow::on_stepButton_clicked()
         return;
     }
     CommandItem* command = model.listitems[model.currentCommandIndex];
-    cpe.fetch(command->f, command->i, command->k, command->m, command->ci, command->ri);
+//    cpe.fetch(command->f, command->i, command->k, command->m, command->ci, command->ri);
     cpe.decode();
     cpe.execute();
     update_on_cpu_data();
@@ -203,4 +203,26 @@ void MainWindow::on_boxJUMP_currentIndexChanged(int index)
 {
 
 }
+
+void MainWindow::handleInputState() {
+    std::string cpeFunc = ui->boxCPE->currentText().toStdString();
+    // fetch r group and change regs list if needed
+
+    std::string reg = ui->boxREG->currentText().toStdString();
+    std::string fic = ui->boxFC1->currentText().toStdString();
+    std::string foc = ui->boxFC2->currentText().toStdString();
+    std::string jump = ui->boxJUMP->currentText().toStdString();
+
+    bool haveEmptyLineEdit = false;
+    std::string command_adress = ui->commandAddressEdit->text().toStdString();
+    std::string i = ui->iLineEdit->text().toStdString();
+    std::string k = ui->kLineEdit->text().toStdString();
+    std::string m = ui->mLineEdit->text().toStdString();
+    std::string ri   = ui->riLineEdit->text().toStdString();
+    std::string ci = ui->ciLineEdit->text().toStdString();
+
+    haveEmptyLineEdit = command_adress.empty() or i.empty() or k.empty() or m.empty() or ri.empty() or ci.empty();
+    ui->plusButton->setEnabled(!haveEmptyLineEdit);
+}
+
 

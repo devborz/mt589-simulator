@@ -49,6 +49,8 @@ public:
 
     void update_on_cpu_data();
 
+    void handleInputState();
+
 private slots:
     void on_stepButton_clicked();
 
