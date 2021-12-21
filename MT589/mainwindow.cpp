@@ -51,10 +51,10 @@ void MainWindow::on_stepButton_clicked()
         nextCol = startColumn;
     }
     microcommand command = mk.rom.read(nextRow, nextCol);
-    mk.execute_cpe(command.F, command.K, 0, command.M, command.CI);
-    mk.mcu.connect_data(command.AC, 0, mk.CO, command.FC);
-    mk.mcu.execute();
-    mk.mcu.decode_adr();
+    std::string ac = command.AC.to_string();
+    mk.fetch(command);
+    mk.decode();
+    mk.execute();
 
     if (command.empty) {
         items[nextRow][nextCol]->setBackground(QBrush(Qt::transparent));
@@ -62,8 +62,8 @@ void MainWindow::on_stepButton_clicked()
         items[nextRow][nextCol]->setBackground(QBrush(Qt::blue));
     }
 
-    nextRow = mk.mcu.get_row_adr();
-    nextCol = mk.mcu.get_col_adr();
+    nextRow = mk.get_row_adr();
+    nextCol = mk.get_col_adr();
     items[nextRow][nextCol]->setBackground(QBrush(Qt::yellow));
     update_on_cpu_data();
 
@@ -84,11 +84,9 @@ void MainWindow::setupRegs() {
     QRegularExpression reg("[0-1]+");
     QRegularExpressionValidator* validator = new QRegularExpressionValidator(reg, this);
 
-    ui->ciLineEdit->setValidator(validator);
 //    ui->iLineEdit->setValidator(validator);
     ui->mLineEdit->setValidator(validator);
     ui->kLineEdit->setValidator(validator);
-    ui->riLineEdit->setValidator(validator);
     ui->startAddressEdit->setValidator(validator);
 
    regLCDs.push_back(ui->reg0);
@@ -156,22 +154,21 @@ void MainWindow::setupBoxes() {
 }
 
 void MainWindow::clearInputs() {
-    ui->ciLineEdit->setText("0");
     ui->mLineEdit->setText("00000000");
     ui->ramcLineEdit->setText("00");
     ui->kLineEdit->setText("");
-    ui->riLineEdit->setText("0");
 }
 
 void MainWindow::update_on_cpu_data() {
   for (size_t i = 0; i < 10; ++i) {
+      int x = mk.MEM[i];
       regLCDs[i]->display(mk.MEM[i]);
   }
   ui->regMAR->display(mk.MAR);
   ui->regT->display(mk.MEM[T]);
   ui->regAC->display(mk.MEM[AC]);
-  ui->COlcd->display(mk.CO);
-  ui->ROlcd->display(mk.RO);
+  ui->COlcd->display(mk.FI);
+//  ui->ROlcd->display(mk.RO);
   ui->Dlcd->display(mk.MEM[AC]);
   ui->Alcd->display(mk.MAR);
 }
@@ -237,11 +234,9 @@ void MainWindow::handleInputState() {
 //    std::string i = ui->iLineEdit->text().toStdString();
     std::string k = ui->kLineEdit->text().toStdString();
     std::string m = ui->mLineEdit->text().toStdString();
-    std::string ri  = ui->riLineEdit->text().toStdString();
-    std::string ci = ui->ciLineEdit->text().toStdString();
 
     haveEmptyLineEdit = address_control.size() < 7
-             or k.size() < 8 or m.size() < 8 or ri.empty() or ci.empty();
+             or k.size() < 8 or m.size() < 8;
     ui->saveButton->setEnabled(!haveEmptyLineEdit);
 }
 
@@ -298,7 +293,6 @@ void MainWindow::fillInputs() {
 
     ui->kLineEdit->setText(std::bitset<8>(command.K).to_string().c_str());
     ui->commandAddressEdit->setText(command.address_control.c_str());
-    ui->ciLineEdit->setText(std::to_string(command.CI).c_str());
     ui->mLineEdit->setText(std::bitset<8>(command.M).to_string().c_str());
 }
 
@@ -307,15 +301,13 @@ void MainWindow::on_saveButton_clicked()
 {
     std::bitset<7> cpeFunc = getFromFunc(ui->boxCPE->currentText().toStdString());
     std::bitset<4> reg = getFromReg(ui->boxREG->currentText().toStdString(), getRGroup(ui->boxREG->currentIndex()));
-    std::bitset<2> fic = getFromFIC(ui->boxFC1->currentText().toStdString());
-    std::bitset<2> foc = getFromFOC(ui->boxFC2->currentText().toStdString());
+    int fic = ui->boxFC1->currentIndex();
+    int foc = ui->boxFC2->currentIndex();
     std::bitset<7> jumpMask = getFromJump(ui->boxJUMP->currentText().toStdString());
     std::bitset<7> address_control = std::bitset<7>(ui->commandAddressEdit->text().toStdString());
 //    std::bitset<8> i = std::bitset<8>(ui->iLineEdit->text().toStdString());
     std::bitset<8> k = std::bitset<8>(ui->kLineEdit->text().toStdString());
     std::bitset<8> m = std::bitset<8>(ui->mLineEdit->text().toStdString());
-    std::bitset<1> ri   = std::bitset<1>(ui->riLineEdit->text().toStdString());
-    std::bitset<1> ci = std::bitset<1>(ui->ciLineEdit->text().toStdString());
 
     std::bitset<7> buf("111" + reg.to_string());
 
@@ -330,11 +322,10 @@ void MainWindow::on_saveButton_clicked()
     command.address_control = address_control.to_string();
     command.index_REG = ui->boxREG->currentIndex();
     command.M = m.to_ulong();
-    command.CI = ci.to_ulong();
 
-    std::bitset<4> fc_buf(foc.to_string());
-    fc_buf = (fc_buf << 2) | std::bitset<4>(fic.to_string());
-    command.FC = fc_buf.to_ulong();
+    BYTE fc_buf = ((foc << 2) + fic) & 0b1111;
+    std::string str = std::bitset<4>(fc_buf).to_string();
+    command.FC = fc_buf;
 
     command.AC = jumpMask | address_control;
 
@@ -374,21 +365,27 @@ void MainWindow::on_startAddressEdit_textEdited(const QString &arg1)
 void MainWindow::on_loadButton_clicked()
 {
     std::bitset<8> addr = std::bitset<8>(ui->startAddressEdit->text().toStdString());
-    mk.mcu.connect_data(std::bitset<7>(), addr, 0, 0);
-    mk.mcu.load();
-    mk.mcu.decode_adr();
+    mk.load(addr); // fix load (with X connection, not x from argument);
+
+
     if (!(startRow == -1 && startColumn == -1)) {
         items[startRow][startColumn]->setBackground(QBrush(Qt::transparent));
     }
-    startRow = mk.mcu.get_row_adr();
-    startColumn = mk.mcu.get_col_adr();
+
+    startRow = mk.get_row_adr();
+    startColumn = mk.get_col_adr();
+
     items[startRow][startColumn]->setBackground(QBrush(Qt::yellow));
     ui->tableWidget->clearSelection();
 }
-
 
 void MainWindow::on_ramcLineEdit_textEdited(const QString &arg1)
 {
     handleInputState();
 }
+
+void MainWindow::showCurrentCommand() {
+
+}
+
 

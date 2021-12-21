@@ -10,15 +10,24 @@ CONFIG += c++11
 
 SOURCES += \
     ListModels.cpp \
+    cpe.cpp \
     emulator.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    mcu.cpp \
+    ram.cpp \
+    rom.cpp
 
 HEADERS += \
     ListModels.h \
     Models.h \
+    cpe.h \
     emulator.hpp \
     mainwindow.h \
+    mcu.h \
+    mt_global.h \
+    ram.h \
+    rom.h \
     util.hpp
 
 FORMS += \

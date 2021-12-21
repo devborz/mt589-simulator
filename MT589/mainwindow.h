@@ -54,6 +54,8 @@ public:
 
     void fillInputs();
 
+    void showCurrentCommand();
+
 private slots:
     void on_stepButton_clicked();
 

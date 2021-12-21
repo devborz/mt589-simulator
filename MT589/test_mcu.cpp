@@ -20,7 +20,7 @@ int main() {
     std::bitset<8> X = 0b00010001;
     std::bitset<7> AC;
     mce.X = X;
-    mce.load();
+    mce.load(X);
 
     std::vector<std::vector<bool> > rom;
     std::vector< std::bitset<7> > prog = {
