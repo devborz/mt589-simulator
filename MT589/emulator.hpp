@@ -13,19 +13,35 @@ constexpr BYTE T = 0xA;
 
 // r group    | F GROUP
 // F0,F1,F2,F3, F4,F5,F6
-struct CPE
+class CPE
 {
+public:
     CPE();
     void fetch(const std::bitset<7>& f, BYTE i, BYTE k, BYTE m, BYTE CI,
-            BYTE RI);
+            BYTE LI);
     void decode();
     void execute();
-
-    void propogate();
-    void compute_CO();
-
     void reset();
 
+    //======OUTPUT
+    BYTE A : 2; // MAR output
+    BYTE D : 2; // AC output
+    BYTE RO : 1;
+    BYTE CO : 1;
+    BYTE X : 1;
+    BYTE Y : 1;
+    //======MEMORY
+    BYTE MAR : 2;
+    BYTE MEM[0xC];
+
+    //======MISC
+    int r_group;
+    int f_group;
+    BYTE ADR : 4;
+
+private:
+    void propogate();
+    void compute_CO();
     // Commands
     void execute_f0();
     void f_group1();
@@ -35,14 +51,15 @@ struct CPE
     void execute_f5();
     void execute_f6();
     void execute_f7();
-
     // Utility
-    bool is_RO_out = false;
-    bool is_D_out = false;
-    bool is_A_out = false;
-    const BYTE word_wise_or(BYTE op);
-    const BYTE get_lb(BYTE src);
-    const BYTE get_hb(BYTE src);
+    bool is_RO_out = false; // CO and RO - tri-state
+    bool is_D_out = false; // D - tri-state
+    bool is_A_out = false; // A - tri-state
+
+    BYTE word_wise_or(BYTE op);
+    BYTE get_lb(BYTE src);
+    BYTE get_hb(BYTE src);
+
     //======INPUT
     std::bitset<7> F;
     BYTE I : 2;
@@ -52,24 +69,7 @@ struct CPE
     BYTE M : 2;
     //======
 
-    //======MEMORY
-    BYTE MAR : 2;
-    BYTE MEM[0xC];
-    //======
-
-    //======OUTPUT
-    BYTE A : 2; // MAR output
-    BYTE D : 2; // AC output
-    BYTE RO : 1;
-    BYTE CO : 1;
-    BYTE X : 1;
-    BYTE Y : 1;
-    //======
-
     //======MISC
-    int r_group;
-    int f_group;
-    BYTE ADR : 4;
     BYTE BUF1 : 1;
     BYTE BUF2 : 2;
     BYTE opA : 2;
@@ -83,53 +83,34 @@ public:
     FCC();
 };
 
-struct microcommand {
-    std::bitset<7> F = {0b1100000};
-    BYTE FC : 4;
-    std::bitset<7> AC;
-    BYTE K;
-    //BYTE RAM_ACCESS : 1;
-    //BYTE WR : 2;
-    BYTE CI : 1;
-    BYTE M;
-
-    bool empty = true;
-    // Input indexes
-    int index_F;
-    int index_REG;
-    int index_FIC;
-    int index_FOC;
-    int index_Jump;
-    std::string address_control = "0000000";
-};
-
-template<std::size_t N>
-void reverse(std::bitset<N> &b) {
-    for(std::size_t i = 0; i < N/2; ++i) {
-        bool t = b[i];
-        b[i] = b[N-i-1];
-        b[N-i-1] = t;
-    }
-}
-
-struct MCU
+class MCU
 {
+public:
     MCU();
     void load(); // emulation of strob signal LD -> X lines loads into MPAR
-    void connect_data(std::bitset<7> ac, std::bitset<8> x, BYTE fi, BYTE fc );
-    void decode_jmp();
-    void decode_fl(); // decode flag logic
-    void do_flag_logic();
-    void compute_next_addr();
+    void fetch(std::bitset<7> ac, std::bitset<8> x, BYTE fi, BYTE fc );
+    void decode();
     void execute();
 
     //======INPUTS
     BYTE FI : 1; // flag input
+
+    //======OUTPUTS
+    BYTE FO : 1;
+    BYTE PR : 3;
+    std::bitset<9> MA;
+
+private:
+    void decode_jmp();
+    void decode_fl(); // decode flag logic
+
+    void execute_flag_logic();
+    void compute_next_addr();
+
+    //======INPUTS
     BYTE FC_10 : 2; // flag input control
     BYTE FC_32 : 2; // flag output control
     std::bitset<7> AC; // address control command
-
-    // ЭТО ИГРУШКА ДbЯВОЛА
     std::bitset<8> X; // 4-7 = PX, 0-3 = SX
     //======
 
@@ -139,20 +120,6 @@ struct MCU
     BYTE TZ : 1; // ZERO flag latch (trigger)
     BYTE PR_latch : 4; // aka command register
     std::bitset<9> MPAR;
-    //======
-
-    //======OUTPUTS
-    BYTE FO : 1;
-    BYTE PR : 3;
-    std::bitset<9> MA;
-    //======
-
-    //======MISC
-    void decode_adr();
-    size_t get_row_adr();
-    size_t get_col_adr();
-    size_t col_adr;
-    size_t row_adr;
 
     enum class FCI {
         SCZ = 0,
@@ -198,7 +165,30 @@ struct MCU
         0b1111111,
         0b1111011
     };
-    //======
+};
+
+struct microcommand {
+    bool empty = true;
+    // to mcu
+    std::bitset<7> AC;
+    std::bitset<8> X;
+    BYTE FC : 4;
+    // to cpe
+    std::bitset<7> F = {0b1100000};
+    BYTE K;
+    [[maybe_unused]] BYTE CI : 1;
+    [[maybe_unused]] BYTE LI : 1;
+    [[maybe_unused]] BYTE M;
+    [[maybe_unused]] BYTE I;
+    // to ram
+
+    //  UI HELPERS
+    int index_F;
+    int index_REG;
+    int index_FIC;
+    int index_FOC;
+    int index_Jump;
+    std::string address_control = "0000000";
 };
 
 struct ROM
@@ -222,34 +212,75 @@ struct RAM {
     std::vector<BYTE> memory;
 };
 
+// Microcomputer with microcommand control (by default)
 class MK589
 {
 public:
     MK589();
-    std::vector<CPE> cpe_arr;
-    MCU mcu {};
-    ROM rom {};
-    RAM ram {};
+    ROM rom {}; // rom with microprogramm
+    RAM ram {}; // read/write memory
 
-    size_t cpe_amount = 4;
+    void load();
+    void fetch(const microcommand& mc);
+    void decode();
 
+
+    // for step
+     void execute();
+    // for run button
+    void execute_microprogram();
     //=====MEMORY
     BYTE MEM[0xC];
     BYTE MAR;
+    //=====OUTPUTS
+    BYTE D; // cpe
+    BYTE A; // cpe
+    size_t get_row_adr(); // mcu
+    size_t get_col_adr(); // mcu
+private:
+    //===============MCU
+    MCU mcu {};
 
-    //=====OUTPUT
-    BYTE CO : 1;
-    BYTE RO : 1;
+    void fetch_mcu(std::bitset<7> AC, std::bitset<8> X, BYTE FC);
+    void decode_adr();
+    //=====INPUTS
+    std::bitset<7> _AC;
+    std::bitset<8> X;
+    BYTE FC : 4;
+    BYTE FI : 1; // FI - is CO or RO
+    // decoding
+    size_t col_adr;
+    size_t row_adr;
+    //==================
 
-    //=====CPE
+    //===============CPE
+    void fetch_cpe(std::bitset<7> f,
+                            BYTE k,
+                            BYTE i,
+                            BYTE m);
+    void decode_cpe();
+    void execute_cpe();
+    void execute_cpe_right_rot();
+    void unite_registers();
+
+    size_t cpe_amount = 4;
+    std::vector<CPE> cpe_arr;
+    //=====INPUTS
+    std::bitset<7> F;
+    BYTE K;
+
+    BYTE FO : 1; // FO is CI or LI
+    [[maybe_unused]] BYTE CI : 1; // only affects lowest 2bits (cpe_arr[0])
+    [[maybe_unused]] BYTE LI : 1; // only affects highest 2bits (cpe_arr[cpe_amount - 1])
+    [[maybe_unused]] BYTE I;
+    [[maybe_unused]] BYTE M;
+
+    // decoding
     size_t r_group;
     size_t f_group;
     BYTE ADR : 4;
-
-    void execute_microprogram();
-    void execute_cpe(std::bitset<7> F, BYTE K, BYTE I, BYTE M, BYTE CI);
-
-    void unite_registers();
+    bool is_performing_right_rot = false;
+    //==================
 };
 
 #endif // MK589_HPP
