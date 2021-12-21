@@ -9,7 +9,6 @@ void CPE::reset() {
         CPE::MEM[i] = 0b00;
     }
     MAR = 0b00;
-
     // set zero output?
     A = 0b00;
     D = 0b00;
@@ -19,16 +18,16 @@ void CPE::reset() {
     Y = 0b0;
 }
 
-const BYTE CPE::word_wise_or(BYTE op) {
+BYTE CPE::word_wise_or(BYTE op) {
     return get_lb(op) | get_hb(op);
 }
 
-const BYTE CPE::get_lb(BYTE src) {
-    BUF1 = src & 0b01;
+BYTE CPE::get_lb(BYTE src) {
+    BUF1 = src;
     return BUF1;
 }
-const BYTE CPE::get_hb(BYTE src) {
-    BUF1 = (src >> 1) & 0b01;
+BYTE CPE::get_hb(BYTE src) {
+    BUF1 = (src >> 1);
     return BUF1;
 }
 
@@ -42,16 +41,8 @@ void CPE::fetch(const std::bitset<7>& f, BYTE i, BYTE k, BYTE m, BYTE CI, BYTE L
 }
 
 void CPE::decode() {
-    f_group = (F >> 4).to_ulong();// = 0b000;
-    //f_group |= (F[6] & 0b1) << 2;
-    //f_group |= (F[5] & 0b1) << 1;
-    //f_group |= (F[4] & 0b1) << 0;
-
-    r_group = (F & std::bitset<7> {0b0001111}).to_ulong(); //= 0b0000;
-    //r_group |= (F[3] & 0b1) << 3;
-    //r_group |= (F[2] & 0b1) << 2;
-    //r_group |= (F[1] & 0b1) << 1;
-    //r_group |= (F[0] & 0b1) << 0;
+    f_group = (F >> 4).to_ulong();
+    r_group = (F & std::bitset<7> {0b0001111}).to_ulong();
 
     if (r_group == 0xA or r_group == 0xB) {
         ADR = r_group;
@@ -108,12 +99,12 @@ void CPE::propogate() {
         BYTE a0 = opA & 0b1;
         BYTE b0 = opB & 0b1;
         BYTE b1 = (opB >> 1) & 0b1;
-        X = (a1 & b1) | (a0 | b0);
+        X = (a1 & b1) | (a0 & b0);
         Y = (a1 & b1) | ((a1 | b1) & (a0 | b0));
     }
 }
 void CPE::compute_CO() {
-    CO = ~(~(CI & Y) | (X & Y));
+    CO = (CI & Y) | (X & Y);
 }
 void CPE::execute_f0() {
     switch(r_group) {
@@ -135,12 +126,22 @@ void CPE::execute_f0() {
             MEM[ADR] = BUF2;
             break;
         case 3:
-            // CO? XY? => inclompleted
-            RO = get_lb(MEM[ADR]) & (get_lb(I) & get_lb(K)); // inverse before 2nd brackets
-            BUF1 = (get_lb(MEM[ADR]) & (get_lb(I) & get_lb(K))) | (get_hb(MEM[ADR]) | (get_hb(I) & get_hb(K)));
-            MEM[ADR] = MEM[ADR] & BUF1;
+            RO = get_lb(MEM[ADR]) & ~(get_lb(I) & get_lb(K));
+            // low bit of AT
+            BUF1 = (get_lb(MEM[ADR]) & (get_lb(I) & get_lb(K)))
+                 | (get_hb(MEM[ADR]) | (get_hb(I) & get_hb(K)));
+            if (BUF1 == 0b0) {
+                MEM[ADR] &= 0b10;
+            } else {
+                MEM[ADR] |= 0b01;
+            }
+            // high bit of AT
             BUF1 = LI | ((get_hb(I) & get_hb(K)) & get_hb(MEM[ADR]));
-            MEM[ADR] = MEM[ADR] | (BUF1 << 1);
+            if (BUF1 == 0b0) {
+                MEM[ADR] &= 0b01;
+            } else {
+                MEM[ADR] |= 0b10;
+            }
             break;
     }
 }
@@ -334,9 +335,8 @@ void MCU::load() {
         MPAR[i] = X[i - 4];
     }
     MA = MPAR;
-    decode_adr();
 }
-void MCU::connect_data(std::bitset<7> ac, std::bitset<8> x, BYTE fi, BYTE fc ) {
+void MCU::fetch(std::bitset<7> ac, std::bitset<8> x, BYTE fi, BYTE fc ) {
     this->AC = ac;
     this->X = x;
     this->FC_10 = fc & 0b0011;
@@ -355,7 +355,7 @@ void MCU::decode_fl() {
     cur_FCI = static_cast<FCI>(FC_10);
     cur_FCO = static_cast<FCO>(FC_32);
 }
-void MCU::do_flag_logic() {
+void MCU::execute_flag_logic() {
     TF = FI;
     switch(cur_FCI) {
         case FCI::SCZ:
@@ -432,23 +432,15 @@ void MCU::compute_next_addr() {
     }
     MA = MPAR;
 }
-void MCU::execute() {
+void MCU::decode() {
     decode_jmp();
     decode_fl();
-    do_flag_logic();
-    compute_next_addr();
-    decode_adr();
 }
 
-void MCU::decode_adr() {
-    row_adr = (MA >> 4).to_ulong();
-    col_adr = (MA & std::bitset<9> {0b000001111}).to_ulong();
-}
-size_t MCU::get_row_adr() {
-    return row_adr;
-}
-size_t MCU::get_col_adr() {
-    return col_adr;
+void MCU::execute() {
+    // order?
+    execute_flag_logic();
+    compute_next_addr();
 }
 
 RAM::RAM() {
@@ -491,45 +483,127 @@ microcommand ROM::read(size_t row, size_t col) {
 }
 MK589::MK589() {
     cpe_arr.resize(cpe_amount);
-    CO = 0b0;
-    RO = 0b0;
+}
+void MK589::decode_adr() {
+    row_adr = (mcu.MA >> 4).to_ulong();
+    col_adr = (mcu.MA & std::bitset<9> {0b000001111}).to_ulong();
+}
+size_t MK589::get_row_adr() {
+    return row_adr;
+}
+size_t MK589::get_col_adr() {
+    return col_adr;
+}
+void MK589::fetch(const microcommand& mc) {
+    fetch_cpe(mc.F,mc.K, mc.I, mc.M);
+    fetch_mcu(mc.AC, mc.X, mc.FC);
+}
+void MK589::decode() {
+    decode_cpe();
+    mcu.decode();
+}
+void MK589::execute() {
+
+    if (is_performing_right_rot) {
+        execute_cpe_right_rot();
+    } else {
+        execute_cpe();
+    }
+    mcu.FI = this->FI;
+    mcu.execute();
+    decode_adr();
+}
+void MK589::fetch_mcu(std::bitset<7> AC, std::bitset<8> X, BYTE FC) {
+    this->_AC = AC;
+    this->X = X;
+    this->FC = FC;
+}
+void MK589::fetch_cpe(std::bitset<7> f,
+                               BYTE k,
+                               BYTE i,
+                               BYTE m)
+{
+    this->F = f;
+    this->I = i;
+    this->K = k;
+    this->M = m;
+    this->LI = FO;
+    this->CI = FO;
 }
 
-void MK589::execute_cpe(std::bitset<7> F, BYTE K, BYTE I, BYTE M, BYTE CI) {
+void MK589::decode_cpe() {
+    f_group = (F >> 4).to_ulong();
+    r_group = (F & std::bitset<7> {0b0001111}).to_ulong();
 
-    cpe_arr[0].CI = CI;
-    for (size_t i = 0; i < 4; ++i) {
+    if (r_group == 0xA or r_group == 0xB) {
+        ADR = r_group;
+        r_group = 2;
+    } else if (r_group == 0xE or r_group == 0xF) {
+        ADR = r_group - 4;
+        r_group = 3;
+    } else {
+        if (r_group == 0xC or r_group == 0xD) {
+            ADR = r_group - 2;
+        } else {
+            ADR = r_group;
+        }
+        r_group = 1;
+    }
+    for (size_t i = 0; i < cpe_amount; ++i) {
+        cpe_arr[i].r_group = r_group;
+        cpe_arr[i].f_group = f_group;
+        cpe_arr[i].ADR = ADR;
+    }
+    if (r_group == 3 and f_group == 0) {
+        is_performing_right_rot = true;
+    }
+}
+
+void MK589::execute_cpe_right_rot() {
+    for (size_t i = cpe_amount - 1; i < cpe_amount; --i) {
         cpe_arr[i].fetch(F, ((I >> (i*2)) & 0b11), ((K >> (i*2)) & 0b11),
-                ((M >> (i*2)) & 0b11), cpe_arr[i].CI, 0);
-        cpe_arr[i].decode();
+                ((M >> (i*2)) & 0b11), 0, LI);
         cpe_arr[i].execute();
-        if (i < 3)
-            cpe_arr[i + 1].CI = cpe_arr[i].CO;
+        LI = cpe_arr[i].RO;
     }
     unite_registers();
-    CO = cpe_arr[3].CO;
-
+    FI = cpe_arr[0].RO;
+    A = MAR;
+    this->D = this->MEM[AC];
 }
+
+void MK589::execute_cpe() {
+    for (size_t i = 0; i < 4; ++i) {
+        cpe_arr[i].fetch(F, ((I >> (i*2)) & 0b11), ((K >> (i*2)) & 0b11),
+                ((M >> (i*2)) & 0b11), CI, 0);
+        cpe_arr[i].execute();
+        CI = cpe_arr[i].CO;
+    }
+    unite_registers();
+    FI = cpe_arr[3].CO;
+    A = MAR;
+    D = MEM[AC];
+}
+
 
 void MK589::unite_registers() {
-    for (size_t i = 0; i < 0xD; ++i) {
-        MEM[i] = (cpe_arr[3].MEM[i] << 6) |
-                 (cpe_arr[2].MEM[i] << 4) |
-                 (cpe_arr[1].MEM[i] << 2) |
-                 (cpe_arr[0].MEM[i] << 0);
+    for (size_t i = 0; i < 0xC; ++i) {
+        for (size_t k = 0; k < cpe_amount; ++k) {
+            MEM[i] |= (cpe_arr[k].MEM[i] << k*2);
+        }
+//        MEM[i] = (cpe_arr[3].MEM[i] << 6) |
+//                 (cpe_arr[2].MEM[i] << 4) |
+//                 (cpe_arr[1].MEM[i] << 2) |
+//                 (cpe_arr[0].MEM[i] << 0);
     }
-    MAR = (cpe_arr[3].MAR << 6) |
-          (cpe_arr[2].MAR << 4) |
-          (cpe_arr[1].MAR << 2) |
-          (cpe_arr[0].MAR << 0);
+    for (size_t k = 0; k < cpe_amount; ++k) {
+        MAR |= (cpe_arr[k].MAR << k*2);
+    }
+//    MAR = (cpe_arr[3].MAR << 6) |
+//          (cpe_arr[2].MAR << 4) |
+//          (cpe_arr[1].MAR << 2) |
+//          (cpe_arr[0].MAR << 0);
 }
 
-void MK589::execute_microprogram() {
-    bool running = true;
-    while (running) {
-       auto mcmd = rom.read(mcu.get_row_adr(), mcu.get_col_adr());
-       execute_cpe(mcmd.F, mcmd.K, 0, 0, 0);
-       mcu.connect_data(mcmd.AC, 0b00000000, CO, mcmd.FC);
-       mcu.execute();
-    }
-}
+// for run button
+void MK589::execute_microprogram() {}
