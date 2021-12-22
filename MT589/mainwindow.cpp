@@ -206,21 +206,7 @@ void MainWindow::update_on_cpu_data() {
 
 void MainWindow::on_boxCPE_currentIndexChanged(int index)
 {
-    std::vector<std::string> regs;
-
-    int rGroup = model.r_groups[index];
-
-    regs = model.regsMnemonics[rGroup - 1];
-
-    QStringList list;
-    for (auto& reg: regs) {
-        list << reg.c_str();
-    }
-    for (int i = ui->boxREG->count() - 1; i >= 0; --i) {
-        ui->boxREG->removeItem(i);
-    }
-    ui->boxREG->addItems(list);
-
+    ui->fLineEdit->setText(model.funcs[index].c_str());
     std::string k =  model.ks[index];
     ui->kLineEdit->setText((k+k+k+k).c_str());
 }
@@ -258,7 +244,6 @@ void MainWindow::on_boxJUMP_currentIndexChanged(int index)
 void MainWindow::handleInputState() {
     std::string cpeFunc = ui->boxCPE->currentText().toStdString();
 
-    std::string reg = ui->boxREG->currentText().toStdString();
     std::string fic = ui->boxFC1->currentText().toStdString();
     std::string foc = ui->boxFC2->currentText().toStdString();
     std::string jump = ui->boxJUMP->currentText().toStdString();
@@ -384,22 +369,18 @@ void MainWindow::fillInputs() {
 
 void MainWindow::on_saveButton_clicked()
 {
-    int funcIndex = ui->boxCPE->currentIndex();
-    int rGroup = model.r_groups[funcIndex];
-    std::bitset<7> cpeFunc = std::bitset<7>(model.funcs[funcIndex]);
-    std::bitset<4> reg = std::bitset<4>(model.regAddresses[rGroup][ui->boxREG->currentIndex()]);
+    std::bitset<7> f = std::bitset<7>(ui->fLineEdit->text().toStdString().c_str());
+
     int fic = ui->boxFC1->currentIndex();
     int foc = ui->boxFC2->currentIndex();
+
     std::bitset<7> jumpMask = getFromJump(ui->boxJUMP->currentText().toStdString());
     std::bitset<7> address_control = std::bitset<7>(ui->commandAddressEdit->text().toStdString());
     std::bitset<8> i = std::bitset<8>(ui->iLineEdit->text().toStdString());
     std::bitset<8> k = std::bitset<8>(ui->kLineEdit->text().toStdString());
-//    std::bitset<8> m = std::bitset<8>(ui->mLineEdit->text().toStdString());
-
-    std::bitset<7> buf("111" + reg.to_string());
 
     microcommand command;
-    command.F = buf & cpeFunc;
+    command.F = f;
     command.I = i.to_ulong();
 
     command.index_F = ui->boxCPE->currentIndex();
@@ -407,8 +388,6 @@ void MainWindow::on_saveButton_clicked()
     command.index_FOC = ui->boxFC2->currentIndex();
     command.index_Jump = ui->boxJUMP->currentIndex();
     command.address_control = address_control.to_string();
-    command.index_REG = ui->boxREG->currentIndex();
-//    command.M = m.to_ulong();
 
     BYTE fc_buf = ((foc << 2) + fic) & 0b1111;
     std::string str = std::bitset<4>(fc_buf).to_string();
