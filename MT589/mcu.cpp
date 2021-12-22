@@ -6,6 +6,9 @@ MCU::MCU() {
     TZ = 0b0;
     PR_latch = 0b0000;
     MPAR = 0b000000000;
+    FI = 0b0;
+    FO = 0;
+    MA = 0;
 }
 
 void MCU::load(std::bitset<8> x) {
@@ -19,13 +22,17 @@ void MCU::load(std::bitset<8> x) {
     }
     MA = MPAR;
 }
-void MCU::fetch(std::bitset<7> ac, std::bitset<8> x, BYTE fi, BYTE fc ) {
+void MCU::fetch(std::bitset<7> ac, std::bitset<8> x, BYTE fc ) {
     this->AC = ac;
     this->X = x;
     this->FC_10 = fc & 0b0011;
     this->FC_32 = (fc >> 2) & 0b11;
+}
+
+void MCU::fetch_flag(BYTE fi) {
     this->FI = fi;
 }
+
 void MCU::decode_jmp() {
     for (size_t i = 0; i < total_jmps; ++i ){
         if ((AC & std::bitset<7> {_signals[i]}) == AC) {
@@ -139,7 +146,6 @@ void MCU::decode() {
 }
 
 void MCU::execute() {
-    // order?
     execute_flag_logic();
     compute_next_addr();
 }

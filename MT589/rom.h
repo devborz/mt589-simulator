@@ -12,13 +12,13 @@ struct microcommand {
     // to cpe
     std::bitset<7> F = {0b1100000};
     BYTE K;
-    [[maybe_unused]] BYTE CI : 1;
-    [[maybe_unused]] BYTE LI : 1;
+    //[[maybe_unused]] BYTE CI : 1;
+    //[[maybe_unused]] BYTE LI : 1;
     [[maybe_unused]] BYTE M;
     [[maybe_unused]] BYTE I;
-    // to ram
-
-    //  UI HELPERS
+    //// to ram
+//
+    ////  UI HELPERS
     int index_F;
     int index_REG;
     int index_FIC;

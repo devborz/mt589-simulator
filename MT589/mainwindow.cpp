@@ -61,9 +61,8 @@ void MainWindow::on_stepButton_clicked()
     Point currentPoint = model.currentPoint;
     microcommand command = mk.rom.read(currentPoint.row, currentPoint.col);
     std::string ac = command.AC.to_string();
-    mk.fetch(command);
-    mk.decode();
-    mk.execute();
+
+    mk.do_fetch_decode_execute_cycle(command);
 
     Point nextPoint = Point(mk.get_row_adr(), mk.get_col_adr());
 
@@ -196,8 +195,15 @@ void MainWindow::update_on_cpu_data() {
   ui->regMAR->display(mk.MAR);
   ui->regT->display(mk.MEM[T]);
   ui->regAC->display(mk.MEM[AC]);
-  ui->COlcd->display(mk.FI);
-//  ui->ROlcd->display(mk.RO);
+
+  if (mk.is_performing_right_rot) {
+      ui->ROlcd->display(mk.RO);
+      ui->COlcd->display("-");
+  } else {
+      ui->COlcd->display(mk.CO);
+      ui->ROlcd->display("-");
+  }
+
   ui->Dlcd->display(mk.MEM[AC]);
   ui->Alcd->display(mk.MAR);
 }
