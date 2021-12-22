@@ -1,7 +1,7 @@
 # MACOS SHIT
 .DS_Store
 
-.pro.user
+*.pro.user
 
 # Builds
 *build*/
