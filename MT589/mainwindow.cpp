@@ -18,8 +18,11 @@ MainWindow::MainWindow(QWidget *parent)
     for (size_t i = 0; i < 32; ++i) {
         verlist << std::to_string(i).c_str();
     }
+
     ui->tableWidget->setHorizontalHeaderLabels(horlist);
     ui->tableWidget->setVerticalHeaderLabels(verlist);
+    ui->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+
     clearInputs();
     setupRegs();
     setLCDsColor();
@@ -37,6 +40,9 @@ MainWindow::MainWindow(QWidget *parent)
         }
         items.push_back(row);
     }
+
+
+    configUIMode();
 }
 
 MainWindow::~MainWindow()
@@ -46,36 +52,60 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_stepButton_clicked()
 {
-    if (nextCol == -1 && nextRow == - 1) {
-        nextRow = startRow;
-        nextCol = startColumn;
+    if (model.getMode() == editing) {
+        setMode(running);
     }
-    microcommand command = mk.rom.read(nextRow, nextCol);
+    if (model.currentPoint.isNull()) {
+        model.currentPoint = model.startPoint;
+    }
+    Point currentPoint = model.currentPoint;
+    microcommand command = mk.rom.read(currentPoint.row, currentPoint.col);
     std::string ac = command.AC.to_string();
     mk.fetch(command);
     mk.decode();
     mk.execute();
 
-    if (command.empty) {
-        items[nextRow][nextCol]->setBackground(QBrush(Qt::transparent));
-    } else {
-        items[nextRow][nextCol]->setBackground(QBrush(Qt::blue));
-    }
+    Point nextPoint = Point(mk.get_row_adr(), mk.get_col_adr());
 
-    nextRow = mk.get_row_adr();
-    nextCol = mk.get_col_adr();
-    items[nextRow][nextCol]->setBackground(QBrush(Qt::yellow));
+    model.currentPoint = nextPoint;
+
+    configUIMode();
+    changeCurrentPoint(currentPoint, nextPoint);
     update_on_cpu_data();
 
 }
 
 void MainWindow::on_runButton_clicked()
 {
+    if (model.getMode() == editing) {
+        setMode(running);
+    }
+    if (model.currentPoint.isNull()) {
+        model.currentPoint = model.startPoint;
+    }
+    ui->stepButton->setEnabled(false);
+    while (model.getMode() == running) {
+        Point currentPoint = model.currentPoint;
+        microcommand command = mk.rom.read(currentPoint.row, currentPoint.col);
+
+        mk.fetch(command);
+        mk.decode();
+        mk.execute();
+
+        Point nextPoint = Point(mk.get_row_adr(), mk.get_col_adr());
+
+        model.currentPoint = nextPoint;
+
+        configUIMode();
+        changeCurrentPoint(currentPoint, nextPoint);
+        update_on_cpu_data();
+    }
+    ui->stepButton->setEnabled(true);
 }
 
 void MainWindow::on_listWidget_currentRowChanged(int currentRow)
 {
-    selectedCommand = currentRow;
+//    selectedCommand = currentRow;
 }
 
 // HELP FUNCTIONS
@@ -161,7 +191,6 @@ void MainWindow::clearInputs() {
 
 void MainWindow::update_on_cpu_data() {
   for (size_t i = 0; i < 10; ++i) {
-      int x = mk.MEM[i];
       regLCDs[i]->display(mk.MEM[i]);
   }
   ui->regMAR->display(mk.MAR);
@@ -237,7 +266,14 @@ void MainWindow::handleInputState() {
 
     haveEmptyLineEdit = address_control.size() < 7
              or k.size() < 8 or m.size() < 8;
-    ui->saveButton->setEnabled(!haveEmptyLineEdit);
+    ui->saveButton->setEnabled(!haveEmptyLineEdit && !model.currentPoint.isNull());
+    ui->clearButton->setEnabled(!model.currentPoint.isNull());
+
+    if (ui->startAddressEdit->text().toStdString().size() < 8) {
+        ui->loadButton->setEnabled(false);
+    } else {
+        ui->loadButton->setEnabled(true);
+    }
 }
 
 void MainWindow::on_commandAddressEdit_textEdited(const QString &arg1)
@@ -277,23 +313,65 @@ void MainWindow::on_ciLineEdit_textEdited(const QString &arg1)
 
 void MainWindow::on_tableWidget_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn)
 {
-    fillInputs();
+    auto previousPoint = model.currentPoint;
+    if (model.getMode() == editing) {
+        model.currentPoint = Point(currentRow, currentColumn);
+        changeCurrentPoint(previousPoint, model.currentPoint);
+        if (previousPoint.isNull()) {
+            ui->tableWidget->setCurrentIndex(QModelIndex(ui->tableWidget->model()->index(currentRow, currentColumn)));
+        }
+        configUIMode();
+    }
+}
+
+void MainWindow::on_tableWidget_cellClicked(int row, int column)
+{
+    auto previousPoint = model.currentPoint;
+    if (model.getMode() == editing) {
+        model.currentPoint = Point(row, column);
+        changeCurrentPoint(previousPoint, model.currentPoint);
+        if (previousPoint.isNull()) {
+            ui->tableWidget->setCurrentIndex(QModelIndex(ui->tableWidget->model()->index(row, column)));
+        }
+        configUIMode();
+    }
 }
 
 void MainWindow::fillInputs() {
-    int currentRow = ui->tableWidget->currentRow();
-    int currentColumn = ui->tableWidget->currentColumn();
+    if (model.currentPoint.isNull()) {
+        ui->boxCPE->setCurrentIndex(0);
+        ui->boxFC1->setCurrentIndex(0);
+        ui->boxFC2->setCurrentIndex(0);
+        ui->boxJUMP->setCurrentIndex(0);
 
-    microcommand command = mk.rom.read(currentRow, currentColumn);
+        ui->kLineEdit->setText("00000000");
+        ui->mLineEdit->setText("00000000");
+        on_boxJUMP_currentIndexChanged(0);
+    } else {
+        auto point = model.currentPoint;
 
-    ui->boxCPE->setCurrentIndex(command.index_F);
-    ui->boxFC1->setCurrentIndex(command.index_FIC);
-    ui->boxFC2->setCurrentIndex(command.index_FOC);
-    ui->boxJUMP->setCurrentIndex(command.index_Jump);
+        microcommand command = mk.rom.read(point.row, point.col);
 
-    ui->kLineEdit->setText(std::bitset<8>(command.K).to_string().c_str());
-    ui->commandAddressEdit->setText(command.address_control.c_str());
-    ui->mLineEdit->setText(std::bitset<8>(command.M).to_string().c_str());
+        if (command.empty) {
+            ui->boxCPE->setCurrentIndex(0);
+            ui->boxFC1->setCurrentIndex(0);
+            ui->boxFC2->setCurrentIndex(0);
+            ui->boxJUMP->setCurrentIndex(0);
+
+            ui->kLineEdit->setText("00000000");
+            ui->mLineEdit->setText("00000000");
+            on_boxJUMP_currentIndexChanged(0);
+        } else {
+            ui->boxCPE->setCurrentIndex(command.index_F);
+            ui->boxFC1->setCurrentIndex(command.index_FIC);
+            ui->boxFC2->setCurrentIndex(command.index_FOC);
+            ui->boxJUMP->setCurrentIndex(command.index_Jump);
+
+            ui->kLineEdit->setText(std::bitset<8>(command.K).to_string().c_str());
+            ui->commandAddressEdit->setText(command.address_control.c_str());
+            ui->mLineEdit->setText(std::bitset<8>(command.M).to_string().c_str());
+        }
+    }
 }
 
 
@@ -311,7 +389,6 @@ void MainWindow::on_saveButton_clicked()
 
     std::bitset<7> buf("111" + reg.to_string());
 
-    clearInputs();
     microcommand command;
     command.F = buf & cpeFunc;
 
@@ -332,34 +409,33 @@ void MainWindow::on_saveButton_clicked()
     command.K = k.to_ulong();
     command.empty = false;
 
-    int currentRow = ui->tableWidget->currentRow();
-    int currentColumn = ui->tableWidget->currentColumn();
-    if (currentRow >= 0 and currentRow < 32 and currentColumn >= 0 and currentColumn < 16) {
-        if (currentRow != startRow || currentColumn != startColumn) {
-            items[currentRow][currentColumn]->setBackground(QBrush(Qt::blue));
-        }
-        mk.rom.write(currentRow, currentColumn, command);
+    Point currentPoint = model.currentPoint;
+
+    if (!currentPoint.isNull()) {
+        mk.rom.write(currentPoint.row, currentPoint.col, command);
     }
 
-    ui->tableWidget->clearSelection();
+    setItemColor(currentPoint);
+
+    handleInputState();
 }
 
 void MainWindow::on_clearButton_clicked()
 {
     microcommand command;
-    int currentRow = ui->tableWidget->currentRow();
-    int currentColumn = ui->tableWidget->currentColumn();
-    if (currentRow >= 0 and currentRow < 32 and currentColumn >= 0 and currentColumn < 16) {
-        if (currentRow != startRow || currentColumn != startColumn) {
-            items[currentRow][currentColumn]->setBackground(QBrush(Qt::transparent));
-        }
-        mk.rom.write(currentRow, currentColumn, command);
+    Point currentPoint = model.currentPoint;
+
+    if (!currentPoint.isNull()) {
+        mk.rom.write(currentPoint.row, currentPoint.col, command);
     }
+
+    setItemColor(currentPoint);
+    ui->tableWidget->clearSelection();
 }
 
 void MainWindow::on_startAddressEdit_textEdited(const QString &arg1)
 {
-
+    handleInputState();
 }
 
 void MainWindow::on_loadButton_clicked()
@@ -367,16 +443,15 @@ void MainWindow::on_loadButton_clicked()
     std::bitset<8> addr = std::bitset<8>(ui->startAddressEdit->text().toStdString());
     mk.load(addr); // fix load (with X connection, not x from argument);
 
+    auto currentStartPoint = model.startPoint;
 
-    if (!(startRow == -1 && startColumn == -1)) {
-        items[startRow][startColumn]->setBackground(QBrush(Qt::transparent));
-    }
+    auto newStartPoint = Point(mk.get_row_adr(), mk.get_col_adr());
 
-    startRow = mk.get_row_adr();
-    startColumn = mk.get_col_adr();
+    model.startPoint = newStartPoint;
 
-    items[startRow][startColumn]->setBackground(QBrush(Qt::yellow));
-    ui->tableWidget->clearSelection();
+    setItemColor(currentStartPoint);
+    setItemColor(newStartPoint);
+    configUIMode();
 }
 
 void MainWindow::on_ramcLineEdit_textEdited(const QString &arg1)
@@ -385,7 +460,79 @@ void MainWindow::on_ramcLineEdit_textEdited(const QString &arg1)
 }
 
 void MainWindow::showCurrentCommand() {
-
+//    items[]
 }
 
+void MainWindow::setItemColor(Point point) {
+    if (point.isNull()) {
+        return;
+    }
+    microcommand command = mk.rom.read(point.row, point.col);
+    QTableWidgetItem* item = items[point.row][point.col];
+    if (model.getMode() == running) {
+        if (point == model.currentPoint) {
+            item->setBackground(currentRunningColor);
+        } else if (point == model.startPoint) {
+            item->setBackground(startColor);
+        } else if (command.empty) {
+            item->setBackground(transparentColor);
+        } else {
+            item->setBackground(commandColor);
+        }
+    } else {
+        if (point == model.startPoint) {
+            item->setBackground(startColor);
+        } else if (command.empty) {
+            item->setBackground(transparentColor);
+        } else {
+            item->setBackground(commandColor);
+        }
+    }
+}
+
+void MainWindow::configUIMode() {
+    if (model.getMode() == running) {
+        ui->inputFrame->setEnabled(false);
+        ui->startAddressFrame->setEnabled(false);
+        ui->endButton->setEnabled(true);
+
+        Point point = model.currentPoint;
+        if (!point.isNull()) {
+            microcommand command = mk.rom.read(point.row, point.col);
+            if (command.empty) {
+                setMode(editing);
+                configUIMode();
+            }
+        }
+    } else {
+        ui->inputFrame->setEnabled(true);
+        ui->startAddressFrame->setEnabled(true);
+        ui->endButton->setEnabled(false);
+
+        ui->saveButton->setEnabled(!model.currentPoint.isNull());
+        ui->clearButton->setEnabled(!model.currentPoint.isNull());
+
+        ui->stepButton->setEnabled(!model.startPoint.isNull());
+        ui->runButton->setEnabled(!model.startPoint.isNull());
+    }
+}
+
+void MainWindow::on_endButton_clicked()
+{
+    setMode(editing);
+}
+
+void MainWindow::setMode(Mode mode) {
+    auto currentPoint = model.currentPoint;
+    model.setMode(mode);
+    ui->tableWidget->clearSelection();
+    changeCurrentPoint(currentPoint, model.currentPoint);
+    configUIMode();
+}
+
+void MainWindow::changeCurrentPoint(Point last, Point currentPoint) {
+    setItemColor(last);
+    setItemColor(currentPoint);
+    fillInputs();
+}
 
