@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <util.hpp>
 #include <QPalette>
@@ -330,8 +330,8 @@ void MainWindow::fillInputs() {
         ui->boxJUMP->setCurrentIndex(0);
 
         ui->kLineEdit->setText("00000000");
-//        ui->mLineEdit->setText("00000000");
         ui->iLineEdit->setText("00000000");
+        ui->fLineEdit->setText("0001001");
         on_boxJUMP_currentIndexChanged(0);
     } else {
         auto point = model.currentPoint;
@@ -345,8 +345,8 @@ void MainWindow::fillInputs() {
             ui->boxJUMP->setCurrentIndex(0);
 
             ui->kLineEdit->setText("00000000");
-//            ui->mLineEdit->setText("00000000");
             ui->iLineEdit->setText("00000000");
+            ui->fLineEdit->setText("0001001");
             on_boxJUMP_currentIndexChanged(0);
         } else {
             ui->boxCPE->setCurrentIndex(command.index_F);
@@ -356,8 +356,8 @@ void MainWindow::fillInputs() {
 
             ui->kLineEdit->setText(std::bitset<8>(command.K).to_string().c_str());
             ui->commandAddressEdit->setText(command.address_control.c_str());
-//            ui->mLineEdit->setText(std::bitset<8>(command.M).to_string().c_str());
             ui->iLineEdit->setText(std::bitset<8>(command.I).to_string().c_str());
+            ui->fLineEdit->setText(command.F.to_string().c_str());
         }
     }
 }
