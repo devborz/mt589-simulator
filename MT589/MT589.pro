@@ -20,7 +20,7 @@ SOURCES += \
 
 HEADERS += \
     ListModels.h \
-    Models.h \
+    Model.h \
     cpe.h \
     emulator.hpp \
     mainwindow.h \

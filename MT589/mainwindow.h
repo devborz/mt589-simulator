@@ -7,72 +7,12 @@
 #include <QPushButton>
 #include <QTableWidgetItem>
 #include <QAbstractItemView>
+#include "Model.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-// Address in matrix
-struct Point {
-    Point() {
-        this->row = -1;
-        this->col = -1;
-    }
-
-    Point(int row, int col) {
-        this->row = row;
-        this->col = col;
-    }
-
-    int row;
-
-    int col;
-
-    bool isNull() {
-        bool isNull = (row == -1) && (col == -1);
-        return isNull;
-    }
-
-    static Point nullPoint() {
-        return Point();
-    }
-
-    friend bool operator== (Point &lhs, Point &rhs) {
-        return (lhs.row == rhs.row) && (lhs.col == rhs.col);
-    }
-
-    friend bool operator!= (Point &lhs, Point &rhs) {
-        return (lhs.row != rhs.row) || (lhs.col != rhs.col);
-    }
-};
-
-// Mode
-enum Mode {
-    editing,
-    running
-};
-
-// UI Model
-class Model {
-
-    Mode mode = editing;
-
-public:
-    Model() { }
-
-    Mode getMode() {
-        return mode;
-    }
-
-    void setMode(Mode mode) {
-        this->currentPoint = Point::nullPoint();
-        this->mode = mode;
-    }
-
-    Point currentPoint = Point::nullPoint();
-
-    Point startPoint = Point::nullPoint();
-};
 
 class MainWindow : public QMainWindow
 {

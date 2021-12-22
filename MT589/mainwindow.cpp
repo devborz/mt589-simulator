@@ -87,9 +87,7 @@ void MainWindow::on_runButton_clicked()
         Point currentPoint = model.currentPoint;
         microcommand command = mk.rom.read(currentPoint.row, currentPoint.col);
 
-        mk.fetch(command);
-        mk.decode();
-        mk.execute();
+        mk.do_fetch_decode_execute_cycle(command);
 
         Point nextPoint = Point(mk.get_row_adr(), mk.get_col_adr());
 
@@ -113,10 +111,10 @@ void MainWindow::setupRegs() {
     QRegularExpression reg("[0-1]+");
     QRegularExpressionValidator* validator = new QRegularExpressionValidator(reg, this);
 
-//    ui->iLineEdit->setValidator(validator);
-    ui->mLineEdit->setValidator(validator);
+    ui->iLineEdit->setValidator(validator);
     ui->kLineEdit->setValidator(validator);
     ui->startAddressEdit->setValidator(validator);
+    ui->commandAddressEdit->setValidator(validator);
 
    regLCDs.push_back(ui->reg0);
    regLCDs.push_back(ui->reg1);
@@ -146,11 +144,9 @@ void MainWindow::setLCDsColor() {
 }
 
 void MainWindow::setupBoxes() {
-
-    FuncListItem::prepareFunctions();
     QStringList list;
-    for (FuncListItem* func: FuncListItem::items) {
-        list << func->name.c_str();
+    for (std::string& func: model.mnemonics) {
+        list << func.c_str();
     }
     ui->boxCPE->addItems(list);
 
@@ -183,7 +179,7 @@ void MainWindow::setupBoxes() {
 }
 
 void MainWindow::clearInputs() {
-    ui->mLineEdit->setText("00000000");
+    ui->iLineEdit->setText("00000000");
     ui->ramcLineEdit->setText("00");
     ui->kLineEdit->setText("");
 }
@@ -210,10 +206,11 @@ void MainWindow::update_on_cpu_data() {
 
 void MainWindow::on_boxCPE_currentIndexChanged(int index)
 {
-    int r_group = getRGroup(index);
     std::vector<std::string> regs;
-    std::vector<std::string> addresses;
-    getRGroupRegs(r_group, regs, addresses);
+
+    int rGroup = model.r_groups[index];
+
+    regs = model.regsMnemonics[rGroup - 1];
 
     QStringList list;
     for (auto& reg: regs) {
@@ -223,7 +220,9 @@ void MainWindow::on_boxCPE_currentIndexChanged(int index)
         ui->boxREG->removeItem(i);
     }
     ui->boxREG->addItems(list);
-    ui->kLineEdit->setText(getKFromFunc(index).c_str());
+
+    std::string k =  model.ks[index];
+    ui->kLineEdit->setText((k+k+k+k).c_str());
 }
 
 
@@ -266,12 +265,11 @@ void MainWindow::handleInputState() {
 
     bool haveEmptyLineEdit = false;
     std::string address_control = ui->commandAddressEdit->text().toStdString();
-//    std::string i = ui->iLineEdit->text().toStdString();
+    std::string i = ui->iLineEdit->text().toStdString();
     std::string k = ui->kLineEdit->text().toStdString();
-    std::string m = ui->mLineEdit->text().toStdString();
 
     haveEmptyLineEdit = address_control.size() < 7
-             or k.size() < 8 or m.size() < 8;
+             or k.size() < 8 or i.size() < 8;
     ui->saveButton->setEnabled(!haveEmptyLineEdit && !model.currentPoint.isNull());
     ui->clearButton->setEnabled(!model.currentPoint.isNull());
 
@@ -351,7 +349,8 @@ void MainWindow::fillInputs() {
         ui->boxJUMP->setCurrentIndex(0);
 
         ui->kLineEdit->setText("00000000");
-        ui->mLineEdit->setText("00000000");
+//        ui->mLineEdit->setText("00000000");
+        ui->iLineEdit->setText("00000000");
         on_boxJUMP_currentIndexChanged(0);
     } else {
         auto point = model.currentPoint;
@@ -365,7 +364,8 @@ void MainWindow::fillInputs() {
             ui->boxJUMP->setCurrentIndex(0);
 
             ui->kLineEdit->setText("00000000");
-            ui->mLineEdit->setText("00000000");
+//            ui->mLineEdit->setText("00000000");
+            ui->iLineEdit->setText("00000000");
             on_boxJUMP_currentIndexChanged(0);
         } else {
             ui->boxCPE->setCurrentIndex(command.index_F);
@@ -375,7 +375,8 @@ void MainWindow::fillInputs() {
 
             ui->kLineEdit->setText(std::bitset<8>(command.K).to_string().c_str());
             ui->commandAddressEdit->setText(command.address_control.c_str());
-            ui->mLineEdit->setText(std::bitset<8>(command.M).to_string().c_str());
+//            ui->mLineEdit->setText(std::bitset<8>(command.M).to_string().c_str());
+            ui->iLineEdit->setText(std::bitset<8>(command.I).to_string().c_str());
         }
     }
 }
@@ -383,20 +384,23 @@ void MainWindow::fillInputs() {
 
 void MainWindow::on_saveButton_clicked()
 {
-    std::bitset<7> cpeFunc = getFromFunc(ui->boxCPE->currentText().toStdString());
-    std::bitset<4> reg = getFromReg(ui->boxREG->currentText().toStdString(), getRGroup(ui->boxREG->currentIndex()));
+    int funcIndex = ui->boxCPE->currentIndex();
+    int rGroup = model.r_groups[funcIndex];
+    std::bitset<7> cpeFunc = std::bitset<7>(model.funcs[funcIndex]);
+    std::bitset<4> reg = std::bitset<4>(model.regAddresses[rGroup][ui->boxREG->currentIndex()]);
     int fic = ui->boxFC1->currentIndex();
     int foc = ui->boxFC2->currentIndex();
     std::bitset<7> jumpMask = getFromJump(ui->boxJUMP->currentText().toStdString());
     std::bitset<7> address_control = std::bitset<7>(ui->commandAddressEdit->text().toStdString());
-//    std::bitset<8> i = std::bitset<8>(ui->iLineEdit->text().toStdString());
+    std::bitset<8> i = std::bitset<8>(ui->iLineEdit->text().toStdString());
     std::bitset<8> k = std::bitset<8>(ui->kLineEdit->text().toStdString());
-    std::bitset<8> m = std::bitset<8>(ui->mLineEdit->text().toStdString());
+//    std::bitset<8> m = std::bitset<8>(ui->mLineEdit->text().toStdString());
 
     std::bitset<7> buf("111" + reg.to_string());
 
     microcommand command;
     command.F = buf & cpeFunc;
+    command.I = i.to_ulong();
 
     command.index_F = ui->boxCPE->currentIndex();
     command.index_FIC = ui->boxFC1->currentIndex();
@@ -404,7 +408,7 @@ void MainWindow::on_saveButton_clicked()
     command.index_Jump = ui->boxJUMP->currentIndex();
     command.address_control = address_control.to_string();
     command.index_REG = ui->boxREG->currentIndex();
-    command.M = m.to_ulong();
+//    command.M = m.to_ulong();
 
     BYTE fc_buf = ((foc << 2) + fic) & 0b1111;
     std::string str = std::bitset<4>(fc_buf).to_string();

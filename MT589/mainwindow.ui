@@ -1126,9 +1126,9 @@
     <widget class="QLabel" name="label_32">
      <property name="geometry">
       <rect>
-       <x>310</x>
+       <x>330</x>
        <y>80</y>
-       <width>151</width>
+       <width>131</width>
        <height>20</height>
       </rect>
      </property>
@@ -1158,9 +1158,9 @@
     <widget class="QLineEdit" name="commandAddressEdit">
      <property name="geometry">
       <rect>
-       <x>310</x>
+       <x>330</x>
        <y>100</y>
-       <width>151</width>
+       <width>131</width>
        <height>30</height>
       </rect>
      </property>
@@ -1231,22 +1231,6 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>80</y>
-       <width>81</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>M</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
     <widget class="QComboBox" name="boxREG">
      <property name="geometry">
       <rect>
@@ -1270,7 +1254,7 @@
     <widget class="QLabel" name="label_3">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>20</x>
        <y>80</y>
        <width>81</width>
        <height>20</height>
@@ -1286,9 +1270,9 @@
     <widget class="QLineEdit" name="ramcLineEdit">
      <property name="geometry">
       <rect>
-       <x>210</x>
+       <x>130</x>
        <y>100</y>
-       <width>80</width>
+       <width>51</width>
        <height>30</height>
       </rect>
      </property>
@@ -1315,32 +1299,10 @@
       </rect>
      </property>
     </widget>
-    <widget class="QLineEdit" name="mLineEdit">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>100</y>
-       <width>80</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="maxLength">
-      <number>8</number>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="placeholderText">
-      <string>00000000</string>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="kLineEdit">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>20</x>
        <y>100</y>
        <width>80</width>
        <height>30</height>
@@ -1407,9 +1369,9 @@
     <widget class="QLabel" name="label_5">
      <property name="geometry">
       <rect>
-       <x>210</x>
+       <x>130</x>
        <y>80</y>
-       <width>81</width>
+       <width>51</width>
        <height>20</height>
       </rect>
      </property>
@@ -1447,6 +1409,41 @@
      </property>
      <property name="frame">
       <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="iLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>100</y>
+       <width>91</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="maxLength">
+      <number>8</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="placeholderText">
+      <string>00000000</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>80</y>
+       <width>91</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>I</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </widget>
@@ -1574,15 +1571,12 @@
      <rect>
       <x>400</x>
       <y>720</y>
-      <width>101</width>
-      <height>32</height>
+      <width>100</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
      <string>End</string>
-    </property>
-    <property name="default">
-     <bool>false</bool>
     </property>
    </widget>
   </widget>
@@ -1592,7 +1586,7 @@
      <x>0</x>
      <y>0</y>
      <width>1000</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
