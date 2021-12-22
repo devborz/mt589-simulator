@@ -242,18 +242,14 @@ void MainWindow::on_boxJUMP_currentIndexChanged(int index)
 }
 
 void MainWindow::handleInputState() {
-    std::string cpeFunc = ui->boxCPE->currentText().toStdString();
-
-    std::string fic = ui->boxFC1->currentText().toStdString();
-    std::string foc = ui->boxFC2->currentText().toStdString();
-    std::string jump = ui->boxJUMP->currentText().toStdString();
 
     bool haveEmptyLineEdit = false;
-    std::string address_control = ui->commandAddressEdit->text().toStdString();
+    std::string ac = ui->commandAddressEdit->text().toStdString();
     std::string i = ui->iLineEdit->text().toStdString();
     std::string k = ui->kLineEdit->text().toStdString();
+    std::string f = ui->fLineEdit->text().toStdString();
 
-    haveEmptyLineEdit = address_control.size() < 7
+    haveEmptyLineEdit = ac.size() < 7 or f.size() < 7
              or k.size() < 8 or i.size() < 8;
     ui->saveButton->setEnabled(!haveEmptyLineEdit && !model.currentPoint.isNull());
     ui->clearButton->setEnabled(!model.currentPoint.isNull());
