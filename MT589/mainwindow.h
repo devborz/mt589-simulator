@@ -101,6 +101,8 @@ private slots:
 
     void on_tableWidget_cellClicked(int row, int column);
 
+    void on_fLineEdit_textEdited(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
 

@@ -521,3 +521,9 @@ void MainWindow::changeCurrentPoint(Point last, Point currentPoint) {
     fillInputs();
 }
 
+
+void MainWindow::on_fLineEdit_textEdited(const QString &arg1)
+{
+    handleInputState();
+}
+
