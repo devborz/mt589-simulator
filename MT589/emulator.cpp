@@ -2,12 +2,41 @@
 
 MK589::MK589() {
     cpe_arr.resize(cpe_amount);
-    MAR = 0;
+    this->reset();
+}
+
+void MK589::reset() {
+    MAR = 0b00000000;
+    CO = 0b0;
+    RO = 0b0;
+    CI = 0b0;
+    LI = 0b0;
+    D = 0b00000000;
+    A = 0b00000000;
     for (size_t i = 0; i < 0xC; ++i) {
         MEM[i] = 0;
     }
 }
+void MK589::do_fetch_decode_execute_cycle(const microcommand &mc) {
+    mcu.fetch(mc.AC, mc.X, mc.FC);
+    fetch_cpe(mc.F, mc.K, 0, 0);
 
+    decode(); // both mcu and cpe
+
+    if (is_performing_right_rot) {
+        LI = FO;
+        execute_cpe_right_rot();
+    } else {
+        CI = FO;
+        execute_cpe();
+    }
+    // when FI flag is set (after cpe execution)
+    mcu.fetch_flag(FI);
+    mcu.execute();
+    this->FO = mcu.FO;
+
+    decode_adr();
+}
 void MK589::decode_adr() {
     row_adr = (mcu.MA >> 4).to_ulong();
     std::string ma = mcu.MA.to_string();
@@ -27,35 +56,11 @@ void MK589::load(std::bitset<8> x) {
     decode_adr();
 }
 
-void MK589::fetch(const microcommand& mc) {
-    fetch_cpe(mc.F,mc.K, mc.I, mc.M);
-    fetch_mcu(mc.AC, mc.X, mc.FC);
-    mcu.fetch(_AC,X,FI,FC);
-}
-
 void MK589::decode() {
     decode_cpe();
     mcu.decode();
 }
-void MK589::execute() {
-    this->LI = FO;
-    this->CI = FO;
-    if (is_performing_right_rot) {
-        execute_cpe_right_rot();
-    } else {
-        execute_cpe();
-    }
-    mcu.FI = FI;
-    mcu.execute();
-    this->FO = mcu.FO;
 
-    decode_adr();
-}
-void MK589::fetch_mcu(std::bitset<7> AC, std::bitset<8> X, BYTE FC) {
-    this->_AC = AC;
-    this->X = X;
-    this->FC = FC;
-}
 void MK589::fetch_cpe(std::bitset<7> f,
                                BYTE k,
                                BYTE i,
@@ -104,9 +109,10 @@ void MK589::execute_cpe_right_rot() {
         LI = cpe_arr[i].RO;
     }
     unite_registers();
-    FI = cpe_arr[0].RO;
+    RO = cpe_arr[0].RO;
+    FI = RO;
     A = MAR;
-    this->D = this->MEM[AC];
+    D = MEM[AC];
 }
 
 void MK589::execute_cpe() {
@@ -117,7 +123,8 @@ void MK589::execute_cpe() {
         CI = cpe_arr[i].CO;
     }
     unite_registers();
-    FI = cpe_arr[3].CO;
+    CO = cpe_arr[3].CO;
+    FI = CO;
     A = MAR;
     D = MEM[AC];
 }
@@ -141,6 +148,3 @@ void MK589::unite_registers() {
           (cpe_arr[1].MAR << 2) |
           (cpe_arr[0].MAR << 0);
 }
-
-// for run button
-void MK589::execute_microprogram() {}
