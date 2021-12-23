@@ -60,15 +60,15 @@ void MainWindow::setupRAM() {
     QStringList verlist;
     QRegularExpression reg("[0-9]+");
     QRegularExpressionValidator* validator = new QRegularExpressionValidator(reg, this);
-    for (size_t i = 0; i < 255; ++i) {
+    for (size_t i = 0; i < mk.ram.size; ++i) {
         verlist << std::to_string(i).c_str();
     }
 
-    ui->ramWidget->setHorizontalHeaderLabels({ "DATA"});
+    ui->ramWidget->setHorizontalHeaderLabels({"DATA"});
     ui->ramWidget->setVerticalHeaderLabels(verlist);
     ui->ramWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
-    for (size_t i = 0; i < 255; ++i) {
+    for (size_t i = 0; i < mk.ram.size; ++i) {
             QTableWidgetItem* item = new QTableWidgetItem();
             ramItems.push_back(item);
             item->setData(Qt::ItemDataRole::EditRole, 0);
@@ -88,7 +88,17 @@ void MainWindow::on_stepButton_clicked()
     microcommand command = mk.rom.read(currentPoint.row, currentPoint.col);
     std::string ac = command.AC.to_string();
 
+    if (command.RAMC == 0b01) {
+        // read
+        command.M = mk.ram.read(mk.MAR);
+    } else {
+        command.M = 0x00;
+    }
     mk.do_fetch_decode_execute_cycle(command);
+    if (command.RAMC == 0b00) {
+        // write
+        ramItems[mk.MAR]->setText(std::to_string(mk.D).c_str());
+    }
 
     Point nextPoint = Point(mk.get_row_adr(), mk.get_col_adr());
 
@@ -358,7 +368,7 @@ void MainWindow::fillInputs() {
         ui->kLineEdit->setText("00000000");
         ui->iLineEdit->setText("00000000");
         ui->fLineEdit->setText("0001001");
-        ui->ramcLineEdit->setText("00");
+        ui->ramcLineEdit->setText("11");
         on_boxJUMP_currentIndexChanged(0);
     } else {
         auto point = model.currentPoint;

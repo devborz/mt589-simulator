@@ -19,7 +19,7 @@ void MK589::reset() {
 }
 void MK589::do_fetch_decode_execute_cycle(const microcommand &mc) {
     mcu.fetch(mc.AC, mc.X, mc.FC);
-    fetch_cpe(mc.F, mc.K, 0, 0);
+    fetch_cpe(mc.F, mc.K, mc.I, mc.M);
 
     decode(); // both mcu and cpe
 

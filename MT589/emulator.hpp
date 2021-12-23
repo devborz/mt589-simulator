@@ -38,8 +38,8 @@ public:
     BYTE K;
     BYTE CI : 1; // only affects lowest 2bits (cpe_arr[0])
     BYTE LI : 1; // only affects highest 2bits (cpe_arr[cpe_amount - 1])
-    [[maybe_unused]] BYTE I;
-    [[maybe_unused]] BYTE M;
+    BYTE I; // from IO devices
+    BYTE M; // from RAM
     //=====MEMORY
     BYTE MEM[0xC];
     BYTE MAR;
