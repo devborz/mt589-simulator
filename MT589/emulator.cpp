@@ -23,6 +23,9 @@ void MK589::do_fetch_decode_execute_cycle(const microcommand &mc) {
 
     decode(); // both mcu and cpe
 
+    mcu.execute_output_flag_logic();
+    this->FO = mcu.FO;
+
     if (is_performing_right_rot) {
         LI = FO;
         execute_cpe_right_rot();
@@ -32,8 +35,8 @@ void MK589::do_fetch_decode_execute_cycle(const microcommand &mc) {
     }
     // when FI flag is set (after cpe execution)
     mcu.fetch_flag(FI);
-    mcu.execute();
-    this->FO = mcu.FO;
+    mcu.execute_input_flag_logic();
+    mcu.compute_next_addr();
 
     decode_adr();
 }

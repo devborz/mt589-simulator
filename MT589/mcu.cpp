@@ -67,7 +67,8 @@ void MCU::decode_fl() {
     }
     }
 }
-void MCU::execute_flag_logic() {
+
+void MCU::execute_input_flag_logic() {
     TF = FI;
     switch(cur_FCI) {
         case FCI::SCZ:
@@ -83,7 +84,8 @@ void MCU::execute_flag_logic() {
         case FCI::HCZ:
             break;
     }
-
+}
+void MCU::execute_output_flag_logic() {
     switch(cur_FCO) {
         case FCO::FF0:
             FO = 0b0;
@@ -99,6 +101,7 @@ void MCU::execute_flag_logic() {
             break;
     }
 }
+
 
 void MCU::compute_next_addr() {
     switch(cur_jmp) {
@@ -193,7 +196,3 @@ void MCU::decode() {
     decode_fl();
 }
 
-void MCU::execute() {
-    execute_flag_logic();
-    compute_next_addr();
-}

@@ -20,7 +20,6 @@ public:
     void fetch_flag(BYTE fi);
 
     void decode();
-    void execute();
 
     //======INPUTS
     BYTE FI : 1; // flag input
@@ -34,7 +33,8 @@ public:
     void decode_jmp();
     void decode_fl(); // decode flag logic
 
-    void execute_flag_logic();
+    void execute_input_flag_logic();
+    void execute_output_flag_logic();
     void compute_next_addr();
 
     //======INPUTS
