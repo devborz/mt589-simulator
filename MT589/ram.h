@@ -8,7 +8,7 @@ struct RAM {
     void write(size_t address, BYTE data);
     BYTE read(size_t address);
 
-    size_t size = 0xFF;
+    size_t size = 0x100;
     std::vector<BYTE> memory;
 };
 

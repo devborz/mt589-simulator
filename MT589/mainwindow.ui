@@ -35,7 +35,7 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../build-MT589-Qt_6_2_2_for_macOS-Debug/qmake_qmake_qm_files.qrc">
+   <iconset resource="../build-MT589-Qt_6_2_0_for_macOS-Debug/qmake_qmake_qm_files.qrc">
     <normaloff>:/i18n/MT589_ru_RU.qm</normaloff>:/i18n/MT589_ru_RU.qm</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -494,6 +494,7 @@
      </property>
      <property name="font">
       <font>
+       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
        <underline>false</underline>
@@ -908,7 +909,7 @@
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>0</y>
+      <y>10</y>
       <width>151</width>
       <height>16</height>
      </rect>
@@ -1168,363 +1169,6 @@
       <enum>QLCDNumber::Flat</enum>
      </property>
     </widget>
-   </widget>
-   <widget class="QWidget" name="verticalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>20</y>
-      <width>561</width>
-      <height>171</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QFrame" name="inputFrame">
-       <property name="frameShape">
-        <enum>QFrame::Box</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <property name="lineWidth">
-        <number>2</number>
-       </property>
-       <widget class="QLabel" name="label_32">
-        <property name="geometry">
-         <rect>
-          <x>470</x>
-          <y>60</y>
-          <width>75</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>AC</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_12">
-        <property name="geometry">
-         <rect>
-          <x>460</x>
-          <y>10</y>
-          <width>91</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Jump Func</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="commandAddressEdit">
-        <property name="geometry">
-         <rect>
-          <x>470</x>
-          <y>80</y>
-          <width>75</width>
-          <height>30</height>
-         </rect>
-        </property>
-        <property name="maxLength">
-         <number>7</number>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="placeholderText">
-         <string>0000000</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_11">
-        <property name="geometry">
-         <rect>
-          <x>330</x>
-          <y>10</y>
-          <width>121</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Flag Output Control</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="clearButton">
-        <property name="geometry">
-         <rect>
-          <x>330</x>
-          <y>130</y>
-          <width>101</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Clear</string>
-        </property>
-        <property name="autoDefault">
-         <bool>false</bool>
-        </property>
-        <property name="default">
-         <bool>false</bool>
-        </property>
-        <property name="flat">
-         <bool>false</bool>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="boxJUMP">
-        <property name="geometry">
-         <rect>
-          <x>460</x>
-          <y>30</y>
-          <width>91</width>
-          <height>32</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_3">
-        <property name="geometry">
-         <rect>
-          <x>110</x>
-          <y>60</y>
-          <width>75</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>K</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="ramcLineEdit">
-        <property name="geometry">
-         <rect>
-          <x>370</x>
-          <y>80</y>
-          <width>40</width>
-          <height>30</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="maxLength">
-         <number>2</number>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="placeholderText">
-         <string>00</string>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="boxFC2">
-        <property name="geometry">
-         <rect>
-          <x>320</x>
-          <y>30</y>
-          <width>141</width>
-          <height>32</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="kLineEdit">
-        <property name="geometry">
-         <rect>
-          <x>110</x>
-          <y>80</y>
-          <width>75</width>
-          <height>30</height>
-         </rect>
-        </property>
-        <property name="maxLength">
-         <number>8</number>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="placeholderText">
-         <string>00000000</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_9">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>161</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>CPE FUNC</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_10">
-        <property name="geometry">
-         <rect>
-          <x>190</x>
-          <y>10</y>
-          <width>131</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Flag Input Control</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="saveButton">
-        <property name="geometry">
-         <rect>
-          <x>440</x>
-          <y>130</y>
-          <width>101</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Save</string>
-        </property>
-        <property name="default">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_5">
-        <property name="geometry">
-         <rect>
-          <x>370</x>
-          <y>60</y>
-          <width>40</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>RAMC</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="boxFC1">
-        <property name="geometry">
-         <rect>
-          <x>190</x>
-          <y>30</y>
-          <width>131</width>
-          <height>32</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="boxCPE">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>30</y>
-          <width>171</width>
-          <height>32</height>
-         </rect>
-        </property>
-        <property name="contextMenuPolicy">
-         <enum>Qt::ActionsContextMenu</enum>
-        </property>
-        <property name="editable">
-         <bool>false</bool>
-        </property>
-        <property name="frame">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="iLineEdit">
-        <property name="geometry">
-         <rect>
-          <x>240</x>
-          <y>80</y>
-          <width>75</width>
-          <height>30</height>
-         </rect>
-        </property>
-        <property name="maxLength">
-         <number>8</number>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="placeholderText">
-         <string>00000000</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_6">
-        <property name="geometry">
-         <rect>
-          <x>240</x>
-          <y>60</y>
-          <width>75</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>I</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="fLineEdit">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>80</y>
-          <width>90</width>
-          <height>30</height>
-         </rect>
-        </property>
-        <property name="maxLength">
-         <number>7</number>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="placeholderText">
-         <string>0000000</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_2">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>60</y>
-          <width>90</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>F</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </widget>
-     </item>
-    </layout>
    </widget>
    <widget class="QWidget" name="verticalLayoutWidget_2">
     <property name="geometry">
@@ -1902,6 +1546,357 @@
      </item>
     </layout>
    </widget>
+   <widget class="QFrame" name="inputFrame">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>30</y>
+      <width>541</width>
+      <height>155</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <property name="lineWidth">
+     <number>2</number>
+    </property>
+    <widget class="QLabel" name="label_32">
+     <property name="geometry">
+      <rect>
+       <x>420</x>
+       <y>60</y>
+       <width>111</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>AC</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_12">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>10</y>
+       <width>130</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Jump Func</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="commandAddressEdit">
+     <property name="geometry">
+      <rect>
+       <x>420</x>
+       <y>80</y>
+       <width>111</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="maxLength">
+      <number>7</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="placeholderText">
+      <string>0000000</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_11">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>10</y>
+       <width>130</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Flag Output Control</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="clearButton">
+     <property name="geometry">
+      <rect>
+       <x>320</x>
+       <y>120</y>
+       <width>101</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Clear</string>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
+     </property>
+     <property name="default">
+      <bool>false</bool>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="boxJUMP">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>30</y>
+       <width>130</width>
+       <height>32</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_3">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>60</y>
+       <width>101</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>K</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="ramcLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>80</y>
+       <width>61</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="maxLength">
+      <number>2</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="placeholderText">
+      <string>00</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="boxFC2">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>30</y>
+       <width>130</width>
+       <height>32</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="kLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>80</y>
+       <width>101</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="maxLength">
+      <number>8</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="placeholderText">
+      <string>00000000</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_9">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>130</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>CPE FUNC</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_10">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>10</y>
+       <width>130</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Flag Input Control</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="saveButton">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>120</y>
+       <width>101</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Save</string>
+     </property>
+     <property name="default">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>60</y>
+       <width>61</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>RAMC</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="boxFC1">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>30</y>
+       <width>130</width>
+       <height>32</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="boxCPE">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>130</width>
+       <height>32</height>
+      </rect>
+     </property>
+     <property name="contextMenuPolicy">
+      <enum>Qt::ActionsContextMenu</enum>
+     </property>
+     <property name="editable">
+      <bool>false</bool>
+     </property>
+     <property name="frame">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="iLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>80</y>
+       <width>101</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="maxLength">
+      <number>8</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="placeholderText">
+      <string>00000000</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>60</y>
+       <width>101</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>I</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="fLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>80</y>
+       <width>101</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="maxLength">
+      <number>7</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="placeholderText">
+      <string>0000000</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>60</y>
+       <width>101</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>F</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -1909,7 +1904,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1963,7 +1958,7 @@
   </action>
  </widget>
  <resources>
-  <include location="../build-MT589-Qt_6_2_2_for_macOS-Debug/qmake_qmake_qm_files.qrc"/>
+  <include location="../build-MT589-Qt_6_2_0_for_macOS-Debug/qmake_qmake_qm_files.qrc"/>
  </resources>
  <connections/>
 </ui>
