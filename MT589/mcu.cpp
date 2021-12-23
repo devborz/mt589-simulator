@@ -38,11 +38,39 @@ void MCU::fetch_flag(BYTE fi) {
 }
 
 void MCU::decode_jmp() {
-    for (size_t i = 0; i < total_jmps; ++i ){
-        if ((AC & std::bitset<7> {_signals[i]}) == AC) {
-            cur_jmp = static_cast<JUMP>(i);
-            break;
-        }
+//    for (size_t i = 0; i < total_jmps; ++i ){
+//        std::string ac = AC.to_string();
+//        std::string bs = std::bitset<7> {_signals[i]}.to_string();
+//        if ((AC & std::bitset<7> {_signals[i]}) == AC) {
+//            cur_jmp = static_cast<JUMP>(i);
+//            break;
+//        }
+//        if ()
+//    }
+
+//    }
+    if (AC.to_string().substr(0, 2) == "00") {
+        cur_jmp = JUMP::JCC;
+    } else if (AC.to_string().substr(0, 3) == "010") {
+        cur_jmp = JUMP::JZR;
+    } else if (AC.to_string().substr(0, 3) == "011") {
+        cur_jmp = JUMP::JCR;
+    } else if (AC.to_string().substr(0, 3) == "111") {
+        cur_jmp = JUMP::JCE;
+    } else if (AC.to_string().substr(0, 3) == "100") {
+        cur_jmp = JUMP::JFL;
+    } else if (AC.to_string().substr(0, 4) == "1010") {
+        cur_jmp = JUMP::JCF;
+    } else if (AC.to_string().substr(0, 4) == "1011") {
+        cur_jmp = JUMP::JZF;
+    } else if (AC.to_string().substr(0, 4) == "1100") {
+        cur_jmp = JUMP::JPR;
+    } else if (AC.to_string().substr(0, 4) == "1101") {
+        cur_jmp = JUMP::JLL;
+    } else if (AC.to_string().substr(0, 5) == "11111") {
+        cur_jmp = JUMP::JRL;
+    } else if (AC.to_string().substr(0, 5) == "11110") {
+        cur_jmp = JUMP::JPX;
     }
 }
 void MCU::decode_fl() {
@@ -190,6 +218,7 @@ void MCU::compute_next_addr() {
             break;
     }
     MA = MPAR;
+    std::string s = MPAR.to_string();
 }
 void MCU::decode() {
     decode_jmp();

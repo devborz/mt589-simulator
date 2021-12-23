@@ -2,7 +2,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++17
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -22,8 +22,10 @@ SOURCES += \
 HEADERS += \
     ListModels.h \
     Model.h \
+    Saver.h \
     cpe.h \
     emulator.hpp \
+    json.hpp \
     mainwindow.h \
     mcu.h \
     mt_global.h \
@@ -39,6 +41,9 @@ TRANSLATIONS += \
 CONFIG += lrelease
 CONFIG += embed_translations
 
+macx: {
+    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.15
+}
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

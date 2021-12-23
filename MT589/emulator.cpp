@@ -16,6 +16,9 @@ void MK589::reset() {
     for (size_t i = 0; i < 0xC; ++i) {
         MEM[i] = 0;
     }
+    for (size_t i = 0; i < cpe_amount; ++i) {
+        cpe_arr[i].reset();
+    }
 }
 void MK589::do_fetch_decode_execute_cycle(const microcommand &mc) {
     mcu.fetch(mc.AC, mc.X, mc.FC);

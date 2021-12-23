@@ -2,6 +2,9 @@
 #include "ui_mainwindow.h"
 #include <util.hpp>
 #include <QPalette>
+#include <QtGui>
+#include <QFileDialog>
+#include <Saver.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -90,18 +93,20 @@ void MainWindow::on_stepButton_clicked()
 
     if (command.RAMC == 0b01) {
         // read
-        command.I = mk.ram.read(mk.MAR);
-    } else if (command.RAMC == 0b00) {
-        // write
-        ramItems[mk.MAR]->setText(std::to_string(mk.M).c_str());
-    }
+        command.M = mk.ram.read(mk.MAR);
+    } else
 
     mk.do_fetch_decode_execute_cycle(command);
-
+    if (command.RAMC == 0b00) {
+            // write
+        ramItems[mk.MAR]->setText(std::to_string(mk.D).c_str());
+    }
 
     Point nextPoint = Point(mk.get_row_adr(), mk.get_col_adr());
 
     model.currentPoint = nextPoint;
+    ui->rowLcd->display(model.currentPoint.row);
+    ui->colLcd->display(model.currentPoint.col);
 
     configUIMode();
     changeCurrentPoint(currentPoint, nextPoint);
@@ -436,7 +441,7 @@ void MainWindow::on_saveButton_clicked()
 
     microcommand command;
     command.F = f;
-    command.M = m.to_ulong();
+    command.I = m.to_ulong();
 
     command.index_F = ui->boxCPE->currentIndex();
     command.index_FIC = ui->boxFC1->currentIndex();
@@ -592,5 +597,24 @@ void MainWindow::on_fLineEdit_textEdited(const QString &arg1)
 void MainWindow::on_ramWidget_cellChanged(int row, int column)
 {
     mk.ram.write(row, ramItems[row]->text().toUInt());
+}
+
+
+void MainWindow::on_action_3_triggered()
+{
+     QString fileName = QFileDialog::getSaveFileName(this, tr("Save ROM Image"),
+                                "~/prog.rom",
+                                tr("*.rom"));
+    save(fileName.toStdString(), this->mk, model.startPoint.row, model.startPoint.col);
+}
+
+
+void MainWindow::on_resetButton_clicked()
+{
+    on_endButton_clicked();
+    model.currentPoint = Point::nullPoint();
+    ui->rowLcd->display(model.currentPoint.row);
+    ui->colLcd->display(model.currentPoint.col);
+    mk.reset();
 }
 

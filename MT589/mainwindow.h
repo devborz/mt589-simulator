@@ -109,6 +109,10 @@ private slots:
 
     void on_ramWidget_cellChanged(int row, int column);
 
+    void on_action_3_triggered();
+
+    void on_resetButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 
