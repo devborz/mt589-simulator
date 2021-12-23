@@ -48,8 +48,8 @@ public:
     BYTE TF : 1; // flag latch
     BYTE TC : 1; // CO trigger (lathc)
     BYTE TZ : 1; // ZERO flag latch (trigger)
-    BYTE PR_latch : 4; // aka command register
-    std::bitset<9> MPAR;
+    std::bitset<4> PR_latch; // aka command register
+    std::bitset<9> MPAR; // microprogramm address register
 
     enum class FCI : BYTE {
         SCZ = 0b00,
@@ -87,9 +87,9 @@ public:
         0b0101111, // JZR
         0b0111111, // JCR
         0b1110111, // JCE
-        0b1001111,
-        0b1010111,
-        0b1011111,
+        0b1001111, // JFL
+        0b1010111, // JCF
+        0b1011111, //
         0b1100111,
         0b1101111,
         0b1111111,

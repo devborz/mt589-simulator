@@ -27,6 +27,10 @@ void MCU::fetch(std::bitset<7> ac, std::bitset<8> x, BYTE fc ) {
     this->X = x;
     this->FC_10 = fc & 0b0011;
     this->FC_32 = (fc >> 2) & 0b11;
+
+    for (size_t i = 0; i < 3; ++i) {
+        PR_latch[i] = X[i];
+    }
 }
 
 void MCU::fetch_flag(BYTE fi) {
@@ -119,23 +123,67 @@ void MCU::compute_next_addr() {
 
             break;
         case JUMP::JCE:
-            MPAR[4] = AC[0];
-            MPAR[5] = AC[1];
-            MPAR[6] = AC[2];
+            for (size_t i = 4; i < 7; ++i) {
+                MPAR[i] = AC[i - 4];
+            }
+            // PR latch output enable?
             break;
         case JUMP::JFL:
+            for (size_t i = 4; i < 8; ++i) {
+                MPAR[i] = AC[i - 4];
+            }
+            MPAR[2] = 0;
+            MPAR[1] = 1;
+            MPAR[0] = TF;
             break;
         case JUMP::JCF:
+            for (size_t i = 4; i < 7; ++i) {
+                MPAR[i] = AC[i - 4];
+            }
+            MPAR[2] = 0;
+            MPAR[1] = 1;
+            MPAR[0] = TC;
             break;
         case JUMP::JZF:
+            for (size_t i = 4; i < 7; ++i) {
+                MPAR[i] = AC[i - 4];
+            }
+            MPAR[2] = 0;
+            MPAR[1] = 1;
+            MPAR[0] = TZ;
             break;
         case JUMP::JPR:
+            for (size_t i = 4; i < 7; ++i) {
+                MPAR[i] = AC[i - 4];
+            }
+            for (size_t i = 0; i < 4; ++i) {
+                MPAR[i] = PR_latch[i];
+            }
             break;
         case JUMP::JLL:
+            for (size_t i = 4; i < 7; ++i) {
+                MPAR[i] = AC[i - 4];
+            }
+            MPAR[3] = 0;
+            MPAR[2] = 1;
+            MPAR[1] = PR_latch[3];
+            MPAR[0] = PR_latch[2];
             break;
         case JUMP::JRL:
+            for (size_t i = 4; i < 7; ++i) {
+                MPAR[i] = AC[i - 4];
+            }
+            MPAR[3] = 1;
+            MPAR[2] = 1;
+            MPAR[1] = PR_latch[1];
+            MPAR[0] = PR_latch[0];
             break;
         case JUMP::JPX:
+            MPAR[5] = AC[1];
+            MPAR[4] = AC[0];
+            for (size_t i = 0; i < 4; ++i) {
+                MPAR[i] = X[i + 4];
+            }
             break;
     }
     MA = MPAR;

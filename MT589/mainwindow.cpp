@@ -203,7 +203,14 @@ void MainWindow::setupBoxes() {
                               "JCC",
                               "JZR",
                               "JCR",
-                              "JCE"
+                              "JCE",
+                              "JFL",
+                              "JCF",
+                              "JZF",
+                              "JPR",
+                              "JLL",
+                              "JRL",
+                              "JPX"
                           });
     std::vector<std::string> acs = {
         "0000000",
@@ -273,6 +280,18 @@ void MainWindow::on_boxJUMP_currentIndexChanged(int index)
         "0100000",
         "0110000",
         "1110000",
+        "1000000",
+        "1010000",
+
+        "1011000",
+
+        "1100000",
+
+        "1101000",
+
+        "1111100",
+
+        "1111000"
     };
     ui->commandAddressEdit->setText(acs[index].c_str());
 }

@@ -62,8 +62,22 @@ std::bitset<7> getFromJump(const std::string& mnemonic) {
         return std::bitset<7>("0100000");
     } else if (mnemonic == "JCR") {
         return std::bitset<7>("0110000");
-    } else {
+    } else if (mnemonic == "JCE") {
         return std::bitset<7>("1110000");
+    } else if (mnemonic == "JFL") {
+        return std::bitset<7>("1000000");
+    } else if (mnemonic == "JCF") {
+        return std::bitset<7>("1010000");
+    } else if (mnemonic == "JZF") {
+        return std::bitset<7>("1011000");
+    } else if (mnemonic == "JPR") {
+        return std::bitset<7>("1100000");
+    } else if (mnemonic == "JLL") {
+        return std::bitset<7>("1101000");
+    } else if (mnemonic == "JRL") {
+        return std::bitset<7>("1111100");
+    } else { //(mnemonic == "JPX")
+        return std::bitset<7>("1111000");
     }
 }
 
