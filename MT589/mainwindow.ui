@@ -35,7 +35,7 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../build-MT589-Qt_6_2_0_for_macOS-Debug/qmake_qmake_qm_files.qrc">
+   <iconset resource="../build-MT589-Qt_6_2_2_for_macOS-Debug/qmake_qmake_qm_files.qrc">
     <normaloff>:/i18n/MT589_ru_RU.qm</normaloff>:/i18n/MT589_ru_RU.qm</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -494,7 +494,6 @@
      </property>
      <property name="font">
       <font>
-       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
        <underline>false</underline>
@@ -1826,7 +1825,7 @@
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLineEdit" name="iLineEdit">
+    <widget class="QLineEdit" name="mLineEdit">
      <property name="geometry">
       <rect>
        <x>240</x>
@@ -1855,7 +1854,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>I</string>
+      <string>M</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -1904,7 +1903,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -1958,7 +1957,7 @@
   </action>
  </widget>
  <resources>
-  <include location="../build-MT589-Qt_6_2_0_for_macOS-Debug/qmake_qmake_qm_files.qrc"/>
+  <include location="../build-MT589-Qt_6_2_2_for_macOS-Debug/qmake_qmake_qm_files.qrc"/>
  </resources>
  <connections/>
 </ui>

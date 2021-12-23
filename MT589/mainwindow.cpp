@@ -88,18 +88,16 @@ void MainWindow::on_stepButton_clicked()
     microcommand command = mk.rom.read(currentPoint.row, currentPoint.col);
     std::string ac = command.AC.to_string();
 
-    command.M = 0x00;
-    command.I = 0x00;
     if (command.RAMC == 0b01) {
         // read
-        command.M = mk.ram.read(mk.MAR);
+        command.I = mk.ram.read(mk.MAR);
+    } else if (command.RAMC == 0b00) {
+        // write
+        ramItems[mk.MAR]->setText(std::to_string(mk.M).c_str());
     }
 
     mk.do_fetch_decode_execute_cycle(command);
-    if (command.RAMC == 0b00) {
-        // write
-        ramItems[mk.MAR]->setText(std::to_string(mk.I).c_str());
-    }
+
 
     Point nextPoint = Point(mk.get_row_adr(), mk.get_col_adr());
 
@@ -148,7 +146,7 @@ void MainWindow::setupRegs() {
     QRegularExpression reg("[0-9]+");
     QRegularExpressionValidator* validator = new QRegularExpressionValidator(reg, this);
 
-    ui->iLineEdit->setValidator(validator);
+    ui->mLineEdit->setValidator(validator);
     ui->kLineEdit->setValidator(validator);
     ui->startAddressEdit->setValidator(validator);
     ui->commandAddressEdit->setValidator(validator);
@@ -223,7 +221,7 @@ void MainWindow::setupBoxes() {
 }
 
 void MainWindow::clearInputs() {
-    ui->iLineEdit->setText("00000000");
+    ui->mLineEdit->setText("00000000");
     ui->ramcLineEdit->setText("11");
     ui->kLineEdit->setText("");
 }
@@ -301,12 +299,12 @@ void MainWindow::handleInputState() {
 
     bool haveEmptyLineEdit = false;
     std::string ac = ui->commandAddressEdit->text().toStdString();
-    std::string i = ui->iLineEdit->text().toStdString();
+    std::string m = ui->mLineEdit->text().toStdString();
     std::string k = ui->kLineEdit->text().toStdString();
     std::string f = ui->fLineEdit->text().toStdString();
 
     haveEmptyLineEdit = ac.size() < 7 or f.size() < 7
-             or k.size() < 8 or i.size() < 8;
+             or k.size() < 8 or m.size() < 8;
     ui->saveButton->setEnabled(!haveEmptyLineEdit && !model.currentPoint.isNull());
     ui->clearButton->setEnabled(!model.currentPoint.isNull());
 
@@ -386,7 +384,8 @@ void MainWindow::fillInputs() {
         ui->boxJUMP->setCurrentIndex(0);
 
         ui->kLineEdit->setText("00000000");
-        ui->iLineEdit->setText("00000000");
+//        ui->iLineEdit->setText("00000000");
+        ui->mLineEdit->setText("00000000");
         ui->fLineEdit->setText("0001001");
         ui->ramcLineEdit->setText("11");
         on_boxJUMP_currentIndexChanged(0);
@@ -402,7 +401,7 @@ void MainWindow::fillInputs() {
             ui->boxJUMP->setCurrentIndex(0);
 
             ui->kLineEdit->setText("00000000");
-            ui->iLineEdit->setText("00000000");
+            ui->mLineEdit->setText("00000000");
             ui->fLineEdit->setText("0001001");
             ui->ramcLineEdit->setText("11");
             on_boxJUMP_currentIndexChanged(0);
@@ -414,7 +413,7 @@ void MainWindow::fillInputs() {
 
             ui->kLineEdit->setText(std::bitset<8>(command.K).to_string().c_str());
             ui->commandAddressEdit->setText(command.address_control.c_str());
-            ui->iLineEdit->setText(std::bitset<8>(command.I).to_string().c_str());
+            ui->mLineEdit->setText(std::bitset<8>(command.I).to_string().c_str());
             ui->fLineEdit->setText(command.F.to_string().c_str());
             ui->ramcLineEdit->setText(std::bitset<2>(command.RAMC).to_string().c_str());
         }
@@ -431,13 +430,13 @@ void MainWindow::on_saveButton_clicked()
 
     std::bitset<7> jumpMask = getFromJump(ui->boxJUMP->currentText().toStdString());
     std::bitset<7> address_control = std::bitset<7>(ui->commandAddressEdit->text().toStdString());
-    std::bitset<8> i = std::bitset<8>(ui->iLineEdit->text().toStdString());
+    std::bitset<8> m = std::bitset<8>(ui->mLineEdit->text().toStdString());
     std::bitset<8> k = std::bitset<8>(ui->kLineEdit->text().toStdString());
     int ramc = ui->ramcLineEdit->text().toUInt();
 
     microcommand command;
     command.F = f;
-    command.I = i.to_ulong();
+    command.M = m.to_ulong();
 
     command.index_F = ui->boxCPE->currentIndex();
     command.index_FIC = ui->boxFC1->currentIndex();
