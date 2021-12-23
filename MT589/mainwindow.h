@@ -107,6 +107,8 @@ private slots:
 
     void on_fLineEdit_textEdited(const QString &arg1);
 
+    void on_ramWidget_cellChanged(int row, int column);
+
 private:
     Ui::MainWindow *ui;
 

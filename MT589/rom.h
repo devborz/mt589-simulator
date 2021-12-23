@@ -17,7 +17,7 @@ struct microcommand {
     [[maybe_unused]] BYTE M;
     [[maybe_unused]] BYTE I;
     //// to ram
-//
+    BYTE RAMC : 2;
     ////  UI HELPERS
     int index_F;
     int index_REG;

@@ -358,6 +358,7 @@ void MainWindow::fillInputs() {
         ui->kLineEdit->setText("00000000");
         ui->iLineEdit->setText("00000000");
         ui->fLineEdit->setText("0001001");
+        ui->ramcLineEdit->setText("00");
         on_boxJUMP_currentIndexChanged(0);
     } else {
         auto point = model.currentPoint;
@@ -373,6 +374,7 @@ void MainWindow::fillInputs() {
             ui->kLineEdit->setText("00000000");
             ui->iLineEdit->setText("00000000");
             ui->fLineEdit->setText("0001001");
+            ui->ramcLineEdit->setText("00");
             on_boxJUMP_currentIndexChanged(0);
         } else {
             ui->boxCPE->setCurrentIndex(command.index_F);
@@ -384,6 +386,7 @@ void MainWindow::fillInputs() {
             ui->commandAddressEdit->setText(command.address_control.c_str());
             ui->iLineEdit->setText(std::bitset<8>(command.I).to_string().c_str());
             ui->fLineEdit->setText(command.F.to_string().c_str());
+            ui->ramcLineEdit->setText(std::bitset<2>(command.RAMC).to_string().c_str());
         }
     }
 }
@@ -400,6 +403,7 @@ void MainWindow::on_saveButton_clicked()
     std::bitset<7> address_control = std::bitset<7>(ui->commandAddressEdit->text().toStdString());
     std::bitset<8> i = std::bitset<8>(ui->iLineEdit->text().toStdString());
     std::bitset<8> k = std::bitset<8>(ui->kLineEdit->text().toStdString());
+    int ramc = ui->ramcLineEdit->text().toUInt();
 
     microcommand command;
     command.F = f;
@@ -410,6 +414,7 @@ void MainWindow::on_saveButton_clicked()
     command.index_FOC = ui->boxFC2->currentIndex();
     command.index_Jump = ui->boxJUMP->currentIndex();
     command.address_control = address_control.to_string();
+    command.RAMC = ramc;
 
     BYTE fc_buf = ((foc << 2) + fic) & 0b1111;
     std::string str = std::bitset<4>(fc_buf).to_string();
@@ -551,5 +556,12 @@ void MainWindow::changeCurrentPoint(Point last, Point currentPoint) {
 void MainWindow::on_fLineEdit_textEdited(const QString &arg1)
 {
     handleInputState();
+}
+
+
+
+void MainWindow::on_ramWidget_cellChanged(int row, int column)
+{
+    mk.ram.write(row, ramItems[row]->text().toUInt());
 }
 
