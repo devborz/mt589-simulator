@@ -88,16 +88,17 @@ void MainWindow::on_stepButton_clicked()
     microcommand command = mk.rom.read(currentPoint.row, currentPoint.col);
     std::string ac = command.AC.to_string();
 
+    command.M = 0x00;
+    command.I = 0x00;
     if (command.RAMC == 0b01) {
         // read
         command.M = mk.ram.read(mk.MAR);
-    } else {
-        command.M = 0x00;
     }
+
     mk.do_fetch_decode_execute_cycle(command);
     if (command.RAMC == 0b00) {
         // write
-        ramItems[mk.MAR]->setText(std::to_string(mk.D).c_str());
+        ramItems[mk.MAR]->setText(std::to_string(mk.I).c_str());
     }
 
     Point nextPoint = Point(mk.get_row_adr(), mk.get_col_adr());
