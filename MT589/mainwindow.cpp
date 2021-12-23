@@ -216,7 +216,7 @@ void MainWindow::setupBoxes() {
 
 void MainWindow::clearInputs() {
     ui->iLineEdit->setText("00000000");
-    ui->ramcLineEdit->setText("00");
+    ui->ramcLineEdit->setText("11");
     ui->kLineEdit->setText("");
 }
 
@@ -384,7 +384,7 @@ void MainWindow::fillInputs() {
             ui->kLineEdit->setText("00000000");
             ui->iLineEdit->setText("00000000");
             ui->fLineEdit->setText("0001001");
-            ui->ramcLineEdit->setText("00");
+            ui->ramcLineEdit->setText("11");
             on_boxJUMP_currentIndexChanged(0);
         } else {
             ui->boxCPE->setCurrentIndex(command.index_F);
