@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
     }
     a.setWindowIcon(QIcon(":/logo.png"));
     MainWindow w;
+    w.setWindowIcon(QIcon(":/logo.png"));
     w.show();
     return a.exec();
 }

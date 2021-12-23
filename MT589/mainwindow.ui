@@ -34,6 +34,10 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../build-MT589-Qt_6_2_2_for_macOS-Debug/qmake_qmake_qm_files.qrc">
+    <normaloff>:/i18n/MT589_ru_RU.qm</normaloff>:/i18n/MT589_ru_RU.qm</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="runButton">
     <property name="geometry">
@@ -1958,6 +1962,8 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../build-MT589-Qt_6_2_2_for_macOS-Debug/qmake_qmake_qm_files.qrc"/>
+ </resources>
  <connections/>
 </ui>
