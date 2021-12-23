@@ -1042,6 +1042,15 @@
       <height>671</height>
      </rect>
     </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+    <property name="selectionMode">
+     <enum>QAbstractItemView::SingleSelection</enum>
+    </property>
+    <property name="gridStyle">
+     <enum>Qt::SolidLine</enum>
+    </property>
     <property name="rowCount">
      <number>32</number>
     </property>
@@ -1111,7 +1120,7 @@
       <x>520</x>
       <y>30</y>
       <width>471</width>
-      <height>181</height>
+      <height>161</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -1127,7 +1136,7 @@
      <property name="geometry">
       <rect>
        <x>380</x>
-       <y>80</y>
+       <y>60</y>
        <width>81</width>
        <height>20</height>
       </rect>
@@ -1143,7 +1152,7 @@
      <property name="geometry">
       <rect>
        <x>370</x>
-       <y>20</y>
+       <y>10</y>
        <width>91</width>
        <height>16</height>
       </rect>
@@ -1159,7 +1168,7 @@
      <property name="geometry">
       <rect>
        <x>380</x>
-       <y>100</y>
+       <y>80</y>
        <width>81</width>
        <height>30</height>
       </rect>
@@ -1178,7 +1187,7 @@
      <property name="geometry">
       <rect>
        <x>250</x>
-       <y>20</y>
+       <y>10</y>
        <width>91</width>
        <height>16</height>
       </rect>
@@ -1194,7 +1203,7 @@
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>140</y>
+       <y>120</y>
        <width>101</width>
        <height>31</height>
       </rect>
@@ -1219,7 +1228,7 @@
      <property name="geometry">
       <rect>
        <x>370</x>
-       <y>40</y>
+       <y>30</y>
        <width>91</width>
        <height>32</height>
       </rect>
@@ -1229,7 +1238,7 @@
      <property name="geometry">
       <rect>
        <x>150</x>
-       <y>80</y>
+       <y>60</y>
        <width>81</width>
        <height>20</height>
       </rect>
@@ -1245,7 +1254,7 @@
      <property name="geometry">
       <rect>
        <x>240</x>
-       <y>100</y>
+       <y>80</y>
        <width>41</width>
        <height>30</height>
       </rect>
@@ -1267,7 +1276,7 @@
      <property name="geometry">
       <rect>
        <x>250</x>
-       <y>40</y>
+       <y>30</y>
        <width>91</width>
        <height>32</height>
       </rect>
@@ -1277,7 +1286,7 @@
      <property name="geometry">
       <rect>
        <x>150</x>
-       <y>100</y>
+       <y>80</y>
        <width>80</width>
        <height>30</height>
       </rect>
@@ -1296,7 +1305,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
+       <y>10</y>
        <width>91</width>
        <height>16</height>
       </rect>
@@ -1312,7 +1321,7 @@
      <property name="geometry">
       <rect>
        <x>130</x>
-       <y>20</y>
+       <y>10</y>
        <width>91</width>
        <height>16</height>
       </rect>
@@ -1328,7 +1337,7 @@
      <property name="geometry">
       <rect>
        <x>360</x>
-       <y>140</y>
+       <y>120</y>
        <width>101</width>
        <height>31</height>
       </rect>
@@ -1344,7 +1353,7 @@
      <property name="geometry">
       <rect>
        <x>240</x>
-       <y>80</y>
+       <y>60</y>
        <width>41</width>
        <height>20</height>
       </rect>
@@ -1360,7 +1369,7 @@
      <property name="geometry">
       <rect>
        <x>130</x>
-       <y>40</y>
+       <y>30</y>
        <width>91</width>
        <height>32</height>
       </rect>
@@ -1370,7 +1379,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>40</y>
+       <y>30</y>
        <width>91</width>
        <height>32</height>
       </rect>
@@ -1389,7 +1398,7 @@
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>100</y>
+       <y>80</y>
        <width>81</width>
        <height>30</height>
       </rect>
@@ -1408,7 +1417,7 @@
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>80</y>
+       <y>60</y>
        <width>81</width>
        <height>20</height>
       </rect>
@@ -1424,7 +1433,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>100</y>
+       <y>80</y>
        <width>131</width>
        <height>30</height>
       </rect>
@@ -1443,7 +1452,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>80</y>
+       <y>60</y>
        <width>131</width>
        <height>20</height>
       </rect>
@@ -1473,9 +1482,9 @@
     <property name="geometry">
      <rect>
       <x>520</x>
-      <y>250</y>
+      <y>220</y>
       <width>311</width>
-      <height>71</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -1491,7 +1500,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
+       <y>10</y>
        <width>181</width>
        <height>31</height>
       </rect>
@@ -1510,7 +1519,7 @@
      <property name="geometry">
       <rect>
        <x>200</x>
-       <y>20</y>
+       <y>10</y>
        <width>101</width>
        <height>31</height>
       </rect>
@@ -1524,7 +1533,7 @@
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>230</y>
+      <y>200</y>
       <width>111</width>
       <height>16</height>
      </rect>
@@ -1537,9 +1546,9 @@
     <property name="geometry">
      <rect>
       <x>520</x>
-      <y>359</y>
+      <y>299</y>
       <width>471</width>
-      <height>91</height>
+      <height>151</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -1551,22 +1560,305 @@
     <property name="lineWidth">
      <number>2</number>
     </property>
-    <widget class="QListWidget" name="listWidget">
+    <widget class="QTableWidget" name="ramWidget">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>10</y>
        <width>451</width>
-       <height>71</height>
+       <height>131</height>
       </rect>
      </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="rowCount">
+      <number>255</number>
+     </property>
+     <property name="columnCount">
+      <number>1</number>
+     </property>
+     <attribute name="horizontalHeaderCascadingSectionResizes">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderCascadingSectionResizes">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="verticalHeaderMinimumSectionSize">
+      <number>30</number>
+     </attribute>
+     <attribute name="verticalHeaderStretchLastSection">
+      <bool>false</bool>
+     </attribute>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
+     <column/>
     </widget>
    </widget>
    <widget class="QLabel" name="label_48">
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>340</y>
+      <y>280</y>
       <width>58</width>
       <height>16</height>
      </rect>

@@ -10,6 +10,28 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setWindowTitle("MT589");
 
+
+
+    clearInputs();
+    setupRegs();
+    setLCDsColor();
+    setupBoxes();
+//    update_on_cpu_data();
+
+    handleInputState();
+
+    setupMatrix();
+    setupRAM();
+
+    configUIMode();
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::setupMatrix() {
     QStringList horlist;
     for (size_t i = 0; i < 16; ++i) {
         horlist << std::to_string(i).c_str();
@@ -23,14 +45,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableWidget->setVerticalHeaderLabels(verlist);
     ui->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
-    clearInputs();
-    setupRegs();
-    setLCDsColor();
-    setupBoxes();
-//    update_on_cpu_data();
-
-    handleInputState();
-
     for (size_t i = 0; i < 32; ++i) {
         std::vector<QTableWidgetItem*> row;
         for (size_t j = 0; j < 16; ++j) {
@@ -38,16 +52,28 @@ MainWindow::MainWindow(QWidget *parent)
             row.push_back(item);
             ui->tableWidget->setItem(i, j, item);
         }
-        items.push_back(row);
+        matrixItems.push_back(row);
     }
-
-
-    configUIMode();
 }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
+void MainWindow::setupRAM() {
+    QStringList verlist;
+    QRegularExpression reg("[0-9]+");
+    QRegularExpressionValidator* validator = new QRegularExpressionValidator(reg, this);
+    for (size_t i = 0; i < 255; ++i) {
+        verlist << std::to_string(i).c_str();
+    }
+
+    ui->ramWidget->setHorizontalHeaderLabels({ "DATA"});
+    ui->ramWidget->setVerticalHeaderLabels(verlist);
+    ui->ramWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+
+    for (size_t i = 0; i < 255; ++i) {
+            QTableWidgetItem* item = new QTableWidgetItem();
+            ramItems.push_back(item);
+            item->setData(Qt::ItemDataRole::EditRole, 0);
+            ui->ramWidget->setItem(i, 0, item);
+    }
 }
 
 void MainWindow::on_stepButton_clicked()
@@ -108,7 +134,7 @@ void MainWindow::on_listWidget_currentRowChanged(int currentRow)
 // HELP FUNCTIONS
 
 void MainWindow::setupRegs() {
-    QRegularExpression reg("[0-1]+");
+    QRegularExpression reg("[0-9]+");
     QRegularExpressionValidator* validator = new QRegularExpressionValidator(reg, this);
 
     ui->iLineEdit->setValidator(validator);
@@ -453,7 +479,7 @@ void MainWindow::setItemColor(Point point) {
         return;
     }
     microcommand command = mk.rom.read(point.row, point.col);
-    QTableWidgetItem* item = items[point.row][point.col];
+    QTableWidgetItem* item = matrixItems[point.row][point.col];
     if (model.getMode() == running) {
         if (point == model.currentPoint) {
             item->setBackground(currentRunningColor);

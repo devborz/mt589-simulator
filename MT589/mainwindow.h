@@ -56,6 +56,10 @@ public:
 
     void changeCurrentPoint(Point last, Point currentPoint);
 
+    void setupMatrix();
+
+    void setupRAM();
+
 private slots:
     void on_stepButton_clicked();
 
@@ -112,9 +116,9 @@ private:
 
     Model model = Model();
 
+    std::vector<std::vector<QTableWidgetItem*>> matrixItems;
 
-
-    std::vector<std::vector<QTableWidgetItem*>> items;
+    std::vector<QTableWidgetItem*> ramItems;
 
     QBrush commandColor = QBrush(Qt::blue);
 
