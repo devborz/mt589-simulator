@@ -616,6 +616,7 @@ void MainWindow::on_save_file_as_triggered()
                                "~/prog.rom",
                                tr("*.rom"));
    fm::save(filename.toStdString(), this->mk, model.startPoint.row, model.startPoint.col, MT::microcommand);
+   model.current_filename = filename.toStdString();
 }
 
 
@@ -624,6 +625,7 @@ void MainWindow::on_open_file_triggered()
     QString filename = QFileDialog::getOpenFileName(this, tr("Save project"),
                                                     "~/prog.rom",
                                                     tr("*.rom"));
+
 
     fm::programm_data data = fm::get_data(filename.toStdString());
 
@@ -636,5 +638,20 @@ void MainWindow::on_open_file_triggered()
         }
     }
     fillInputs();
+    model.current_filename = filename.toStdString();
+}
+
+
+void MainWindow::on_save_file_triggered()
+{
+    if (model.current_filename.empty()) {
+        QString filename = QFileDialog::getSaveFileName(this, tr("Save project"),
+                                   "~/prog.rom",
+                                   tr("*.rom"));
+       fm::save(filename.toStdString(), this->mk, model.startPoint.row, model.startPoint.col, MT::microcommand);
+       model.current_filename = filename.toStdString();
+    } else {
+        fm::save(model.current_filename, this->mk, model.startPoint.row, model.startPoint.col, MT::microcommand);
+    }
 }
 

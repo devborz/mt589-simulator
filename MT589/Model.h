@@ -66,6 +66,8 @@ public:
 
     Point startPoint = Point::nullPoint();
 
+    std::string current_filename = "";
+
     std::vector<std::string> mnemonics = {
         "ILR",
         "ACM",

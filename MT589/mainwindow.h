@@ -115,6 +115,8 @@ private slots:
 
     void on_open_file_triggered();
 
+    void on_save_file_triggered();
+
 private:
     Ui::MainWindow *ui;
 
