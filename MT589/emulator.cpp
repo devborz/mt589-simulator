@@ -5,6 +5,24 @@ MK589::MK589() {
     this->reset();
 }
 
+MK589::MK589(const MK589& mk) {
+    cpe_arr.resize(mk.cpe_amount);
+    MAR = mk.MAR;
+    CO = mk.CO;
+    RO = mk.RO;
+    CI = mk.CI;
+    LI = mk.LI;
+    D = mk.D;
+    A = mk.A;
+    for (size_t i = 0; i < 0xC; ++i) {
+        MEM[i] = mk.MEM[i];
+    }
+    for (size_t i = 0; i < cpe_amount; ++i) {
+        cpe_arr[i].reset();
+    }
+    rom.memory = mk.rom.memory;
+}
+
 void MK589::reset() {
     MAR = 0b00000000;
     CO = 0b0;

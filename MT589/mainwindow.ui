@@ -35,7 +35,7 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../build-MT589-Qt_6_2_2_for_macOS-Debug/qmake_qmake_qm_files.qrc">
+   <iconset resource="../build-MT589-Qt_6_2_0_for_macOS-Debug/qmake_qmake_qm_files.qrc">
     <normaloff>:/i18n/MT589_ru_RU.qm</normaloff>:/i18n/MT589_ru_RU.qm</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -494,6 +494,7 @@
      </property>
      <property name="font">
       <font>
+       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
        <underline>false</underline>
@@ -1962,15 +1963,17 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>Файл</string>
     </property>
-    <addaction name="action_2"/>
-    <addaction name="action_3"/>
+    <addaction name="save_file"/>
+    <addaction name="save_file_as"/>
+    <addaction name="separator"/>
+    <addaction name="open_file"/>
    </widget>
    <widget class="QMenu" name="menu">
     <property name="title">
@@ -1994,12 +1997,12 @@
     <string> Файл</string>
    </property>
   </action>
-  <action name="action_2">
+  <action name="save_file">
    <property name="text">
     <string>Сохранить</string>
    </property>
   </action>
-  <action name="action_3">
+  <action name="save_file_as">
    <property name="text">
     <string>Сохранить как...</string>
    </property>
@@ -2014,9 +2017,14 @@
     <string>Окно</string>
    </property>
   </action>
+  <action name="open_file">
+   <property name="text">
+    <string>Открыть</string>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="../build-MT589-Qt_6_2_2_for_macOS-Debug/qmake_qmake_qm_files.qrc"/>
+  <include location="../build-MT589-Qt_6_2_0_for_macOS-Debug/qmake_qmake_qm_files.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -11,6 +11,7 @@ class MK589
 {
 public:
     MK589();
+    MK589(const MK589& mk);
     size_t cpe_amount = 4;
     std::vector<CPE> cpe_arr;
     ROM rom {}; // rom with microprogramm
@@ -61,5 +62,29 @@ public:
     size_t f_group;
     BYTE ADR : 4;
     bool is_performing_right_rot = false;
+
+    MK589& operator=(const MK589& mk)
+    {
+        // Guard self assignment
+        if (this == &mk)
+            return *this;
+        this->reset();
+        cpe_arr.resize(mk.cpe_amount);
+        MAR = mk.MAR;
+        CO = mk.CO;
+        RO = mk.RO;
+        CI = mk.CI;
+        LI = mk.LI;
+        D = mk.D;
+        A = mk.A;
+        for (size_t i = 0; i < 0xC; ++i) {
+            MEM[i] = mk.MEM[i];
+        }
+        for (size_t i = 0; i < cpe_amount; ++i) {
+            cpe_arr[i].reset();
+        }
+        rom.memory = mk.rom.memory;
+        return *this;
+    }
 };
 #endif // MK589_HPP

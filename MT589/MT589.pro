@@ -13,6 +13,7 @@ SOURCES += \
     ListModels.cpp \
     cpe.cpp \
     emulator.cpp \
+    filemanager.cpp \
     main.cpp \
     mainwindow.cpp \
     mcu.cpp \
@@ -22,9 +23,9 @@ SOURCES += \
 HEADERS += \
     ListModels.h \
     Model.h \
-    Saver.h \
     cpe.h \
     emulator.hpp \
+    filemanager.h \
     json.hpp \
     mainwindow.h \
     mcu.h \

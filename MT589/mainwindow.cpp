@@ -4,7 +4,7 @@
 #include <QPalette>
 #include <QtGui>
 #include <QFileDialog>
-#include <Saver.h>
+#include <filemanager.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -600,15 +600,6 @@ void MainWindow::on_ramWidget_cellChanged(int row, int column)
 }
 
 
-void MainWindow::on_action_3_triggered()
-{
-     QString fileName = QFileDialog::getSaveFileName(this, tr("Save ROM Image"),
-                                "~/prog.rom",
-                                tr("*.rom"));
-    save(fileName.toStdString(), this->mk, model.startPoint.row, model.startPoint.col);
-}
-
-
 void MainWindow::on_resetButton_clicked()
 {
     on_endButton_clicked();
@@ -616,5 +607,34 @@ void MainWindow::on_resetButton_clicked()
     ui->rowLcd->display(model.currentPoint.row);
     ui->colLcd->display(model.currentPoint.col);
     mk.reset();
+}
+
+
+void MainWindow::on_save_file_as_triggered()
+{
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save project"),
+                               "~/prog.rom",
+                               tr("*.rom"));
+   fm::save(filename.toStdString(), this->mk, model.startPoint.row, model.startPoint.col, MT::microcommand);
+}
+
+
+void MainWindow::on_open_file_triggered()
+{
+    QString filename = QFileDialog::getOpenFileName(this, tr("Save project"),
+                                                    "~/prog.rom",
+                                                    tr("*.rom"));
+
+    fm::programm_data data = fm::get_data(filename.toStdString());
+
+    model.startPoint = Point(data.start_row, data.start_col);
+    setItemColor(model.startPoint);
+    mk = data.mk;
+    for (size_t row = 0; row < 32; ++row) {
+        for (size_t col = 0; col < 16; ++col) {
+            setItemColor(Point(row, col));
+        }
+    }
+    fillInputs();
 }
 
