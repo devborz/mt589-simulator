@@ -11,6 +11,7 @@ CONFIG += c++17
 ICON = MT589.icns
 SOURCES += \
     ListModels.cpp \
+    commandmodewindow.cpp \
     cpe.cpp \
     emulator.cpp \
     filemanager.cpp \
@@ -18,11 +19,13 @@ SOURCES += \
     mainwindow.cpp \
     mcu.cpp \
     ram.cpp \
-    rom.cpp
+    rom.cpp \
+    romwindow.cpp
 
 HEADERS += \
     ListModels.h \
     Model.h \
+    commandmodewindow.h \
     cpe.h \
     emulator.hpp \
     filemanager.h \
@@ -32,10 +35,13 @@ HEADERS += \
     mt_global.h \
     ram.h \
     rom.h \
+    romwindow.h \
     util.hpp
 
 FORMS += \
-    mainwindow.ui
+    commandmodewindow.ui \
+    mainwindow.ui \
+    romwindow.ui
 
 TRANSLATIONS += \
     MT589_ru_RU.ts

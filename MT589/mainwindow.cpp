@@ -5,6 +5,7 @@
 #include <QtGui>
 #include <QFileDialog>
 #include <filemanager.h>
+#include <commandmodewindow.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -653,5 +654,13 @@ void MainWindow::on_save_file_triggered()
     } else {
         fm::save(model.current_filename, this->mk, model.startPoint.row, model.startPoint.col, MT::microcommand);
     }
+}
+
+
+void MainWindow::on_open_command_mode_triggered()
+{
+    CommandModeWindow* window = new CommandModeWindow();
+    window->show();
+     this->hide();
 }
 
