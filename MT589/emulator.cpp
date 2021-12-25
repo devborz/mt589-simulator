@@ -39,14 +39,14 @@ void MK589::reset() {
     }
 }
 
-void MK589::do_program_cycle_step(WORD command) {
+void MK589::do_program_cycle(WORD command) {
 		std::bitset<8> com_adr = command >> 8;	
-		mk.load(com_adr);
+        load(com_adr);
 		decode_adr();
 		size_t cr = get_row_adr();
 		size_t cc = get_col_adr();
 		while(cr != 0 && cc != 0) {
-				auto c = mk.rom.read(cr, cc);
+                auto c = rom.read(cr, cc);
 				do_fetch_decode_execute_cycle(c);
 				cr = get_row_adr();
 				cc = get_col_adr();

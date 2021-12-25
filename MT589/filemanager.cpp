@@ -28,8 +28,8 @@ fm::programm_data fm::get_data(const std::string& filename) {
             command.I = command_data["I"].get<int>();
             command.index_F = command_data["index_F"].get<int>();
             command.index_FIC = command_data["index_FIC"].get<int>();
-            command.index_FIC = command_data["index_FOC"].get<int>();
-            command.index_FOC = command_data["index_Jump"].get<int>();
+            command.index_FOC = command_data["index_FOC"].get<int>();
+            command.index_Jump = command_data["index_Jump"].get<int>();
             command.address_control = command_data["address_control"].get<std::string>();
             command.RAMC = command_data["RAMC"].get<int>();
             command.FC = command_data["FC"].get<int>();
@@ -68,8 +68,8 @@ void fm::save(const std::string& filename, MK589& mk, int startCol, int startRow
                 command_data["I"] = command.I;
                 command_data["index_F"] = command.index_F;
                 command_data["index_FIC"] = command.index_FIC;
-                command_data["index_FOC"] = command.index_FIC;
-                command_data["index_Jump"] = command.index_FOC;
+                command_data["index_FOC"] = command.index_FOC;
+                command_data["index_Jump"] = command.index_Jump;
                 command_data["address_control"] = command.address_control;
                 command_data["RAMC"] = int(command.RAMC);
                 command_data["FC"] = int(command.FC);

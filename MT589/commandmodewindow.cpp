@@ -1,11 +1,25 @@
 #include "commandmodewindow.h"
 #include "ui_commandmodewindow.h"
+#include <filemanager.h>
+//#include <util.hpp>
 
 CommandModeWindow::CommandModeWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::CommandModeWindow)
 {
     ui->setupUi(this);
+
+//    fm::programm_data data = fm::get_data("");
+
+//    ui->ramWidget->setHorizontalHeaderLabels({"DATA"});
+//    ui->ramWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+
+//    for (size_t i = 0; i < mk.ram.size; ++i) {
+//            QTableWidgetItem* item = new QTableWidgetItem();
+//            items.push_back(item);
+//            item->setData(Qt::ItemDataRole::EditRole, 0);
+//            ui->ramWidget->setItem(i, 0, item);
+//    }
 }
 
 CommandModeWindow::~CommandModeWindow()
@@ -73,5 +87,35 @@ void CommandModeWindow::on_open_microcommand_mode_triggered()
     MainWindow* window = new MainWindow();
     window->show();
      this->hide();
+}
+
+
+void CommandModeWindow::on_resetButton_clicked()
+{
+
+}
+
+
+void CommandModeWindow::on_stepButton_clicked()
+{
+
+}
+
+
+void CommandModeWindow::on_runButton_clicked()
+{
+
+}
+
+
+void CommandModeWindow::on_endButton_clicked()
+{
+
+}
+
+
+void CommandModeWindow::on_ramWidget_cellChanged(int row, int column)
+{
+//    WORD word = parseHex(items[row]->text().toStdString());
 }
 

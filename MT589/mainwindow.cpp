@@ -14,8 +14,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setWindowTitle("MT589");
 
-
-
     clearInputs();
     setupRegs();
     setLCDsColor();
@@ -95,7 +93,9 @@ void MainWindow::on_stepButton_clicked()
     if (command.RAMC == 0b01) {
         // read
         command.M = mk.ram.read(mk.MAR);
-    } else
+    } else {
+        command.M = 0x00;
+    }
 
     mk.do_fetch_decode_execute_cycle(command);
     if (command.RAMC == 0b00) {
@@ -153,7 +153,7 @@ void MainWindow::setupRegs() {
     QRegularExpressionValidator* validator = new QRegularExpressionValidator(reg, this);
 
     ui->mLineEdit->setValidator(validator);
-    ui->kLineEdit->setValidator(validator);
+//    ui->kLineEdit->setValidator(validator);
     ui->startAddressEdit->setValidator(validator);
     ui->commandAddressEdit->setValidator(validator);
 
@@ -256,7 +256,7 @@ void MainWindow::on_boxCPE_currentIndexChanged(int index)
 {
     ui->fLineEdit->setText(model.funcs[index].c_str());
     std::string k =  model.ks[index];
-    ui->kLineEdit->setText((k+k+k+k).c_str());
+    ui->kLineEdit->setText(toHex(std::bitset<16>(k+k+k+k+k+k+k+k).to_ulong()).c_str());
 }
 
 
@@ -305,12 +305,12 @@ void MainWindow::handleInputState() {
 
     bool haveEmptyLineEdit = false;
     std::string ac = ui->commandAddressEdit->text().toStdString();
-    std::string m = ui->mLineEdit->text().toStdString();
+    std::string i = ui->mLineEdit->text().toStdString();
     std::string k = ui->kLineEdit->text().toStdString();
     std::string f = ui->fLineEdit->text().toStdString();
 
     haveEmptyLineEdit = ac.size() < 7 or f.size() < 7
-             or k.size() < 8 or m.size() < 8;
+             or i.size() < 6 or k.size() < 6;
     ui->saveButton->setEnabled(!haveEmptyLineEdit && !model.currentPoint.isNull());
     ui->clearButton->setEnabled(!model.currentPoint.isNull());
 
@@ -389,9 +389,9 @@ void MainWindow::fillInputs() {
         ui->boxFC2->setCurrentIndex(0);
         ui->boxJUMP->setCurrentIndex(0);
 
-        ui->kLineEdit->setText("00000000");
-//        ui->iLineEdit->setText("00000000");
-        ui->mLineEdit->setText("00000000");
+        ui->kLineEdit->setText("0x0000");
+//        ui->iLineEdit->setText("0x0000");
+        ui->mLineEdit->setText("0x0000");
         ui->fLineEdit->setText("0001001");
         ui->ramcLineEdit->setText("11");
         on_boxJUMP_currentIndexChanged(0);
@@ -406,8 +406,8 @@ void MainWindow::fillInputs() {
             ui->boxFC2->setCurrentIndex(0);
             ui->boxJUMP->setCurrentIndex(0);
 
-            ui->kLineEdit->setText("00000000");
-            ui->mLineEdit->setText("00000000");
+            ui->kLineEdit->setText("0x0000");
+            ui->mLineEdit->setText("0x0000");
             ui->fLineEdit->setText("0001001");
             ui->ramcLineEdit->setText("11");
             on_boxJUMP_currentIndexChanged(0);
@@ -417,9 +417,9 @@ void MainWindow::fillInputs() {
             ui->boxFC2->setCurrentIndex(command.index_FOC);
             ui->boxJUMP->setCurrentIndex(command.index_Jump);
 
-            ui->kLineEdit->setText(std::bitset<8>(command.K).to_string().c_str());
+            ui->kLineEdit->setText(toHex(command.K).c_str());
             ui->commandAddressEdit->setText(command.address_control.c_str());
-            ui->mLineEdit->setText(std::bitset<8>(command.I).to_string().c_str());
+            ui->mLineEdit->setText(toHex(command.I).c_str());
             ui->fLineEdit->setText(command.F.to_string().c_str());
             ui->ramcLineEdit->setText(std::bitset<2>(command.RAMC).to_string().c_str());
         }
@@ -436,13 +436,15 @@ void MainWindow::on_saveButton_clicked()
 
     std::bitset<7> jumpMask = getFromJump(ui->boxJUMP->currentText().toStdString());
     std::bitset<7> address_control = std::bitset<7>(ui->commandAddressEdit->text().toStdString());
-    std::bitset<8> m = std::bitset<8>(ui->mLineEdit->text().toStdString());
-    std::bitset<8> k = std::bitset<8>(ui->kLineEdit->text().toStdString());
+    WORD i = parseHex(ui->mLineEdit->text().toStdString());
+    WORD k = parseHex(ui->kLineEdit->text().toStdString());
     int ramc = ui->ramcLineEdit->text().toUInt();
 
     microcommand command;
     command.F = f;
-    command.I = m.to_ulong();
+    command.I = i;
+    command.K = k;
+    command.empty = false;
 
     command.index_F = ui->boxCPE->currentIndex();
     command.index_FIC = ui->boxFC1->currentIndex();
@@ -456,9 +458,6 @@ void MainWindow::on_saveButton_clicked()
     command.FC = fc_buf;
 
     command.AC = jumpMask | address_control;
-
-    command.K = k.to_ulong();
-    command.empty = false;
 
     Point currentPoint = model.currentPoint;
 

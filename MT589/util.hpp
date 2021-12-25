@@ -8,6 +8,8 @@
 #include <bitset>
 #include <vector>
 #include <map>
+#include <sstream>
+#include <algorithm>
 
 void fillArrays(std::vector<std::string>& mnemonics,
                             std::vector<std::string>& funcs,
@@ -17,6 +19,25 @@ std::bitset<7> getFunc(const std::string& mnemonic);
 
 void getRGroupRegs(int r_group, std::vector<std::string>& regs, std::vector<std::string>& addresses);
 
+std::string toHex(unsigned int value) {
+    std::stringstream stream;
+    stream << std::hex << value;
+    std::string str = stream.str();
+    std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+    while (str.size() < 4) {
+        str = "0" + str;
+    }
+    str = "0x" + str;
+    return str;
+}
+
+unsigned int parseHex(const std::string& str) {
+    std::stringstream stream;
+    stream << std::hex << str;
+    unsigned int value = 0;
+    stream >> value;
+    return value;
+}
 int fromStringBin(std::string input) {
     if (input.size() == 0) { return 0; }
     int result = 0;

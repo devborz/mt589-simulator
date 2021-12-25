@@ -35,7 +35,7 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../build-MT589-Qt_6_2_0_for_macOS-Debug/qmake_qmake_qm_files.qrc">
+   <iconset>
     <normaloff>:/i18n/MT589_ru_RU.qm</normaloff>:/i18n/MT589_ru_RU.qm</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -209,7 +209,7 @@
       <number>8</number>
      </property>
      <property name="mode">
-      <enum>QLCDNumber::Dec</enum>
+      <enum>QLCDNumber::Hex</enum>
      </property>
      <property name="segmentStyle">
       <enum>QLCDNumber::Flat</enum>
@@ -259,7 +259,7 @@
       <number>8</number>
      </property>
      <property name="mode">
-      <enum>QLCDNumber::Dec</enum>
+      <enum>QLCDNumber::Hex</enum>
      </property>
      <property name="segmentStyle">
       <enum>QLCDNumber::Flat</enum>
@@ -293,7 +293,7 @@
       <number>8</number>
      </property>
      <property name="mode">
-      <enum>QLCDNumber::Dec</enum>
+      <enum>QLCDNumber::Hex</enum>
      </property>
      <property name="segmentStyle">
       <enum>QLCDNumber::Flat</enum>
@@ -327,7 +327,7 @@
       <number>8</number>
      </property>
      <property name="mode">
-      <enum>QLCDNumber::Dec</enum>
+      <enum>QLCDNumber::Hex</enum>
      </property>
      <property name="segmentStyle">
       <enum>QLCDNumber::Flat</enum>
@@ -361,7 +361,7 @@
       <number>8</number>
      </property>
      <property name="mode">
-      <enum>QLCDNumber::Dec</enum>
+      <enum>QLCDNumber::Hex</enum>
      </property>
      <property name="segmentStyle">
       <enum>QLCDNumber::Flat</enum>
@@ -395,7 +395,7 @@
       <number>8</number>
      </property>
      <property name="mode">
-      <enum>QLCDNumber::Dec</enum>
+      <enum>QLCDNumber::Hex</enum>
      </property>
      <property name="segmentStyle">
       <enum>QLCDNumber::Flat</enum>
@@ -429,7 +429,7 @@
       <number>8</number>
      </property>
      <property name="mode">
-      <enum>QLCDNumber::Dec</enum>
+      <enum>QLCDNumber::Hex</enum>
      </property>
      <property name="segmentStyle">
       <enum>QLCDNumber::Flat</enum>
@@ -494,7 +494,6 @@
      </property>
      <property name="font">
       <font>
-       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
        <underline>false</underline>
@@ -520,7 +519,7 @@
       <number>8</number>
      </property>
      <property name="mode">
-      <enum>QLCDNumber::Dec</enum>
+      <enum>QLCDNumber::Hex</enum>
      </property>
      <property name="segmentStyle">
       <enum>QLCDNumber::Flat</enum>
@@ -554,7 +553,7 @@
       <number>8</number>
      </property>
      <property name="mode">
-      <enum>QLCDNumber::Dec</enum>
+      <enum>QLCDNumber::Hex</enum>
      </property>
      <property name="segmentStyle">
       <enum>QLCDNumber::Flat</enum>
@@ -609,7 +608,7 @@
       <number>8</number>
      </property>
      <property name="mode">
-      <enum>QLCDNumber::Dec</enum>
+      <enum>QLCDNumber::Hex</enum>
      </property>
      <property name="segmentStyle">
       <enum>QLCDNumber::Flat</enum>
@@ -659,7 +658,7 @@
       <number>8</number>
      </property>
      <property name="mode">
-      <enum>QLCDNumber::Dec</enum>
+      <enum>QLCDNumber::Hex</enum>
      </property>
      <property name="segmentStyle">
       <enum>QLCDNumber::Flat</enum>
@@ -693,7 +692,7 @@
       <number>8</number>
      </property>
      <property name="mode">
-      <enum>QLCDNumber::Dec</enum>
+      <enum>QLCDNumber::Hex</enum>
      </property>
      <property name="segmentStyle">
       <enum>QLCDNumber::Flat</enum>
@@ -775,7 +774,7 @@
       <number>8</number>
      </property>
      <property name="mode">
-      <enum>QLCDNumber::Dec</enum>
+      <enum>QLCDNumber::Hex</enum>
      </property>
      <property name="segmentStyle">
       <enum>QLCDNumber::Flat</enum>
@@ -1082,7 +1081,7 @@
       <number>8</number>
      </property>
      <property name="mode">
-      <enum>QLCDNumber::Bin</enum>
+      <enum>QLCDNumber::Hex</enum>
      </property>
      <property name="segmentStyle">
       <enum>QLCDNumber::Flat</enum>
@@ -1163,7 +1162,7 @@
       <number>8</number>
      </property>
      <property name="mode">
-      <enum>QLCDNumber::Bin</enum>
+      <enum>QLCDNumber::Hex</enum>
      </property>
      <property name="segmentStyle">
       <enum>QLCDNumber::Flat</enum>
@@ -1724,13 +1723,13 @@
       </rect>
      </property>
      <property name="maxLength">
-      <number>8</number>
+      <number>6</number>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
      <property name="placeholderText">
-      <string>00000000</string>
+      <string>0x0000</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_9">
@@ -1836,13 +1835,13 @@
       </rect>
      </property>
      <property name="maxLength">
-      <number>8</number>
+      <number>6</number>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
      <property name="placeholderText">
-      <string>00000000</string>
+      <string>0x0000</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_6">
@@ -1963,7 +1962,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -2044,8 +2043,6 @@
    </property>
   </action>
  </widget>
- <resources>
-  <include location="../build-MT589-Qt_6_2_0_for_macOS-Debug/qmake_qmake_qm_files.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

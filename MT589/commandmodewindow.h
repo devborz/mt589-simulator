@@ -28,10 +28,24 @@ private slots:
 
     void on_open_microcommand_mode_triggered();
 
+    void on_resetButton_clicked();
+
+    void on_stepButton_clicked();
+
+    void on_runButton_clicked();
+
+    void on_endButton_clicked();
+
+    void on_ramWidget_cellChanged(int row, int column);
+
 private:
     Ui::CommandModeWindow *ui;
 
     ROMWindow* romWindow = new ROMWindow();
+
+    std::vector<QTableWidgetItem*> items;
+
+    MK589 mk;
 };
 
 #endif // COMMANDMODEWINDOW_H

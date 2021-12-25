@@ -21,9 +21,9 @@ public:
     void reset();
     void load(std::bitset<8> x);
     void decode();
-		void do_program_cycle(WORD command);
+    void do_program_cycle(WORD command);
     void do_fetch_decode_execute_cycle(const microcommand& mc);
-		void program_mode();
+    void program_mode();
     // MCU
     // INPUTS
     BYTE FI : 1; // FI - is CO or RO
