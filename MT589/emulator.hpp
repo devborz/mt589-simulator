@@ -12,7 +12,7 @@ class MK589
 public:
     MK589();
     MK589(const MK589& mk);
-    size_t cpe_amount = 4;
+    size_t cpe_amount = 8;
     std::vector<CPE> cpe_arr;
     ROM rom {}; // rom with microprogramm
     RAM ram {}; // read/write memory
@@ -22,6 +22,7 @@ public:
     void load(std::bitset<8> x);
     void decode();
     void do_fetch_decode_execute_cycle(const microcommand& mc);
+		void program_mode();
     // MCU
     // INPUTS
     BYTE FI : 1; // FI - is CO or RO
@@ -36,23 +37,23 @@ public:
     // CPE_ARRAY
     //=====INPUTS
     std::bitset<7> F;
-    BYTE K;
+    WORD K;
     BYTE CI : 1; // only affects lowest 2bits (cpe_arr[0])
     BYTE LI : 1; // only affects highest 2bits (cpe_arr[cpe_amount - 1])
-    BYTE I; // from IO devices
-    BYTE M; // from RAM
+    WORD I; // from IO devices
+    WORD M; // from RAM
     //=====MEMORY
-    BYTE MEM[0xC];
-    BYTE MAR;
+    WORD MEM[0xC];
+    WORD MAR;
     //=====OUTPUTS
     BYTE CO : 1;
     BYTE RO : 1;
-    BYTE D; // cpe
-    BYTE A; // cpe
+    WORD D; // cpe
+    WORD A; // cpe
     void fetch_cpe(std::bitset<7> f,
-                            BYTE k,
-                            BYTE i,
-                            BYTE m);
+                            WORD k,
+                            WORD i,
+                            WORD m);
     void decode_cpe();
     void execute_cpe();
     void execute_cpe_right_rot();

@@ -5,8 +5,8 @@
 
 struct RAM {
     RAM();
-    void write(size_t address, BYTE data);
-    BYTE read(size_t address);
+    void write(size_t address, WORD data);
+    WORD read(size_t address);
 
     size_t size = 0x100;
     std::vector<BYTE> memory;

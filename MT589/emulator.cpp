@@ -24,13 +24,13 @@ MK589::MK589(const MK589& mk) {
 }
 
 void MK589::reset() {
-    MAR = 0b00000000;
+    MAR = 0x0000;
     CO = 0b0;
     RO = 0b0;
     CI = 0b0;
     LI = 0b0;
-    D = 0b00000000;
-    A = 0b00000000;
+    D = 0x0000;
+    A = 0x0000;
     for (size_t i = 0; i < 0xC; ++i) {
         MEM[i] = 0;
     }
@@ -86,9 +86,9 @@ void MK589::decode() {
 }
 
 void MK589::fetch_cpe(std::bitset<7> f,
-                               BYTE k,
-                               BYTE i,
-                               BYTE m)
+                               WORD k,
+                               WORD i,
+                               WORD m)
 {
     this->F = f;
     this->I = i;
@@ -140,14 +140,14 @@ void MK589::execute_cpe_right_rot() {
 }
 
 void MK589::execute_cpe() {
-    for (size_t i = 0; i < 4; ++i) {
+    for (size_t i = 0; i < cpe_amount; ++i) {
         cpe_arr[i].fetch(F, ((I >> (i*2)) & 0b11), ((K >> (i*2)) & 0b11),
                 ((M >> (i*2)) & 0b11), CI, 0);
         cpe_arr[i].execute();
         CI = cpe_arr[i].CO;
     }
     unite_registers();
-    CO = cpe_arr[3].CO;
+    CO = cpe_arr[cpe_amount - 1].CO;
     FI = CO;
     A = MAR;
     D = MEM[AC];
@@ -159,15 +159,25 @@ void MK589::unite_registers() {
 //        for (size_t k = 0; k < cpe_amount; ++k) {
 //            MEM[i] += (cpe_arr[k].MEM[i] << k*2);
 //        }
-        MEM[i] = (cpe_arr[3].MEM[i] << 6) |
-                 (cpe_arr[2].MEM[i] << 4) |
-                 (cpe_arr[1].MEM[i] << 2) |
-                 (cpe_arr[0].MEM[i] << 0);
+         
+					MEM[i] = (cpe_arr[7].MEM[i] << 14) |
+								   (cpe_arr[6].MEM[i] << 12) |
+								   (cpe_arr[5].MEM[i] << 10) |
+								    (cpe_arr[4].MEM[i] << 8) |
+								    (cpe_arr[3].MEM[i] << 6) |
+                    (cpe_arr[2].MEM[i] << 4) |
+                    (cpe_arr[1].MEM[i] << 2) |
+                    (cpe_arr[0].MEM[i] << 0);
     }
 //    for (size_t k = 0; k < cpe_amount; ++k) {
 //        MAR |= (cpe_arr[k].MAR << k*2);
 //    }
-    MAR = (cpe_arr[3].MAR << 6) |
+    MAR = 
+					(cpe_arr[7].MAR << 14) |
+					(cpe_arr[6].MAR << 12) |
+					(cpe_arr[5].MAR << 10) |
+					(cpe_arr[4].MAR << 8) |
+					(cpe_arr[3].MAR << 6) |
           (cpe_arr[2].MAR << 4) |
           (cpe_arr[1].MAR << 2) |
           (cpe_arr[0].MAR << 0);

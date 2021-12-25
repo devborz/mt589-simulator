@@ -3,12 +3,12 @@
 RAM::RAM() {
    memory.resize(size);
    for (auto& cell : memory) {
-       cell = 0b00000000;
+       cell = 0x0000;
    }
 }
-void RAM::write(size_t address, BYTE data) {
+void RAM::write(size_t address, WORD data) {
     memory[address] = data;
 }
-BYTE RAM::read(size_t address) {
+WORD RAM::read(size_t address) {
     return memory[address];
 }
