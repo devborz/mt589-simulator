@@ -39,6 +39,9 @@ void MK589::reset() {
     }
 }
 void MK589::do_fetch_decode_execute_cycle(const microcommand &mc) {
+		this->ED = mc.ED;
+		this->EA = mc.EA;
+
     mcu.fetch(mc.AC, mc.X, mc.FC);
     fetch_cpe(mc.F, mc.K, mc.I, mc.M);
 
@@ -54,6 +57,17 @@ void MK589::do_fetch_decode_execute_cycle(const microcommand &mc) {
         CI = FO;
         execute_cpe();
     }
+
+		if (ED == 0b1) {
+				D = MEM[AC];
+		} else {
+				D = 0x0000;
+		}
+		if (EA = 0b1) {
+    		A = MAR;
+		} else {
+				A = 0x0000;
+		}
     // when FI flag is set (after cpe execution)
     mcu.fetch_flag(FI);
     mcu.execute_input_flag_logic();
@@ -135,8 +149,6 @@ void MK589::execute_cpe_right_rot() {
     unite_registers();
     RO = cpe_arr[0].RO;
     FI = RO;
-    A = MAR;
-    D = MEM[AC];
 }
 
 void MK589::execute_cpe() {
@@ -149,8 +161,6 @@ void MK589::execute_cpe() {
     unite_registers();
     CO = cpe_arr[cpe_amount - 1].CO;
     FI = CO;
-    A = MAR;
-    D = MEM[AC];
 }
 
 

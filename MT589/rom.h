@@ -12,6 +12,8 @@ struct microcommand {
     // to cpe
     std::bitset<7> F = {0b1100000};
     WORD K;
+		BYTE ED : 1;
+		BYTE EA : 1;
     //[[maybe_unused]] BYTE CI : 1;
     //[[maybe_unused]] BYTE LI : 1;
     [[maybe_unused]] WORD M;
