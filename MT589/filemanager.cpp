@@ -31,7 +31,11 @@ fm::programm_data fm::get_data(const std::string& filename) {
             command.index_FOC = command_data["index_FOC"].get<int>();
             command.index_Jump = command_data["index_Jump"].get<int>();
             command.address_control = command_data["address_control"].get<std::string>();
-            command.RAMC = command_data["RAMC"].get<int>();
+
+            command.RW  = command_data["RW"].get<int>();
+            command.LD  = command_data["LD"].get<int>();
+            command.CS  = command_data["CS"].get<int>();
+
             command.FC = command_data["FC"].get<int>();
             command.AC = std::bitset<7>(command_data["AC"].get<std::string>());
             command.K = command_data["K"].get<int>();
@@ -71,7 +75,9 @@ void fm::save(const std::string& filename, MK589& mk, int startCol, int startRow
                 command_data["index_FOC"] = command.index_FOC;
                 command_data["index_Jump"] = command.index_Jump;
                 command_data["address_control"] = command.address_control;
-                command_data["RAMC"] = int(command.RAMC);
+                command_data["RW"] = int(command.RW);
+                command_data["LD"] = int(command.LD);
+                command_data["CS"] = int(command.CS);
                 command_data["FC"] = int(command.FC);
                 command_data["AC"] = command.AC.to_string();
                 command_data["K"] = command.K;

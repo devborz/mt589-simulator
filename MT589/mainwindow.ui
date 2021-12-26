@@ -494,6 +494,7 @@
      </property>
      <property name="font">
       <font>
+       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
        <underline>false</underline>
@@ -1566,7 +1567,7 @@
     <widget class="QLabel" name="label_32">
      <property name="geometry">
       <rect>
-       <x>420</x>
+       <x>410</x>
        <y>60</y>
        <width>111</width>
        <height>20</height>
@@ -1598,7 +1599,7 @@
     <widget class="QLineEdit" name="commandAddressEdit">
      <property name="geometry">
       <rect>
-       <x>420</x>
+       <x>410</x>
        <y>80</y>
        <width>111</width>
        <height>30</height>
@@ -1668,7 +1669,7 @@
     <widget class="QLabel" name="label_3">
      <property name="geometry">
       <rect>
-       <x>130</x>
+       <x>150</x>
        <y>60</y>
        <width>101</width>
        <height>20</height>
@@ -1679,28 +1680,6 @@
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="ramcLineEdit">
-     <property name="geometry">
-      <rect>
-       <x>350</x>
-       <y>80</y>
-       <width>61</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="maxLength">
-      <number>2</number>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="placeholderText">
-      <string>00</string>
      </property>
     </widget>
     <widget class="QComboBox" name="boxFC2">
@@ -1716,7 +1695,7 @@
     <widget class="QLineEdit" name="kLineEdit">
      <property name="geometry">
       <rect>
-       <x>130</x>
+       <x>150</x>
        <y>80</y>
        <width>101</width>
        <height>30</height>
@@ -1780,22 +1759,6 @@
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLabel" name="label_5">
-     <property name="geometry">
-      <rect>
-       <x>350</x>
-       <y>60</y>
-       <width>61</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>RAMC</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
     <widget class="QComboBox" name="boxFC1">
      <property name="geometry">
       <rect>
@@ -1828,7 +1791,7 @@
     <widget class="QLineEdit" name="mLineEdit">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>280</x>
        <y>80</y>
        <width>101</width>
        <height>30</height>
@@ -1847,7 +1810,7 @@
     <widget class="QLabel" name="label_6">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>280</x>
        <y>60</y>
        <width>101</width>
        <height>20</height>
@@ -1893,6 +1856,45 @@
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="loadCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>120</y>
+       <width>61</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>LOAD</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="wrCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>120</y>
+       <width>51</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>R/W</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="ceCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>120</y>
+       <width>41</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>CE</string>
      </property>
     </widget>
    </widget>
@@ -1962,7 +1964,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

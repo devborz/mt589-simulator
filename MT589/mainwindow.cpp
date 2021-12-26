@@ -228,7 +228,9 @@ void MainWindow::setupBoxes() {
 
 void MainWindow::clearInputs() {
     ui->mLineEdit->setText("00000000");
-    ui->ramcLineEdit->setText("11");
+    ui->wrCheckBox->setChecked(true);
+    ui->loadCheckBox->setChecked(false);
+    ui->ceCheckBox->setChecked(true);
     ui->kLineEdit->setText("");
 }
 
@@ -393,7 +395,9 @@ void MainWindow::fillInputs() {
 //        ui->iLineEdit->setText("0x0000");
         ui->mLineEdit->setText("0x0000");
         ui->fLineEdit->setText("0001001");
-        ui->ramcLineEdit->setText("11");
+        ui->wrCheckBox->setChecked(false);
+        ui->loadCheckBox->setChecked(false);
+        ui->ceCheckBox->setChecked(false);
         on_boxJUMP_currentIndexChanged(0);
     } else {
         auto point = model.currentPoint;
@@ -409,7 +413,9 @@ void MainWindow::fillInputs() {
             ui->kLineEdit->setText("0x0000");
             ui->mLineEdit->setText("0x0000");
             ui->fLineEdit->setText("0001001");
-            ui->ramcLineEdit->setText("11");
+            ui->wrCheckBox->setChecked(false);
+            ui->loadCheckBox->setChecked(false);
+            ui->ceCheckBox->setChecked(false);
             on_boxJUMP_currentIndexChanged(0);
         } else {
             ui->boxCPE->setCurrentIndex(command.index_F);
@@ -421,7 +427,9 @@ void MainWindow::fillInputs() {
             ui->commandAddressEdit->setText(command.address_control.c_str());
             ui->mLineEdit->setText(toHex(command.I).c_str());
             ui->fLineEdit->setText(command.F.to_string().c_str());
-            ui->ramcLineEdit->setText(std::bitset<2>(command.RAMC).to_string().c_str());
+            ui->wrCheckBox->setChecked(command.RW == 1);
+            ui->loadCheckBox->setChecked(command.LD == 1);
+            ui->ceCheckBox->setChecked(command.CS == 1);
         }
     }
 }
@@ -438,7 +446,6 @@ void MainWindow::on_saveButton_clicked()
     std::bitset<7> address_control = std::bitset<7>(ui->commandAddressEdit->text().toStdString());
     WORD i = parseHex(ui->mLineEdit->text().toStdString());
     WORD k = parseHex(ui->kLineEdit->text().toStdString());
-    int ramc = ui->ramcLineEdit->text().toUInt();
 
     microcommand command;
     command.F = f;
@@ -451,7 +458,9 @@ void MainWindow::on_saveButton_clicked()
     command.index_FOC = ui->boxFC2->currentIndex();
     command.index_Jump = ui->boxJUMP->currentIndex();
     command.address_control = address_control.to_string();
-    command.RAMC = ramc;
+    command.RW = ui->wrCheckBox->isChecked() ? 1 : 0;
+    command.LD = ui->loadCheckBox->isChecked() ? 1 : 0;
+    command.CS = ui->ceCheckBox->isChecked() ? 1 : 0;
 
     BYTE fc_buf = ((foc << 2) + fic) & 0b1111;
     std::string str = std::bitset<4>(fc_buf).to_string();
