@@ -22,9 +22,9 @@ void MCU::load(std::bitset<8> x) {
     }
     MA = MPAR;
 }
-void MCU::fetch(std::bitset<7> ac, std::bitset<8> x, BYTE fc ) {
+void MCU::fetch(std::bitset<7> ac, BYTE fc ) {
     this->AC = ac;
-    this->X = x;
+    //this->X = x;
     this->FC_10 = fc & 0b0011;
     this->FC_32 = (fc >> 2) & 0b11;
 

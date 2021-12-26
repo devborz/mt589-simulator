@@ -11,12 +11,18 @@ ROM::ROM() {
            cell.K = 0b00000000;
            cell.FC = 0b0011;
            cell.AC = 0b0000000;
+           cell.ED = 0;
+           cell.EA = 0;
+           cell.LD = 0;
+           cell.RW = 0;
+           cell.CS = 0;
+
        }
    }
 }
 
 bool ROM::is_nop(size_t row, size_t col) {
-    return memory[row][col].F == 0b1100000;
+    return memory[row][col].empty;
 }
 
 void ROM::write(size_t row, size_t col, microcommand cmd) {

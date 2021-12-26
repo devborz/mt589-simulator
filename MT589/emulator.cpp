@@ -57,7 +57,7 @@ void MK589::do_fetch_decode_execute_cycle(const microcommand &mc) {
 		this->ED = mc.ED;
 		this->EA = mc.EA;
 
-    mcu.fetch(mc.AC, mc.X, mc.FC);
+    mcu.fetch(mc.AC, mc.FC);
     fetch_cpe(mc.F, mc.K, mc.I, mc.M);
 
     decode(); // both mcu and cpe
@@ -78,7 +78,7 @@ void MK589::do_fetch_decode_execute_cycle(const microcommand &mc) {
 		} else {
 				D = 0x0000;
 		}
-		if (EA = 0b1) {
+        if (EA == 0b1) {
     		A = MAR;
 		} else {
 				A = 0x0000;

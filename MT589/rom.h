@@ -5,23 +5,21 @@
 
 struct microcommand {
     bool empty = true;
-    // to mcu
+
     std::bitset<7> AC;
-    std::bitset<8> X;
     BYTE FC : 4;
-    // to cpe
-    std::bitset<7> F = {0b1100000};
+    std::bitset<7> F;
     WORD K;
-		BYTE ED : 1;
-		BYTE EA : 1;
-    //[[maybe_unused]] BYTE CI : 1;
-    //[[maybe_unused]] BYTE LI : 1;
+    BYTE ED : 1;
+    BYTE EA : 1;
+    BYTE LD : 1;
+    // RAMC
+    BYTE RAMC : 2;
+    BYTE CS : 1;
+    BYTE RW : 1;
     [[maybe_unused]] WORD M;
     [[maybe_unused]] WORD I;
-    //// to ram
-    BYTE RAMC : 2;
-		BYTE STR : 1;
-    ////  UI HELPERS
+    //  UI
     int index_F;
     int index_REG;
     int index_FIC;

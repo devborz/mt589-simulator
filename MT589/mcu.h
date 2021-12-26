@@ -16,7 +16,7 @@ public:
     MCU();
     void load(std::bitset<8> x); // emulation of strob signal LD -> X lines loads into MPAR
 
-    void fetch(std::bitset<7> ac, std::bitset<8> x, BYTE fc );
+    void fetch(std::bitset<7> ac, BYTE fc );
     void fetch_flag(BYTE fi);
 
     void decode();
