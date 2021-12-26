@@ -3,7 +3,9 @@
 
 #include <QMainWindow>
 #include <romwindow.h>
-#include <mainwindow.h>
+#include <QTableWidgetItem>
+#include <emulator.hpp>
+#include <sstream>
 
 namespace Ui {
 class CommandModeWindow;
@@ -46,6 +48,10 @@ private:
     std::vector<QTableWidgetItem*> items;
 
     MK589 mk;
+
+    std::string toHex(unsigned int value);
+
+    unsigned int parseHex(const std::string& str);
 };
 
 #endif // COMMANDMODEWINDOW_H

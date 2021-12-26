@@ -1,7 +1,27 @@
 #include "commandmodewindow.h"
 #include "ui_commandmodewindow.h"
 #include <filemanager.h>
-//#include <util.hpp>
+#include <mainwindow.h>
+
+std::string CommandModeWindow::toHex(unsigned int value) {
+    std::stringstream stream;
+    stream << std::hex << value;
+    std::string str = stream.str();
+    std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+    while (str.size() < 4) {
+        str = "0" + str;
+    }
+    str = "0x" + str;
+    return str;
+}
+
+unsigned int CommandModeWindow::parseHex(const std::string& str) {
+    std::stringstream stream;
+    stream << std::hex << str;
+    unsigned int value = 0;
+    stream >> value;
+    return value;
+}
 
 CommandModeWindow::CommandModeWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -11,15 +31,15 @@ CommandModeWindow::CommandModeWindow(QWidget *parent) :
 
 //    fm::programm_data data = fm::get_data("");
 
-//    ui->ramWidget->setHorizontalHeaderLabels({"DATA"});
-//    ui->ramWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->ramWidget->setHorizontalHeaderLabels({"DATA"});
+    ui->ramWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
-//    for (size_t i = 0; i < mk.ram.size; ++i) {
-//            QTableWidgetItem* item = new QTableWidgetItem();
-//            items.push_back(item);
-//            item->setData(Qt::ItemDataRole::EditRole, 0);
-//            ui->ramWidget->setItem(i, 0, item);
-//    }
+    for (size_t i = 0; i < mk.ram.size; ++i) {
+            QTableWidgetItem* item = new QTableWidgetItem();
+            items.push_back(item);
+            item->setData(Qt::ItemDataRole::EditRole, 0);
+            ui->ramWidget->setItem(i, 0, item);
+    }
 }
 
 CommandModeWindow::~CommandModeWindow()
@@ -116,6 +136,7 @@ void CommandModeWindow::on_endButton_clicked()
 
 void CommandModeWindow::on_ramWidget_cellChanged(int row, int column)
 {
-//    WORD word = parseHex(items[row]->text().toStdString());
+    WORD word = parseHex(items[row]->text().toStdString());
+    mk.ram.write(row + 1, word);
 }
 

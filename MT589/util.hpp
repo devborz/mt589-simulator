@@ -38,6 +38,7 @@ unsigned int parseHex(const std::string& str) {
     stream >> value;
     return value;
 }
+
 int fromStringBin(std::string input) {
     if (input.size() == 0) { return 0; }
     int result = 0;
