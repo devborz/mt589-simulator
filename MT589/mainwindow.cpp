@@ -90,7 +90,7 @@ void MainWindow::on_stepButton_clicked()
     microcommand command = mk.rom.read(currentPoint.row, currentPoint.col);
     std::string ac = command.AC.to_string();
 
-    if (command.RAMC == 0b01) {
+    if (command.CS == 0b1 and command.RW == 0b0) {
         // read
         command.M = mk.ram.read(mk.MAR);
     } else {
@@ -98,11 +98,11 @@ void MainWindow::on_stepButton_clicked()
     }
 
     mk.do_fetch_decode_execute_cycle(command);
-    if (command.RAMC == 0b00) {
+    if (command.CS == 0b1 and command.RW == 0b1) {
             // write
         ramItems[mk.MAR]->setText(std::to_string(mk.D).c_str());
     }
-
+    std::cout << mk.row_adr << " " << mk.col_adr << std::endl;
     Point nextPoint = Point(mk.get_row_adr(), mk.get_col_adr());
 
     model.currentPoint = nextPoint;

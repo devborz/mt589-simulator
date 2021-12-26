@@ -31,6 +31,8 @@ void MK589::reset() {
     LI = 0b0;
     D = 0x0000;
     A = 0x0000;
+    M = 0x0000;
+    I = 0x0000;
     for (size_t i = 0; i < 0xC; ++i) {
         MEM[i] = 0;
     }
@@ -54,8 +56,8 @@ void MK589::do_program_cycle(WORD command) {
 }
 
 void MK589::do_fetch_decode_execute_cycle(const microcommand &mc) {
-		this->ED = mc.ED;
-		this->EA = mc.EA;
+    this->ED = 1;//mc.ED;
+    this->EA = 1;//mc.EA;
 
     mcu.fetch(mc.AC, mc.FC);
     fetch_cpe(mc.F, mc.K, mc.I, mc.M);
@@ -73,21 +75,25 @@ void MK589::do_fetch_decode_execute_cycle(const microcommand &mc) {
         execute_cpe();
     }
 
-		if (ED == 0b1) {
-				D = MEM[AC];
-		} else {
-				D = 0x0000;
-		}
-        if (EA == 0b1) {
-    		A = MAR;
-		} else {
-				A = 0x0000;
-		}
-    // when FI flag is set (after cpe execution)
-    mcu.fetch_flag(FI);
-    mcu.execute_input_flag_logic();
-    mcu.compute_next_addr();
-
+    if (ED == 0b1) {
+            D = MEM[AC];
+    } else {
+            D = 0x0000;
+    }
+    if (EA == 0b1) {
+        A = MAR;
+    } else {
+        A = 0x0000;
+    }
+    if (mc.LD == 0b1) {
+       WORD next_command = (M & 0xFF00) >> 8;
+       mcu.load(next_command);
+    } else {
+        // when FI flag is set (after cpe execution)
+        mcu.fetch_flag(FI);
+        mcu.execute_input_flag_logic();
+        mcu.compute_next_addr();
+    }
     decode_adr();
 }
 void MK589::decode_adr() {

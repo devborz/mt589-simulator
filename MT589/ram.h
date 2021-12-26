@@ -9,7 +9,7 @@ struct RAM {
     WORD read(size_t address);
 
     size_t size = 0x100;
-    std::vector<BYTE> memory;
+    std::vector<WORD> memory;
 };
 
 #endif // RAM_H

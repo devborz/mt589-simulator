@@ -14,7 +14,6 @@ struct microcommand {
     BYTE EA : 1;
     BYTE LD : 1;
     // RAMC
-    BYTE RAMC : 2;
     BYTE CS : 1;
     BYTE RW : 1;
     [[maybe_unused]] WORD M;

@@ -37,8 +37,8 @@ public:
     size_t row_adr;
     // CPE_ARRAY
     //=====INPUTS
-		BYTE ED : 1;
-		BYTE EA : 1;
+    BYTE ED : 1;
+    BYTE EA : 1;
     std::bitset<7> F;
     WORD K;
     BYTE CI : 1; // only affects lowest 2bits (cpe_arr[0])
