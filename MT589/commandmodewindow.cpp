@@ -2,7 +2,6 @@
 #include "ui_commandmodewindow.h"
 #include <filemanager.h>
 #include <mainwindow.h>
-
 #include <QFileDialog>
 #include <QBrush>
 
@@ -250,8 +249,7 @@ WORD CommandModeWindow::parseCommand(const std::string& str) {
     return com;
 }
 
-void CommandModeWindow::on_ramWidget_cellChanged(int row, int column)
-{
+void CommandModeWindow::on_ramWidget_cellChanged(int row, int column) {
     std::string rowContent = items[row]->text().toStdString();
     if (rowContent.empty()) { return; }
     if (mk.WRITING) {

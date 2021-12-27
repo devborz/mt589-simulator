@@ -8707,7 +8707,7 @@
     },
     "mode": "microcommand",
     "start": {
-        "col": 0,
-        "row": 10
+        "col": 10,
+        "row": 0
     }
 }

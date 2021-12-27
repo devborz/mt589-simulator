@@ -624,7 +624,7 @@ void MainWindow::on_resetButton_clicked()
 void MainWindow::on_save_file_as_triggered()
 {
     QString filename = QFileDialog::getSaveFileName(this, tr("Save project"),
-                               "~/prog.rom",
+                               "~/Desktop/prog.rom",
                                tr("*.rom"));
    fm::save(filename.toStdString(), this->mk, model.startPoint.row, model.startPoint.col, MT::microcommand);
    model.current_filename = filename.toStdString();
@@ -634,7 +634,7 @@ void MainWindow::on_save_file_as_triggered()
 void MainWindow::on_open_file_triggered()
 {
     QString filename = QFileDialog::getOpenFileName(this, tr("Open project"),
-                                                    "~/prog.rom",
+                                                    "~/Desktop/prog.rom",
                                                     tr("*.rom"));
 
 
@@ -655,10 +655,10 @@ void MainWindow::on_save_file_triggered()
         QString filename = QFileDialog::getSaveFileName(this, tr("Save project"),
                                    "~/prog.rom",
                                    tr("*.rom"));
-       fm::save(filename.toStdString(), this->mk, model.startPoint.row, model.startPoint.col, MT::microcommand);
+       fm::save(filename.toStdString(), this->mk, model.startPoint.col, model.startPoint.row, MT::microcommand);
        model.current_filename = filename.toStdString();
     } else {
-        fm::save(model.current_filename, this->mk, model.startPoint.row, model.startPoint.col, MT::microcommand);
+        fm::save(model.current_filename, this->mk, model.startPoint.col, model.startPoint.row, MT::microcommand);
     }
 }
 
