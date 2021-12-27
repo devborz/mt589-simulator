@@ -35,7 +35,7 @@
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../build-MT589-Qt_6_2_2_for_macOS-Debug/qmake_qmake_qm_files.qrc">
     <normaloff>:/i18n/MT589_ru_RU.qm</normaloff>:/i18n/MT589_ru_RU.qm</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -494,7 +494,6 @@
      </property>
      <property name="font">
       <font>
-       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
        <underline>false</underline>
@@ -1964,7 +1963,7 @@
      <x>0</x>
      <y>0</y>
      <width>1100</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -2007,7 +2006,7 @@
   </action>
   <action name="save_file">
    <property name="text">
-    <string>Сохранить</string>
+    <string>Сохранить образ ПЗУ</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -2015,7 +2014,7 @@
   </action>
   <action name="save_file_as">
    <property name="text">
-    <string>Сохранить как...</string>
+    <string>Сохранить образ ПЗУ как...</string>
    </property>
   </action>
   <action name="action_4">
@@ -2030,7 +2029,7 @@
   </action>
   <action name="open_file">
    <property name="text">
-    <string>Открыть</string>
+    <string>Загрузить образ ПЗУ</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -2045,6 +2044,8 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../build-MT589-Qt_6_2_2_for_macOS-Debug/qmake_qmake_qm_files.qrc"/>
+ </resources>
  <connections/>
 </ui>

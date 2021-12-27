@@ -1,6 +1,7 @@
 #ifndef COMMANDMODEWINDOW_H
 #define COMMANDMODEWINDOW_H
 
+#include <QLCDNumber>
 #include <QMainWindow>
 #include <romwindow.h>
 #include <QTableWidgetItem>
@@ -40,8 +41,16 @@ private slots:
 
     void on_ramWidget_cellChanged(int row, int column);
 
+    void update_on_cpu_data();
+
+    void setupRegs();
+
 private:
     Ui::CommandModeWindow *ui;
+
+    bool loaded = false;
+
+    std::vector<QLCDNumber*> regLCDs = {};
 
     ROMWindow* romWindow = new ROMWindow();
 
@@ -52,6 +61,21 @@ private:
     std::string toHex(unsigned int value);
 
     unsigned int parseHex(const std::string& str);
+
+    WORD parseCommand(const std::string& str);
+
+    std::map<std::string, WORD> isa_commands = {
+        {"INCA", 0x0100},
+        {"MOVA", 0x03},
+        {"ADDA", 0x02},
+        {"POP", 0x0500},
+        {"PUSH", 0x04},
+        {"IS", 0x0600},
+    };
+    std::map<std::string, std::string> isa_regs = {
+        {"REG0", "PC"},
+        {"REG1", "SP"},
+    };
 };
 
 #endif // COMMANDMODEWINDOW_H
