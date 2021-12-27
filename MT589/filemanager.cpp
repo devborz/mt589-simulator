@@ -35,6 +35,8 @@ fm::programm_data fm::get_data(const std::string& filename) {
             command.RW  = command_data["RW"].get<int>();
             command.LD  = command_data["LD"].get<int>();
             command.CS  = command_data["CS"].get<int>();
+            command.EA  = command_data["EA"].get<int>();
+            command.ED  = command_data["ED"].get<int>();
 
             command.FC = command_data["FC"].get<int>();
             command.AC = std::bitset<7>(command_data["AC"].get<std::string>());
@@ -80,6 +82,8 @@ void fm::save(const std::string& filename, MK589& mk, int startCol, int startRow
                 command_data["LD"] = int(command.LD);
                 command_data["CS"] = int(command.CS);
                 command_data["FC"] = int(command.FC);
+                command_data["EA"] = int(command.EA);
+                command_data["ED"] = int(command.ED);
                 command_data["AC"] = command.AC.to_string();
                 command_data["K"] = command.K;
                 command_data["Tag"] = command.tag;

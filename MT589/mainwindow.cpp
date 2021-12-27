@@ -61,8 +61,7 @@ void MainWindow::setupMatrix() {
 
 void MainWindow::setupRAM() {
     QStringList verlist;
-    QRegularExpression reg("[0-9]+");
-    QRegularExpressionValidator* validator = new QRegularExpressionValidator(reg, this);
+
     for (size_t i = 0; i < mk.ram.size; ++i) {
         verlist << std::to_string(i).c_str();
     }
@@ -290,15 +289,10 @@ void MainWindow::on_boxJUMP_currentIndexChanged(int index)
         "1110000",
         "1000000",
         "1010000",
-
         "1011000",
-
         "1100000",
-
         "1101000",
-
         "1111100",
-
         "1111000"
     };
     ui->commandAddressEdit->setText(acs[index].c_str());
@@ -399,6 +393,8 @@ void MainWindow::fillInputs() {
         ui->wrCheckBox->setChecked(false);
         ui->loadCheckBox->setChecked(false);
         ui->ceCheckBox->setChecked(false);
+        ui->eaCheckBox->setChecked(false);
+        ui->edCheckBox->setChecked(false);
         on_boxJUMP_currentIndexChanged(0);
     } else {
         auto point = model.currentPoint;
@@ -417,6 +413,8 @@ void MainWindow::fillInputs() {
             ui->wrCheckBox->setChecked(false);
             ui->loadCheckBox->setChecked(false);
             ui->ceCheckBox->setChecked(false);
+            ui->eaCheckBox->setChecked(false);
+            ui->edCheckBox->setChecked(false);
             on_boxJUMP_currentIndexChanged(0);
         } else {
             ui->boxCPE->setCurrentIndex(command.index_F);
@@ -431,6 +429,8 @@ void MainWindow::fillInputs() {
             ui->wrCheckBox->setChecked(command.RW == 1);
             ui->loadCheckBox->setChecked(command.LD == 1);
             ui->ceCheckBox->setChecked(command.CS == 1);
+            ui->eaCheckBox->setChecked(command.EA == 1);
+            ui->edCheckBox->setChecked(command.ED == 1);
         }
     }
 }
@@ -462,6 +462,8 @@ void MainWindow::on_saveButton_clicked()
     command.RW = ui->wrCheckBox->isChecked() ? 1 : 0;
     command.LD = ui->loadCheckBox->isChecked() ? 1 : 0;
     command.CS = ui->ceCheckBox->isChecked() ? 1 : 0;
+    command.EA = ui->eaCheckBox->isChecked() ? 1 : 0;
+    command.ED = ui->edCheckBox->isChecked() ? 1 : 0;
 
     BYTE fc_buf = ((foc << 2) + fic) & 0b1111;
     std::string str = std::bitset<4>(fc_buf).to_string();
