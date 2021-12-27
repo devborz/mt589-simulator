@@ -39,6 +39,7 @@ fm::programm_data fm::get_data(const std::string& filename) {
             command.FC = command_data["FC"].get<int>();
             command.AC = std::bitset<7>(command_data["AC"].get<std::string>());
             command.K = command_data["K"].get<int>();
+            command.tag = command_data["Tag"].get<std::string>();
 
             mk.rom.write(row, col, command);
         }
@@ -81,6 +82,7 @@ void fm::save(const std::string& filename, MK589& mk, int startCol, int startRow
                 command_data["FC"] = int(command.FC);
                 command_data["AC"] = command.AC.to_string();
                 command_data["K"] = command.K;
+                command_data["Tag"] = command.tag;
 
                 data["matrix"][std::to_string(row) + "-" + std::to_string(col)] = command_data;
             }

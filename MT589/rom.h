@@ -25,6 +25,9 @@ struct microcommand {
     int index_FOC;
     int index_Jump;
     std::string address_control = "0000000";
+
+    // For naming
+    std::string tag = "";
 };
 
 struct ROM

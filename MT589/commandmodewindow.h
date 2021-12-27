@@ -20,6 +20,8 @@ public:
     explicit CommandModeWindow(QWidget *parent = nullptr);
     ~CommandModeWindow();
 
+    MK589 mk;
+
 private slots:
     void on_open_rom_triggered();
 
@@ -45,6 +47,8 @@ private slots:
 
     void setupRegs();
 
+    void changeCurrentRow(WORD oldRow, WORD newRow);
+
 private:
     Ui::CommandModeWindow *ui;
 
@@ -55,8 +59,6 @@ private:
     ROMWindow* romWindow = new ROMWindow();
 
     std::vector<QTableWidgetItem*> items;
-
-    MK589 mk;
 
     std::string toHex(unsigned int value);
 
@@ -76,6 +78,8 @@ private:
         {"REG0", "PC"},
         {"REG1", "SP"},
     };
+
+    WORD* PC;
 };
 
 #endif // COMMANDMODEWINDOW_H

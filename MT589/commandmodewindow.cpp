@@ -4,6 +4,7 @@
 #include <mainwindow.h>
 
 #include <QFileDialog>
+#include <QBrush>
 
 
 std::string CommandModeWindow::toHex(unsigned int value) {
@@ -44,6 +45,7 @@ CommandModeWindow::CommandModeWindow(QWidget *parent) :
             ui->ramWidget->setItem(i, 0, item);
     }
     loaded = true;
+    PC = mk.MEM;
 }
 
 CommandModeWindow::~CommandModeWindow()
@@ -53,7 +55,10 @@ CommandModeWindow::~CommandModeWindow()
 
 void CommandModeWindow::on_open_rom_triggered()
 {
+
     romWindow->show();
+    romWindow->mk = mk;
+    romWindow->setupItems();
 }
 
 
@@ -85,8 +90,8 @@ void CommandModeWindow::on_save_as_triggered()
 
 void CommandModeWindow::on_open_triggered()
 {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Save project"),
-                                                    "~/prog.rom",
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open project"),
+                                                    "~/Desktop/prog.rom",
                                                     tr("*.rom"));
 
 
@@ -95,6 +100,7 @@ void CommandModeWindow::on_open_triggered()
 //    model.startPoint = Point(data.start_row, data.start_col);
 //    setItemColor(model.startPoint);
     mk = data.mk;
+    PC = mk.MEM;
 //    for (size_t row = 0; row < 32; ++row) {
 //        for (size_t col = 0; col < 16; ++col) {
 //            setItemColor(Point(row, col));
@@ -140,27 +146,34 @@ void CommandModeWindow::on_open_microcommand_mode_triggered()
 {
 
     MainWindow* window = new MainWindow();
+    window->mk = mk;
     window->show();
-     this->hide();
+    this->hide();
+    window->setupItems();
+    window->fillInputs();
 }
 
 
 void CommandModeWindow::on_resetButton_clicked()
 {
+    WORD oldRow = *PC;
     mk.reset();
     mk.load(0b10100000);
     update_on_cpu_data();
-    //ui->ramWidget->cur
+
+    changeCurrentRow(oldRow, *PC);
 }
 
 
 void CommandModeWindow::on_stepButton_clicked()
 {
     bool is_loadmem_prog_running = true;
-    while(is_loadmem_prog_running) {
+    WORD oldRow = *PC;
+    while (is_loadmem_prog_running) {
         size_t r = mk.get_row_adr();
         size_t c = mk.get_col_adr();
         auto command = mk.rom.read(r, c);
+        if (command.empty) { return; }
         if (command.CS == 0b1 and command.RW == 0b0) {
             // read
             command.M = mk.ram.read(mk.MAR);
@@ -179,15 +192,16 @@ void CommandModeWindow::on_stepButton_clicked()
     }
     size_t current_row = mk.get_row_adr();
     size_t current_col = mk.get_col_adr();
+
     while (current_row != 0 && current_col != 10) {
         auto command = mk.rom.read(current_row, current_col);
+        if (command.empty) { break; }
         if (command.CS == 0b1 and command.RW == 0b0) {
             // read
             command.M = mk.ram.read(mk.MAR);
         } else {
             command.M = 0x00;
         }
-
         mk.do_fetch_decode_execute_cycle(command);
         if (command.CS == 0b1 and command.RW == 0b1) {
             // write
@@ -198,6 +212,8 @@ void CommandModeWindow::on_stepButton_clicked()
         current_row = mk.get_row_adr();
         current_col = mk.get_col_adr();
     }
+    WORD newRow = *PC;
+    changeCurrentRow(oldRow, newRow);
     update_on_cpu_data();
 }
 
@@ -221,24 +237,43 @@ WORD CommandModeWindow::parseCommand(const std::string& str) {
     std::string cmd;
     ss >> cmd;
 
+    if (isa_commands.count(cmd) == 0) {
+        return 0;
+    }
     if (isa_commands[cmd] > 0xFF) {
         return isa_commands[cmd];
     }
     WORD com = isa_commands[cmd];
-    WORD arg;
+    std::string arg;
     ss >> arg;
-    com = (com << 8) | arg;
+    com = (com << 8) | (arg.empty() ? 0 : parseHex(arg));
     return com;
 }
 
 void CommandModeWindow::on_ramWidget_cellChanged(int row, int column)
 {
-    if(mk.WRITING) {
-        auto data = parseHex(items[row]->text().toStdString());
+    std::string rowContent = items[row]->text().toStdString();
+    if (rowContent.empty()) { return; }
+    if (mk.WRITING) {
+        auto data = parseHex(rowContent);
         mk.ram.write(row, data);
         return;
     }
-    WORD word = parseCommand(items[row]->text().toStdString());
+    WORD word = 0;
+    if (row < 200) {
+        word = parseCommand(rowContent);
+        if (!word) {
+            items[row]->setText("");
+        }
+    } else {
+        word = parseHex(rowContent);
+    }
     mk.ram.write(row, word);
 }
 
+void CommandModeWindow::changeCurrentRow(WORD oldRow, WORD newRow) {
+    QTableWidgetItem* oldItem = items[oldRow];
+    QTableWidgetItem* newItem = items[newRow];
+    oldItem->setBackground(QBrush(Qt::transparent));
+    newItem->setBackground(QBrush(Qt::red));
+}

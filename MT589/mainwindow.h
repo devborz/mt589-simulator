@@ -60,6 +60,10 @@ public:
 
     void setupRAM();
 
+    void setupItems();
+
+    MK589 mk;
+
 private slots:
     void on_stepButton_clicked();
 
@@ -119,10 +123,12 @@ private slots:
 
     void on_open_command_mode_triggered();
 
+    void on_tableWidget_itemChanged(QTableWidgetItem *item);
+
+    void on_tableWidget_cellChanged(int row, int column);
+
 private:
     Ui::MainWindow *ui;
-
-    MK589 mk;
 
     std::vector<QLCDNumber*> regLCDs = {};
 
@@ -139,6 +145,8 @@ private:
     QBrush currentRunningColor = QBrush(Qt::red);
 
     QBrush transparentColor = QBrush(Qt::transparent);
+
+    bool loaded = false;
 };
 
 #endif // MAINWINDOW_H

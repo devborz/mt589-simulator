@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     handleInputState();
 
     setupMatrix();
+    loaded = true;
     setupRAM();
 
     configUIMode();
@@ -547,6 +548,7 @@ void MainWindow::setItemColor(Point point) {
             item->setBackground(commandColor);
         }
     }
+    item->setText(command.tag.c_str());
 }
 
 void MainWindow::configUIMode() {
@@ -631,7 +633,7 @@ void MainWindow::on_save_file_as_triggered()
 
 void MainWindow::on_open_file_triggered()
 {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Save project"),
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open project"),
                                                     "~/prog.rom",
                                                     tr("*.rom"));
 
@@ -641,11 +643,7 @@ void MainWindow::on_open_file_triggered()
     model.startPoint = Point(data.start_row, data.start_col);
     setItemColor(model.startPoint);
     mk = data.mk;
-    for (size_t row = 0; row < 32; ++row) {
-        for (size_t col = 0; col < 16; ++col) {
-            setItemColor(Point(row, col));
-        }
-    }
+    setupItems();
     fillInputs();
     model.current_filename = filename.toStdString();
 }
@@ -668,7 +666,34 @@ void MainWindow::on_save_file_triggered()
 void MainWindow::on_open_command_mode_triggered()
 {
     CommandModeWindow* window = new CommandModeWindow();
+    window->mk = mk;
     window->show();
-     this->hide();
+    this->hide();
+}
+
+void MainWindow::setupItems() {
+    for (size_t row = 0; row < 32; ++row) {
+        for (size_t col = 0; col < 16; ++col) {
+            setItemColor(Point(row, col));
+        }
+    }
+}
+
+
+void MainWindow::on_tableWidget_itemChanged(QTableWidgetItem *item)
+{
+
+}
+
+
+void MainWindow::on_tableWidget_cellChanged(int row, int column)
+{
+    if (!loaded) {
+        return;
+    }
+    std::string content = matrixItems[row][column]->text().toStdString();
+    microcommand command = mk.rom.read(row, column);
+    command.tag = content;
+    mk.rom.write(row, column, command);
 }
 
