@@ -106,8 +106,6 @@ void MainWindow::on_stepButton_clicked()
     Point nextPoint = Point(mk.get_row_adr(), mk.get_col_adr());
 
     model.currentPoint = nextPoint;
-    ui->rowLcd->display(model.currentPoint.row);
-    ui->colLcd->display(model.currentPoint.col);
 
     configUIMode();
     changeCurrentPoint(currentPoint, nextPoint);
@@ -617,8 +615,6 @@ void MainWindow::on_resetButton_clicked()
 {
     on_endButton_clicked();
     model.currentPoint = Point::nullPoint();
-    ui->rowLcd->display(model.currentPoint.row);
-    ui->colLcd->display(model.currentPoint.col);
     mk.reset();
 }
 
