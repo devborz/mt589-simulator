@@ -8,6 +8,7 @@
 #include <QTableWidgetItem>
 #include <QAbstractItemView>
 #include <Model.h>
+#include <memory>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -128,15 +129,20 @@ private slots:
     void on_tableWidget_cellChanged(int row, int column);
 
 private:
+
+    // UI Objects
+
     Ui::MainWindow *ui;
 
     std::vector<QLCDNumber*> regLCDs = {};
 
-    Model model = Model();
-
     std::vector<std::vector<QTableWidgetItem*>> matrixItems;
 
     std::vector<QTableWidgetItem*> ramItems;
+
+    // States & Data
+
+    Model model = Model();
 
     QBrush commandColor = QBrush(Qt::blue);
 

@@ -45,7 +45,7 @@ CommandModeWindow::CommandModeWindow(QWidget *parent) :
 
     for (size_t i = 0; i < mk.ram.size; ++i) {
             QTableWidgetItem* item = new QTableWidgetItem();
-            items.push_back(item);
+            items.push_back(std::shared_ptr<QTableWidgetItem>(item));
             //item->setData(Qt::ItemDataRole::EditRole, 0);
             ui->ramWidget->setItem(i, 0, item);
     }
@@ -63,9 +63,9 @@ CommandModeWindow::~CommandModeWindow()
 void CommandModeWindow::on_open_rom_triggered()
 {
 
-    romWindow->show();
-    romWindow->mk = mk;
-    romWindow->setupItems();
+    romWindow.show();
+    romWindow.mk = mk;
+    romWindow.setupItems();
 }
 
 
@@ -117,16 +117,16 @@ void CommandModeWindow::on_open_triggered()
 //    model.current_filename = filename.toStdString();
 }
 void CommandModeWindow::setupRegs() {
-   regLCDs.push_back(ui->reg0);
-   regLCDs.push_back(ui->reg1);
-   regLCDs.push_back(ui->reg2);
-   regLCDs.push_back(ui->reg3);
-   regLCDs.push_back(ui->reg4);
-   regLCDs.push_back(ui->reg5);
-   regLCDs.push_back(ui->reg6);
-   regLCDs.push_back(ui->reg7);
-   regLCDs.push_back(ui->reg8);
-   regLCDs.push_back(ui->reg9);
+   regLCDs.push_back(std::shared_ptr<QLCDNumber>(ui->reg0));
+   regLCDs.push_back(std::shared_ptr<QLCDNumber>(ui->reg1));
+   regLCDs.push_back(std::shared_ptr<QLCDNumber>(ui->reg2));
+   regLCDs.push_back(std::shared_ptr<QLCDNumber>(ui->reg3));
+   regLCDs.push_back(std::shared_ptr<QLCDNumber>(ui->reg4));
+   regLCDs.push_back(std::shared_ptr<QLCDNumber>(ui->reg5));
+   regLCDs.push_back(std::shared_ptr<QLCDNumber>(ui->reg6));
+   regLCDs.push_back(std::shared_ptr<QLCDNumber>(ui->reg7));
+   regLCDs.push_back(std::shared_ptr<QLCDNumber>(ui->reg8));
+   regLCDs.push_back(std::shared_ptr<QLCDNumber>(ui->reg9));
 }
 
 void CommandModeWindow::update_on_cpu_data() {
@@ -289,8 +289,6 @@ void CommandModeWindow::on_ramWidget_cellChanged(int row, int column) {
 }
 
 void CommandModeWindow::changeCurrentRow(WORD oldRow, WORD newRow) {
-    QTableWidgetItem* oldItem = items[oldRow];
-    QTableWidgetItem* newItem = items[newRow];
-    oldItem->setBackground(QBrush(Qt::transparent));
-    newItem->setBackground(QBrush(Qt::red));
+    items[oldRow]->setBackground(QBrush(Qt::transparent));
+    items[newRow]->setBackground(QBrush(Qt::red));
 }

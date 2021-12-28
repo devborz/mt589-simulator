@@ -7,6 +7,7 @@
 #include <QTableWidgetItem>
 #include <emulator.hpp>
 #include <sstream>
+#include <mainwindow.h>
 
 namespace Ui {
 class CommandModeWindow;
@@ -21,6 +22,8 @@ public:
     ~CommandModeWindow();
 
     MK589 mk;
+
+    std::shared_ptr<MainWindow> mainWindow = nullptr;
 
 private slots:
     void on_open_rom_triggered();
@@ -54,11 +57,11 @@ private:
 
     bool loaded = false;
     bool mkwrite = false;
-    std::vector<QLCDNumber*> regLCDs = {};
+    std::vector<std::shared_ptr<QLCDNumber>> regLCDs = {};
 
-    ROMWindow* romWindow = new ROMWindow();
+    ROMWindow romWindow;
 
-    std::vector<QTableWidgetItem*> items;
+    std::vector<std::shared_ptr<QTableWidgetItem>> items;
 
     std::string toHex(unsigned int value);
 
@@ -74,6 +77,7 @@ private:
         {"PUSH", 0x04},
         {"IS", 0x0600},
     };
+
     std::map<std::string, std::string> isa_regs = {
         {"REG0", "PC"},
         {"REG1", "SP"},
