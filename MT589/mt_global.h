@@ -4,6 +4,7 @@
 #include <array>
 #include <bitset>
 #include <vector>
+#include <optional>
 
 using BYTE = uint8_t;
 using WORD = uint16_t;

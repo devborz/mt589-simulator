@@ -4,6 +4,28 @@ MK589::MK589() {
     cpe_arr.resize(cpe_amount);
     this->reset();
 }
+MK589& MK589::operator=(const MK589 &mk) {
+    // Guard self assignment
+    if (this == &mk)
+        return *this;
+    this->reset();
+    cpe_arr.resize(mk.cpe_amount);
+    MAR = mk.MAR;
+    CO = mk.CO;
+    RO = mk.RO;
+    CI = mk.CI;
+    LI = mk.LI;
+    D = mk.D;
+    A = mk.A;
+    for (size_t i = 0; i < 0xC; ++i) {
+        MEM[i] = mk.MEM[i];
+    }
+    for (size_t i = 0; i < cpe_amount; ++i) {
+        cpe_arr[i].reset();
+    }
+    rom.memory = mk.rom.memory;
+    return *this;
+}
 
 MK589::MK589(const MK589& mk) {
     cpe_arr.resize(mk.cpe_amount);
@@ -25,12 +47,12 @@ MK589::MK589(const MK589& mk) {
 
 void MK589::reset() {
     MAR = 0x0000;
-    CO = 0b0;
-    RO = 0b0;
+    A.reset();
+    D.reset();
+    RO.reset();
+    CO.reset();
     CI = 0b0;
     LI = 0b0;
-    D = 0x0000;
-    A = 0x0000;
     M = 0x0000;
     I = 0x0000;
     for (size_t i = 0; i < 0xC; ++i) {
@@ -39,34 +61,21 @@ void MK589::reset() {
     for (size_t i = 0; i < cpe_amount; ++i) {
         cpe_arr[i].reset();
     }
-}
-
-void MK589::do_program_cycle(WORD command) {
-		std::bitset<8> com_adr = command >> 8;	
-        load(com_adr);
-		decode_adr();
-		size_t cr = get_row_adr();
-		size_t cc = get_col_adr();
-		while(cr != 0 && cc != 0) {
-                auto c = rom.read(cr, cc);
-				do_fetch_decode_execute_cycle(c);
-				cr = get_row_adr();
-				cc = get_col_adr();
-		}	
+    mcu.reset();
 }
 
 void MK589::do_fetch_decode_execute_cycle(const microcommand &mc) {
-    this->ED = 1;//mc.ED;
-    this->EA = 1;//mc.EA;
-
-    mcu.fetch(mc.AC, mc.FC);
-    fetch_cpe(mc.F, mc.K, mc.I, mc.M);
+    mcu.X = std::bitset<8> ((mc.M & 0xFF00) >> 8);
+    mcu.fetch(mc.AC, mcu.X, mc.FC, mc.LD);
+    fetch_cpe(mc.F, mc.K, mc.I, mc.M, mc.ED, mc.EA);
 
     decode(); // both mcu and cpe
 
     mcu.execute_output_flag_logic();
     this->FO = mcu.FO;
 
+    A.reset();
+    D.reset();
     if (is_performing_right_rot) {
         LI = FO;
         execute_cpe_right_rot();
@@ -76,24 +85,15 @@ void MK589::do_fetch_decode_execute_cycle(const microcommand &mc) {
     }
 
     if (ED == 0b1) {
-            D = MEM[AC];
-    } else {
-            D = 0x0000;
+       D = MEM[AC];
     }
     if (EA == 0b1) {
         A = MAR;
-    } else {
-        A = 0x0000;
     }
-    if (mc.LD == 0b1) {
-       WORD next_command = (M & 0xFF00) >> 8;
-       mcu.load(next_command);
-    } else {
-        // when FI flag is set (after cpe execution)
-        mcu.fetch_flag(FI);
-        mcu.execute_input_flag_logic();
-        mcu.compute_next_addr();
-    }
+    // when FI flag is set (after cpe execution)
+    mcu.fetch_flag(FI);
+    mcu.execute_input_flag_logic();
+    mcu.execute_next_address_logic();
     decode_adr();
 }
 void MK589::decode_adr() {
@@ -111,7 +111,8 @@ size_t MK589::get_col_adr() {
 }
 
 void MK589::load(std::bitset<8> x) {
-    mcu.load(x);
+    mcu.fetch(0, x, 0, 0b1);
+    mcu.execute_next_address_logic();
     decode_adr();
 }
 
@@ -123,13 +124,16 @@ void MK589::decode() {
 void MK589::fetch_cpe(std::bitset<7> f,
                                WORD k,
                                WORD i,
-                               WORD m)
+                               WORD m,
+                               BYTE ed,
+                               BYTE ea)
 {
     this->F = f;
     this->I = i;
     this->K = k;
     this->M = m;
-
+    this->ED = ed;
+    this->EA = ea;
 }
 
 void MK589::decode_cpe() {
@@ -163,53 +167,44 @@ void MK589::decode_cpe() {
 void MK589::execute_cpe_right_rot() {
     for (size_t i = cpe_amount - 1; i < cpe_amount; --i) {
         cpe_arr[i].fetch(F, ((I >> (i*2)) & 0b11), ((K >> (i*2)) & 0b11),
-                ((M >> (i*2)) & 0b11), 0, LI);
+                ((M >> (i*2)) & 0b11), 0, LI, ED, EA);
         cpe_arr[i].execute();
-        LI = cpe_arr[i].RO;
+        LI = cpe_arr[i].RO.value();
     }
     unite_registers();
     RO = cpe_arr[0].RO;
-    FI = RO;
+    FI = RO.value();
 }
 
 void MK589::execute_cpe() {
     for (size_t i = 0; i < cpe_amount; ++i) {
         cpe_arr[i].fetch(F, ((I >> (i*2)) & 0b11), ((K >> (i*2)) & 0b11),
-                ((M >> (i*2)) & 0b11), CI, 0);
+                ((M >> (i*2)) & 0b11), CI, 0, ED, EA);
         cpe_arr[i].execute();
-        CI = cpe_arr[i].CO;
+        CI = cpe_arr[i].CO.value();
     }
     unite_registers();
     CO = cpe_arr[cpe_amount - 1].CO;
-    FI = CO;
+    FI = CO.value();
 }
-
 
 void MK589::unite_registers() {
     for (size_t i = 0; i < 0xC; ++i) {
-//        for (size_t k = 0; k < cpe_amount; ++k) {
-//            MEM[i] += (cpe_arr[k].MEM[i] << k*2);
-//        }
-         
-					MEM[i] = (cpe_arr[7].MEM[i] << 14) |
-								   (cpe_arr[6].MEM[i] << 12) |
-								   (cpe_arr[5].MEM[i] << 10) |
-								    (cpe_arr[4].MEM[i] << 8) |
-								    (cpe_arr[3].MEM[i] << 6) |
-                    (cpe_arr[2].MEM[i] << 4) |
-                    (cpe_arr[1].MEM[i] << 2) |
-                    (cpe_arr[0].MEM[i] << 0);
+        MEM[i] = (cpe_arr[7].MEM[i] << 14) |
+                (cpe_arr[6].MEM[i] << 12) |
+                (cpe_arr[5].MEM[i] << 10) |
+                (cpe_arr[4].MEM[i] << 8) |
+                (cpe_arr[3].MEM[i] << 6) |
+                (cpe_arr[2].MEM[i] << 4) |
+                (cpe_arr[1].MEM[i] << 2) |
+                (cpe_arr[0].MEM[i] << 0);
     }
-//    for (size_t k = 0; k < cpe_amount; ++k) {
-//        MAR |= (cpe_arr[k].MAR << k*2);
-//    }
-    MAR = 
-					(cpe_arr[7].MAR << 14) |
-					(cpe_arr[6].MAR << 12) |
-					(cpe_arr[5].MAR << 10) |
-					(cpe_arr[4].MAR << 8) |
-					(cpe_arr[3].MAR << 6) |
-          (cpe_arr[2].MAR << 4) |
-          (cpe_arr[1].MAR << 2) |
-          (cpe_arr[0].MAR << 0);
+    MAR = (cpe_arr[7].MAR << 14) |
+            (cpe_arr[6].MAR << 12) |
+            (cpe_arr[5].MAR << 10) |
+            (cpe_arr[4].MAR << 8) |
+            (cpe_arr[3].MAR << 6) |
+            (cpe_arr[2].MAR << 4) |
+            (cpe_arr[1].MAR << 2) |
+            (cpe_arr[0].MAR << 0);
 }

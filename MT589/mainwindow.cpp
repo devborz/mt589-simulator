@@ -90,7 +90,7 @@ void MainWindow::on_stepButton_clicked()
     microcommand command = mk.rom.read(currentPoint.row, currentPoint.col);
     std::string ac = command.AC.to_string();
 
-    if (command.CS == 0b1 and command.RW == 0b0) {
+    if (command.CS == 0b1 and command.RW == 0b0 and command.EA == 0b1) {
         // read
         command.M = mk.ram.read(mk.MAR);
     } else {
@@ -98,11 +98,10 @@ void MainWindow::on_stepButton_clicked()
     }
 
     mk.do_fetch_decode_execute_cycle(command);
-    if (command.CS == 0b1 and command.RW == 0b1) {
+    if (command.CS == 0b1 and command.RW == 0b1 and mk.ED == 0b1 and mk.EA == 0b1) {
             // write
-        ramItems[mk.MAR]->setText(std::to_string(mk.D).c_str());
+        ramItems[mk.A.value()]->setText(std::to_string(mk.D.value()).c_str());
     }
-    std::cout << mk.row_adr << " " << mk.col_adr << std::endl;
     Point nextPoint = Point(mk.get_row_adr(), mk.get_col_adr());
 
     model.currentPoint = nextPoint;
@@ -110,7 +109,6 @@ void MainWindow::on_stepButton_clicked()
     configUIMode();
     changeCurrentPoint(currentPoint, nextPoint);
     update_on_cpu_data();
-
 }
 
 void MainWindow::on_runButton_clicked()
@@ -234,22 +232,32 @@ void MainWindow::clearInputs() {
 
 void MainWindow::update_on_cpu_data() {
   for (size_t i = 0; i < 10; ++i) {
-      regLCDs[i]->display(mk.MEM[i]);
+    regLCDs[i]->display(mk.MEM[i]);
   }
   ui->regMAR->display(mk.MAR);
   ui->regT->display(mk.MEM[T]);
   ui->regAC->display(mk.MEM[AC]);
 
-  if (mk.is_performing_right_rot) {
-      ui->ROlcd->display(mk.RO);
-      ui->COlcd->display("-");
+  if (mk.RO) {
+      ui->ROlcd->display(mk.RO.value());
   } else {
-      ui->COlcd->display(mk.CO);
       ui->ROlcd->display("-");
   }
-
-  ui->Dlcd->display(mk.MEM[AC]);
-  ui->Alcd->display(mk.MAR);
+  if (mk.CO) {
+      ui->COlcd->display(mk.CO.value());
+  } else {
+      ui->COlcd->display("-");
+  }
+  if (mk.D) {
+      ui->Dlcd->display(mk.D.value());
+  } else {
+      ui->Dlcd->display("-");
+  }
+  if (mk.A) {
+      ui->Alcd->display(mk.A.value());
+  } else {
+      ui->Alcd->display("-");
+  }
 }
 
 void MainWindow::on_boxCPE_currentIndexChanged(int index)

@@ -53,7 +53,7 @@ private:
     Ui::CommandModeWindow *ui;
 
     bool loaded = false;
-
+    bool mkwrite = false;
     std::vector<QLCDNumber*> regLCDs = {};
 
     ROMWindow* romWindow = new ROMWindow();

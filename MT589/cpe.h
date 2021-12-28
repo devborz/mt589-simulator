@@ -3,38 +3,40 @@
 
 #include "mt_global.h"
 
-// r group    | F GROUP
-// F0,F1,F2,F3, F4,F5,F6
+// total pins = 25 (vcc, gnd and clk have no need to be implemented)
 class CPE
 {
 public:
     CPE();
     void fetch(const std::bitset<7>& f, BYTE i, BYTE k, BYTE m, BYTE CI,
-            BYTE LI);
+               BYTE LI, BYTE ed, BYTE ea);
     void decode();
     void execute();
     void reset();
-
+    //======INPUT
+    std::bitset<7> F; // pins 25,26,27,24,17,16,15 - 7 total
+    BYTE I : 2; // pins 1,2 - 2 total
+    BYTE K : 2; // pins 3,4 - 2 total
+    BYTE CI : 1; // pin 10 - 1 total
+    BYTE LI : 1; // pin 9 - 1 total
+    BYTE M : 2; // pins 22, 21 - 2 total
+    BYTE EA : 1; // pin 11 - 1 total
+    BYTE ED : 1; // pin 23 - 1 total
     //======OUTPUT
-    BYTE A : 2; // MAR output
-    BYTE D : 2; // AC output
-    BYTE RO : 1;
-    BYTE CO : 1;
-    BYTE X : 1;
-    BYTE Y : 1;
+    std::optional<BYTE> A; // pins 12,13 - 2 total
+    std::optional<BYTE> D; // pins 20,19 - 2 total
+    std::optional<BYTE> RO; // pin 8 - 1 total
+    std::optional<BYTE> CO; // pin 7 - 1 total
+    BYTE X : 1; // pin 5 - 1 total
+    BYTE Y : 1; // pin 6 - 1 total
     //======MEMORY
     BYTE MAR : 2;
     BYTE MEM[0xC];
 
-    //======MISC
-    int r_group;
-    int f_group;
-    BYTE ADR : 4;
-
-//private:
+    // X, Y and CO output computations
     void propogate();
     void compute_CO();
-    // Commands
+    // CPE f-group functions
     void execute_f0();
     void f_group1();
     void f_group2();
@@ -43,30 +45,18 @@ public:
     void execute_f5();
     void execute_f6();
     void execute_f7();
-    // Utility
-    bool is_RO_out = false; // CO and RO - tri-state
-    bool is_D_out = false; // D - tri-state
-    bool is_A_out = false; // A - tri-state
 
+    //======MISC
     BYTE word_wise_or(BYTE op);
     BYTE get_lb(BYTE src);
     BYTE get_hb(BYTE src);
-
-    //======INPUT
-    std::bitset<7> F;
-    BYTE I : 2;
-    BYTE K : 2;
-    BYTE CI : 1;
-    BYTE LI : 1;
-    BYTE M : 2;
-    //======
-
-    //======MISC
+    int r_group;
+    int f_group;
+    BYTE ADR : 4;
     BYTE BUF1 : 1;
     BYTE BUF2 : 2;
     BYTE opA : 2;
     BYTE opB : 2;
-    //======
 };
 
 #endif // CPE_H
