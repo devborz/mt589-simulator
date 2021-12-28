@@ -76,6 +76,9 @@ private:
         {"POP", 0x0500},
         {"PUSH", 0x04},
         {"IS", 0x0600},
+        {"INVA", 0x0700},
+        {"SHAR", 0x08},
+        {"SHAL", 0x09}
     };
 
     std::map<std::string, std::string> isa_regs = {

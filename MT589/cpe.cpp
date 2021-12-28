@@ -64,8 +64,8 @@ void CPE::decode() {
 void CPE::execute() {
     A.reset();
     D.reset();
-    RO.reset();
-    CO.reset();
+    RO = 0;
+    CO = 0;
     switch(f_group) {
         case 0:
             execute_f0();
@@ -92,6 +92,12 @@ void CPE::execute() {
             execute_f7();
             break;
     }
+    if (CO) {
+        RO.reset();
+    }
+    if (RO) {
+        CO.reset();
+    }
     // set buses output
     if (ED == 0b1) {
        D = MEM[AC];
@@ -115,7 +121,7 @@ void CPE::propogate() {
     }
 }
 void CPE::compute_CO() {
-    CO = (CI & Y) | (X & Y);
+    *CO = (CI & Y) | (X & Y);
 }
 void CPE::execute_f0() {
     switch(r_group) {
@@ -137,6 +143,7 @@ void CPE::execute_f0() {
             MEM[ADR] = BUF2;
             break;
         case 3:
+            CO.reset();
             RO = get_lb(MEM[ADR]) & ~(get_lb(I) & get_lb(K));
             // low bit of AT
             BUF1 = (get_lb(MEM[ADR]) & (get_lb(I) & get_lb(K)))
@@ -177,8 +184,11 @@ void CPE::f_group1() {
             MEM[ADR] = BUF2;
             break;
         case 3:
-            // CO? XY? => inclompleted
-            BUF2 = (~MEM[ADR] | K) + (MEM[ADR] & K) + CI;
+            opA = (~MEM[ADR] | K);
+            opB = (MEM[ADR] & K);
+            propogate();
+            compute_CO();
+            BUF2 = opA + opB + CI;
             MEM[ADR] = BUF2;
             break;
     }
@@ -187,7 +197,12 @@ void CPE::f_group1() {
 void CPE::f_group2() {
     switch(r_group) {
         case 1:
-            BUF2 = (MEM[AC] & K) - 1 + CI;
+            opA = (MEM[AC] & K);
+            opB = (-1);
+            propogate();
+            compute_CO();
+            //BUF2 = (MEM[AC] & K) - 1 + CI;
+            BUF2 = opA + opB + CI;
             MEM[ADR] = BUF2;
             break;
         case 2:
@@ -234,7 +249,6 @@ void CPE::execute_f4() {
             BUF1 = CI | word_wise_or(MEM[ADR] & MEM[AC] & K);
             BUF2 = MEM[ADR] & (MEM[AC] & K);
             MEM[ADR] = BUF2;
-            CO = 0;
             CO.value() = BUF1;
             propogate();
             break;
@@ -242,7 +256,6 @@ void CPE::execute_f4() {
             BUF1 = CI | word_wise_or(M & MEM[AC] & K);
             BUF2 = M & (MEM[AC] & K);
             MEM[ADR] = BUF2;
-            CO = 0;
             CO.value() = BUF1;
             propogate();
             break;
@@ -250,7 +263,6 @@ void CPE::execute_f4() {
             BUF1 = CI | word_wise_or(I & MEM[ADR] & K);
             BUF2 = MEM[ADR] & (I & K);
             MEM[ADR] = BUF2;
-            CO = 0;
             CO.value() = BUF1;
             propogate();
             break;
@@ -262,7 +274,6 @@ void CPE::execute_f5() {
             BUF1 = word_wise_or(MEM[ADR] & K) | CI;
             BUF2 = MEM[ADR] & K;
             MEM[ADR] = BUF2;
-            CO = 0;
             CO.value() = BUF1;
             propogate();
             break;
@@ -270,7 +281,6 @@ void CPE::execute_f5() {
             BUF1 = word_wise_or(M & K) | CI;
             BUF2 = M & K;
             MEM[ADR] = BUF2;
-            CO = 0;
             CO.value() = BUF1;
             propogate();
             break;
@@ -278,8 +288,7 @@ void CPE::execute_f5() {
             BUF1 = word_wise_or(MEM[ADR] & K) | CI;
             BUF2 = MEM[ADR] & K;
             MEM[ADR] = BUF2;
-            CO = 0;
-            CO.value() = BUF1;
+            *CO = BUF1;
             propogate();
             break;
     }
@@ -290,7 +299,6 @@ void CPE::execute_f6() {
             BUF1 = word_wise_or(MEM[AC] & K) | CI;
             BUF2 = (MEM[AC] & K) | MEM[ADR];
             MEM[ADR] = BUF2;
-            CO = 0;
             CO.value() = BUF1;
             propogate();
             break;
@@ -298,7 +306,6 @@ void CPE::execute_f6() {
             BUF1 = word_wise_or(MEM[AC] & K) | CI;
             BUF2 = (MEM[AC] & K) | M;
             MEM[ADR] = BUF2;
-            CO = 0;
             CO.value() = BUF1;
             propogate();
             break;
@@ -306,7 +313,6 @@ void CPE::execute_f6() {
             BUF1 = word_wise_or(I & K) | CI;
             BUF2 = (I & K) | MEM[ADR];
             MEM[ADR] = BUF2;
-            CO = 0;
             CO.value() = BUF1;
             propogate();
             break;
@@ -318,7 +324,6 @@ void CPE::execute_f7() {
             BUF1 = word_wise_or(MEM[AC] & MEM[ADR] & K) | CI;
             BUF2 = ~((MEM[AC] & K) ^ MEM[ADR]);
             MEM[ADR] = BUF2;
-            CO = 0;
             CO.value() = BUF1;
             propogate();
             break;
@@ -326,7 +331,6 @@ void CPE::execute_f7() {
             BUF1 = word_wise_or(MEM[AC] & M & K) | CI;
             BUF2 = ~((MEM[AC] & K) ^ M);
             MEM[ADR] = BUF2;
-            CO = 0;
             CO.value() = BUF1;
             propogate();
             break;
@@ -334,8 +338,7 @@ void CPE::execute_f7() {
             BUF1 = word_wise_or(MEM[ADR] & I & K) | CI;
             BUF2 = ~((I & K) ^ MEM[ADR]);
             MEM[ADR] = BUF2;
-            CO = 0;
-            CO.value() = BUF1;
+            *CO = BUF1;
             propogate();
             break;
     }
