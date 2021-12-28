@@ -9731,7 +9731,7 @@
     },
     "mode": "microcommand",
     "start": {
-        "col": -1,
-        "row": -1
+        "col": 10,
+        "row": 0
     }
 }
