@@ -33,7 +33,13 @@ CommandModeWindow::CommandModeWindow(QWidget *parent) :
     ui->setupUi(this);
     setupRegs();
 //    fm::programm_data data = fm::get_data("");
+    QStringList verlist;
 
+    for (size_t i = 0; i < mk.ram.size; ++i) {
+        verlist << std::to_string(i).c_str();
+    }
+
+    ui->ramWidget->setVerticalHeaderLabels(verlist);
     ui->ramWidget->setHorizontalHeaderLabels({"PROGRAM"});
     ui->ramWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
@@ -45,6 +51,8 @@ CommandModeWindow::CommandModeWindow(QWidget *parent) :
     }
     loaded = true;
     PC = mk.MEM;
+
+    on_resetButton_clicked();
 }
 
 CommandModeWindow::~CommandModeWindow()
