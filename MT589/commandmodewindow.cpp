@@ -4,7 +4,7 @@
 #include <mainwindow.h>
 #include <QFileDialog>
 #include <QBrush>
-
+#include <createisa.h>
 
 std::string CommandModeWindow::toHex(unsigned int value) {
     std::stringstream stream;
@@ -102,19 +102,6 @@ void CommandModeWindow::on_open_triggered()
                                                     tr("*.rom"));
 
 
-    fm::programm_data data = fm::get_data(filename.toStdString());
-
-//    model.startPoint = Point(data.start_row, data.start_col);
-//    setItemColor(model.startPoint);
-    mk = data.mk;
-    PC = mk.MEM;
-//    for (size_t row = 0; row < 32; ++row) {
-//        for (size_t col = 0; col < 16; ++col) {
-//            setItemColor(Point(row, col));
-//        }
-//    }
-//    fillInputs();
-//    model.current_filename = filename.toStdString();
 }
 void CommandModeWindow::setupRegs() {
    regLCDs.push_back(std::shared_ptr<QLCDNumber>(ui->reg0));
@@ -292,3 +279,31 @@ void CommandModeWindow::changeCurrentRow(WORD oldRow, WORD newRow) {
     items[oldRow]->setBackground(QBrush(Qt::transparent));
     items[newRow]->setBackground(QBrush(Qt::red));
 }
+
+void CommandModeWindow::on_load_isa_triggered()
+{
+
+}
+
+
+void CommandModeWindow::on_load_rom_triggered()
+{
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open project"),
+                                                    "~/Desktop/prog.rom",
+                                                    tr("*.rom"));
+
+
+    fm::programm_data data = fm::get_data(filename.toStdString());
+
+    mk = data.mk;
+    PC = mk.MEM;
+}
+
+
+
+void CommandModeWindow::on_createISAButton_clicked()
+{
+//    isaWindow = CreateISA();
+    isaWindow.show();
+}
+

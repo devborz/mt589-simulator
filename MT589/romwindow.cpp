@@ -6,6 +6,19 @@ ROMWindow::ROMWindow(QWidget *parent) :
     ui(new Ui::ROMWindow)
 {
     ui->setupUi(this);
+    QStringList horlist;
+    for (size_t i = 0; i < 16; ++i) {
+        horlist << std::to_string(i).c_str();
+    }
+    QStringList verlist;
+    for (size_t i = 0; i < 32; ++i) {
+        verlist << std::to_string(i).c_str();
+    }
+
+    ui->tableWidget->setHorizontalHeaderLabels(horlist);
+    ui->tableWidget->setVerticalHeaderLabels(verlist);
+    ui->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+
     for (size_t i = 0; i < 32; ++i) {
         std::vector<QTableWidgetItem*> row;
         for (size_t j = 0; j < 16; ++j) {

@@ -16,13 +16,23 @@ namespace fm {
         int start_col;
     };
 
-    void write_to_file(const std::string& filename, const json& data);
 
-    std::string read_from_file(const std::string& filename);
+    struct isa_data {
+        std::map<std::string, std::string> isa_regs;
+        std::map<std::string, WORD> isa_commands;
+    };
+
+    void save_isa(const std::string& filename, const isa_data& data);
+
+    isa_data get_isa_data(const std::string& filename);
 
     programm_data get_data(const std::string& filename);
 
     void save(const std::string& filename, MK589& mk, int startCol, int startRow, MT::Mode mode);
+
+    void write_to_file(const std::string& filename, const json& data);
+
+    std::string read_from_file(const std::string& filename);
 
 }
 

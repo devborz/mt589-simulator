@@ -393,7 +393,6 @@ void MainWindow::fillInputs() {
         ui->boxJUMP->setCurrentIndex(0);
 
         ui->kLineEdit->setText("0x0000");
-//        ui->iLineEdit->setText("0x0000");
         ui->mLineEdit->setText("0x0000");
         ui->fLineEdit->setText("0001001");
         ui->wrCheckBox->setChecked(false);

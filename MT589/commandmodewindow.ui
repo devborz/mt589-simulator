@@ -30,7 +30,7 @@
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>600</y>
+      <y>590</y>
       <width>100</width>
       <height>31</height>
      </rect>
@@ -43,7 +43,7 @@
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>320</y>
+      <y>380</y>
       <width>261</width>
       <height>231</height>
      </rect>
@@ -7690,7 +7690,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>570</y>
+      <y>560</y>
       <width>100</width>
       <height>31</height>
      </rect>
@@ -7716,7 +7716,7 @@
     <property name="geometry">
      <rect>
       <x>540</x>
-      <y>300</y>
+      <y>360</y>
       <width>58</width>
       <height>16</height>
      </rect>
@@ -7729,7 +7729,7 @@
     <property name="geometry">
      <rect>
       <x>790</x>
-      <y>320</y>
+      <y>380</y>
       <width>141</width>
       <height>231</height>
      </rect>
@@ -10250,7 +10250,7 @@
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>300</y>
+      <y>360</y>
       <width>58</width>
       <height>16</height>
      </rect>
@@ -10263,7 +10263,7 @@
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>570</y>
+      <y>560</y>
       <width>100</width>
       <height>31</height>
      </rect>
@@ -10279,7 +10279,7 @@
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>570</y>
+      <y>560</y>
       <width>100</width>
       <height>31</height>
      </rect>
@@ -10666,6 +10666,19 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;6. IS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="createISAButton">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>300</y>
+      <width>113</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Create ISA</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -10683,7 +10696,8 @@ p, li { white-space: pre-wrap; }
     <addaction name="save"/>
     <addaction name="save_as"/>
     <addaction name="separator"/>
-    <addaction name="open"/>
+    <addaction name="load_rom"/>
+    <addaction name="load_isa"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -10723,7 +10737,7 @@ p, li { white-space: pre-wrap; }
     <string>Сохранить как...</string>
    </property>
   </action>
-  <action name="open">
+  <action name="load_rom">
    <property name="text">
     <string>Загрузить ПЗУ</string>
    </property>
@@ -10737,6 +10751,11 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="shortcut">
     <string>Ctrl+M</string>
+   </property>
+  </action>
+  <action name="load_isa">
+   <property name="text">
+    <string>Загрузить ISA</string>
    </property>
   </action>
  </widget>

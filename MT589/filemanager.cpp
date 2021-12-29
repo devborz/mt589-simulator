@@ -1,5 +1,37 @@
 #include <filemanager.h>
 
+void fm::save_isa(const std::string& filename, const fm::isa_data& data) {
+    json json_data;
+
+    json_data["regs"] = {};
+    json_data["commands"] = {};
+
+    for (const auto& [key, value] : data.isa_regs) {
+        json_data["regs"][key] = value;
+    }
+
+    for (const auto& [key, value] : data.isa_regs) {
+        json_data["commands"][key] = value;
+    }
+
+    fm::write_to_file(filename, json_data);
+}
+
+fm::isa_data fm::get_isa_data(const std::string& filename) {
+    json data = json::parse(read_from_file(filename));
+
+    fm::isa_data isa_data;
+
+    for (const auto& item: data["regs"].items()) {
+        isa_data.isa_regs[item.key()] = item.value().get<std::string>();
+    }
+
+    for (const auto& item: data["commands"].items()) {
+        isa_data.isa_commands[item.key()] = item.value().get<int>();
+    }
+    return isa_data;
+}
+
 fm::programm_data fm::get_data(const std::string& filename) {
     json data = json::parse(read_from_file(filename));
 

@@ -13,6 +13,7 @@ SOURCES += \
     ListModels.cpp \
     commandmodewindow.cpp \
     cpe.cpp \
+    createisa.cpp \
     emulator.cpp \
     filemanager.cpp \
     main.cpp \
@@ -27,6 +28,7 @@ HEADERS += \
     Model.h \
     commandmodewindow.h \
     cpe.h \
+    createisa.h \
     emulator.hpp \
     filemanager.h \
     json.hpp \
@@ -40,6 +42,7 @@ HEADERS += \
 
 FORMS += \
     commandmodewindow.ui \
+    createisa.ui \
     mainwindow.ui \
     romwindow.ui
 

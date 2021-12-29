@@ -22,7 +22,6 @@ public:
 
     MK589 mk;
 
-
 private:
     Ui::ROMWindow *ui;
 

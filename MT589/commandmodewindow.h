@@ -8,6 +8,7 @@
 #include <emulator.hpp>
 #include <sstream>
 #include <mainwindow.h>
+#include <createisa.h>
 
 namespace Ui {
 class CommandModeWindow;
@@ -52,14 +53,20 @@ private slots:
 
     void changeCurrentRow(WORD oldRow, WORD newRow);
 
+    void on_load_isa_triggered();
+
+    void on_load_rom_triggered();
+
+    void on_createISAButton_clicked();
+
 private:
     Ui::CommandModeWindow *ui;
 
-    bool loaded = false;
-    bool mkwrite = false;
-    std::vector<std::shared_ptr<QLCDNumber>> regLCDs = {};
-
     ROMWindow romWindow;
+
+    CreateISA isaWindow;
+
+    std::vector<std::shared_ptr<QLCDNumber>> regLCDs = {};
 
     std::vector<std::shared_ptr<QTableWidgetItem>> items;
 
@@ -84,6 +91,10 @@ private:
     };
 
     WORD* PC;
+
+    bool loaded = false;
+
+    bool mkwrite = false;
 };
 
 #endif // COMMANDMODEWINDOW_H
