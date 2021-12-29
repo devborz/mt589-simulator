@@ -38,8 +38,8 @@ public:
     void compute_CO();
     // CPE f-group functions
     void execute_f0();
-    void f_group1();
-    void f_group2();
+    void execute_f1();
+    void execute_f2();
     void execute_f3();
     void execute_f4();
     void execute_f5();

@@ -76,8 +76,11 @@ void MK589::do_fetch_decode_execute_cycle(const microcommand &mc) {
 
     A.reset();
     D.reset();
+    CO = 0;
+    RO = 0;
     if (is_performing_right_rot) {
         LI = FO;
+        CO.reset();
         execute_cpe_right_rot();
     } else {
         CI = FO;
@@ -91,6 +94,11 @@ void MK589::do_fetch_decode_execute_cycle(const microcommand &mc) {
         A = MAR;
     }
     // when FI flag is set (after cpe execution)
+    if (CO) {
+        FI = *CO;
+    } else {
+        FI = *RO;
+    }
     mcu.fetch_flag(FI);
     mcu.execute_input_flag_logic();
     mcu.execute_next_address_logic();
@@ -161,6 +169,8 @@ void MK589::decode_cpe() {
     }
     if (r_group == 3 and f_group == 0) {
         is_performing_right_rot = true;
+    } else {
+        is_performing_right_rot = false;
     }
 }
 
@@ -169,11 +179,12 @@ void MK589::execute_cpe_right_rot() {
         cpe_arr[i].fetch(F, ((I >> (i*2)) & 0b11), ((K >> (i*2)) & 0b11),
                 ((M >> (i*2)) & 0b11), 0, LI, ED, EA);
         cpe_arr[i].execute();
-        LI = cpe_arr[i].RO.value();
+        LI = *cpe_arr[i].RO;
     }
     unite_registers();
-    RO = cpe_arr[0].RO;
-    FI = RO.value();
+    RO = *cpe_arr[0].RO;
+    CO.reset();
+    //FI = RO.value();
 }
 
 void MK589::execute_cpe() {
@@ -181,11 +192,12 @@ void MK589::execute_cpe() {
         cpe_arr[i].fetch(F, ((I >> (i*2)) & 0b11), ((K >> (i*2)) & 0b11),
                 ((M >> (i*2)) & 0b11), CI, 0, ED, EA);
         cpe_arr[i].execute();
-        CI = cpe_arr[i].CO.value();
+        CI = *cpe_arr[i].CO;
     }
     unite_registers();
-    CO = cpe_arr[cpe_amount - 1].CO;
-    FI = CO.value();
+    CO = *cpe_arr[cpe_amount - 1].CO;
+    RO.reset();
+   // FI = CO.value();
 }
 
 void MK589::unite_registers() {
