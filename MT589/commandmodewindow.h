@@ -26,6 +26,8 @@ public:
 
     std::shared_ptr<MainWindow> mainWindow = nullptr;
 
+    void prepareISAWindowText();
+
 private slots:
     void on_open_rom_triggered();
 
@@ -85,12 +87,14 @@ private:
         {"IS", 0x0600},
         {"INVA", 0x0700},
         {"SHAR", 0x08},
-        {"SHAL", 0x09}
+        {"SHAL", 0x09},
+        {"JMP", 0xA}
     };
 
     std::map<std::string, std::string> isa_regs = {
         {"REG0", "PC"},
         {"REG1", "SP"},
+        {"REG8", "A"},
     };
 
     WORD* PC;
@@ -98,6 +102,8 @@ private:
     bool loaded = false;
 
     bool mkwrite = false;
+
+    std::vector<QLabel*> reg_labels;
 };
 
 #endif // COMMANDMODEWINDOW_H

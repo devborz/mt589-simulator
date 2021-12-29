@@ -53,6 +53,18 @@ CommandModeWindow::CommandModeWindow(QWidget *parent) :
     PC = mk.MEM;
 
     on_resetButton_clicked();
+
+    reg_labels.push_back(ui->reg0lbl);
+    reg_labels.push_back(ui->reg1lbl);
+    reg_labels.push_back(ui->reg2lbl);
+    reg_labels.push_back(ui->reg3lbl);
+    reg_labels.push_back(ui->reg4lbl);
+    reg_labels.push_back(ui->reg5lbl);
+    reg_labels.push_back(ui->reg6lbl);
+    reg_labels.push_back(ui->reg7lbl);
+    reg_labels.push_back(ui->reg8lbl);
+    reg_labels.push_back(ui->reg9lbl);
+    prepareISAWindowText();
 }
 
 CommandModeWindow::~CommandModeWindow()
@@ -282,18 +294,26 @@ void CommandModeWindow::changeCurrentRow(WORD oldRow, WORD newRow) {
 
 void CommandModeWindow::on_load_isa_triggered()
 {
+    std::string filename = QFileDialog::getOpenFileName(this, tr("Open ISA file"),
+                                                    "~/Desktop/prog.isad",
+                                                    tr("*.isad")).toStdString();
 
+    if (filename.empty()) { return; }
+    fm::isa_data data = fm::get_isa_data(filename);
+    isa_commands = data.isa_commands;
+    isa_regs = data.isa_regs;
+    prepareISAWindowText();
 }
 
 
 void CommandModeWindow::on_load_rom_triggered()
 {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Open project"),
+    std::string filename = QFileDialog::getOpenFileName(this, tr("Open project"),
                                                     "~/Desktop/prog.rom",
-                                                    tr("*.rom"));
+                                                    tr("*.rom")).toStdString();
 
-
-    fm::programm_data data = fm::get_data(filename.toStdString());
+    if (filename.empty()) { return; }
+    fm::programm_data data = fm::get_data(filename);
 
     mk = data.mk;
     PC = mk.MEM;
@@ -303,7 +323,34 @@ void CommandModeWindow::on_load_rom_triggered()
 
 void CommandModeWindow::on_createISAButton_clicked()
 {
-//    isaWindow = CreateISA();
     isaWindow.show();
 }
+
+void CommandModeWindow::prepareISAWindowText() {
+    std::string text = "#ISA\n\n";
+
+    for (const auto& [key, value] : isa_regs) {
+        text += "# " + key + " - " + value + "\n";
+    }
+
+    text += "\nCOMMANDS:\n\n";
+
+    size_t count = 0;
+    for (const auto& [key, value] : isa_commands) {
+        text += key + " - " + toHex(value) + "\n";
+        count++;
+    }
+
+    ui->isaText->setText(text.c_str());
+
+    for (size_t i = 0; i < reg_labels.size(); ++i) {
+        std::string default_name = "REG" + std::to_string(i);
+        if (isa_regs.count(default_name)) {
+            reg_labels[i]->setText(isa_regs[default_name].c_str());
+        } else {
+            reg_labels[i]->setText(default_name.c_str());
+        }
+    }
+}
+
 

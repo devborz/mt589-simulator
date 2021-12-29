@@ -638,19 +638,20 @@ void MainWindow::on_save_file_as_triggered()
 
 void MainWindow::on_open_file_triggered()
 {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Open project"),
+    std::string filename = QFileDialog::getOpenFileName(this, tr("Open project"),
                                                     "~/Desktop/prog.rom",
-                                                    tr("*.rom"));
+                                                    tr("*.rom")).toStdString();
 
 
-    fm::programm_data data = fm::get_data(filename.toStdString());
+    if (filename.empty()) { return; }
+    fm::programm_data data = fm::get_data(filename);
 
     model.startPoint = Point(data.start_row, data.start_col);
     setItemColor(model.startPoint);
     mk = data.mk;
     setupItems();
     fillInputs();
-    model.current_filename = filename.toStdString();
+    model.current_filename = filename;
 }
 
 

@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QTableWidgetItem>
+#include <QLabel>
 
 namespace Ui {
 class CreateISA;
@@ -20,7 +21,6 @@ public:
         // Guard self assignment
         if (this == &rhs)
             return *this;
-        this->regsDNames = rhs.regsDNames;
         this->regsNNames = rhs.regsNNames;
         this->commandNames = rhs.commandNames;
         this->commandAddresses = rhs.commandAddresses;
@@ -35,13 +35,24 @@ private slots:
 private:
     Ui::CreateISA *ui;
 
-   std::vector<QTableWidgetItem*> regsDNames;
-
    std::vector<QTableWidgetItem*> regsNNames;
 
    std::vector<QTableWidgetItem*> commandNames;
 
    std::vector<QTableWidgetItem*> commandAddresses;
+
+   std::vector<std::string> default_regs = {
+       "REG0",
+       "REG1",
+       "REG2",
+       "REG3",
+       "REG4",
+       "REG5",
+       "REG6",
+       "REG7",
+       "REG8",
+       "REG9"
+   };
 };
 
 #endif // CREATEISA_H

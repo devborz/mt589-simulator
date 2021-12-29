@@ -13,16 +13,17 @@ CreateISA::CreateISA(QWidget *parent) :
 }
 
 void CreateISA::prepare() {
+    QStringList verlist;
+    for (size_t i = 0; i < 10; ++i) {
+        verlist << default_regs[i].c_str();
+    }
 
-    ui->regsTableWidget->setHorizontalHeaderLabels({"Default name", "New name"});
-   for (size_t i = 0; i < 9; ++i) {
+    ui->regsTableWidget->setVerticalHeaderLabels(verlist);
+    ui->regsTableWidget->setHorizontalHeaderLabels({"New name"});
+
+   for (size_t i = 0; i < 10; ++i) {
        QTableWidgetItem* item = new QTableWidgetItem;
        ui->regsTableWidget->setItem(i, 0, item);
-       regsDNames.push_back(item);
-   }
-   for (size_t i = 0; i < 9; ++i) {
-       QTableWidgetItem* item = new QTableWidgetItem;
-       ui->regsTableWidget->setItem(i, 1, item);
        regsNNames.push_back(item);
    }
 
@@ -48,11 +49,10 @@ CreateISA::~CreateISA()
 void CreateISA::on_saveButton_clicked()
 {
     fm::isa_data data;
-    for (size_t i = 0; i < regsDNames.size(); ++i) {
-        std::string regDName = regsDNames[i]->text().toStdString();
+    for (size_t i = 0; i < regsNNames.size(); ++i) {
         std::string regNName = regsNNames[i]->text().toStdString();
-        if (!regDName.empty() && !regNName.empty()) {
-            data.isa_regs[regDName] = regNName;
+        if (!regNName.empty()) {
+            data.isa_regs[default_regs[i]] = regNName;
         }
     }
 
@@ -60,13 +60,14 @@ void CreateISA::on_saveButton_clicked()
         std::string command = commandNames[i]->text().toStdString();
         size_t address = commandAddresses[i]->text().toUInt();
         if (!command.empty()) {
-            data.isa_regs[command] = address;
+            data.isa_commands[command] = address;
         }
     }
 
-    QString filename = QFileDialog::getSaveFileName(this, tr("Save ISA"),
+    std::string filename = QFileDialog::getSaveFileName(this, tr("Save ISA"),
                                "~/prog.isad",
-                               tr("*.isad"));
-    fm::save_isa(filename.toStdString(), data);
+                               tr("*.isad")).toStdString();
+    if (filename.empty()) { return; }
+    fm::save_isa(filename, data);
 }
 

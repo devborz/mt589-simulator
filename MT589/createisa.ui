@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>New ISA</string>
   </property>
   <widget class="QTableWidget" name="regsTableWidget">
    <property name="geometry">
@@ -31,14 +31,14 @@
      <x>30</x>
      <y>21</y>
      <width>291</width>
-     <height>601</height>
+     <height>321</height>
     </rect>
    </property>
    <property name="rowCount">
-    <number>9</number>
+    <number>10</number>
    </property>
    <property name="columnCount">
-    <number>2</number>
+    <number>1</number>
    </property>
    <attribute name="horizontalHeaderStretchLastSection">
     <bool>true</bool>
@@ -52,7 +52,7 @@
    <row/>
    <row/>
    <row/>
-   <column/>
+   <row/>
    <column/>
   </widget>
   <widget class="QTableWidget" name="commandsTableWidget">

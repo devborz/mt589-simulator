@@ -10,7 +10,7 @@ void fm::save_isa(const std::string& filename, const fm::isa_data& data) {
         json_data["regs"][key] = value;
     }
 
-    for (const auto& [key, value] : data.isa_regs) {
+    for (const auto& [key, value] : data.isa_commands) {
         json_data["commands"][key] = value;
     }
 
