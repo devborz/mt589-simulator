@@ -71,10 +71,10 @@ void CPE::execute() {
             execute_f0();
             break;
         case 1:
-            f_group1();
+            execute_f1();
             break;
         case 2:
-            f_group2();
+            execute_f2();
             break;
         case 3:
             execute_f3();
@@ -163,7 +163,7 @@ void CPE::execute_f0() {
             break;
     }
 }
-void CPE::f_group1() {
+void CPE::execute_f1() {
     switch(r_group) {
         case 1:
             MAR = K | MEM[ADR];
@@ -193,24 +193,30 @@ void CPE::f_group1() {
             break;
     }
 }
-// how to propogate and compute carry out?????
-void CPE::f_group2() {
+void CPE::execute_f2() {
     switch(r_group) {
         case 1:
             opA = (MEM[AC] & K);
             opB = (-1);
             propogate();
             compute_CO();
-            //BUF2 = (MEM[AC] & K) - 1 + CI;
             BUF2 = opA + opB + CI;
             MEM[ADR] = BUF2;
             break;
         case 2:
-            BUF2 = (MEM[AC] & K) - 1 + CI;
+            opA = (MEM[AC] & K);
+            opB = (-1);
+            propogate();
+            compute_CO();
+            BUF2 = opA + opB + CI;
             MEM[ADR] = BUF2;
             break;
         case 3:
-            BUF2 = (I & K) - 1 + CI;
+            opA = (I & K);
+            opB = (-1);
+            propogate();
+            compute_CO();
+            BUF2 = opA + opB + CI;
             MEM[ADR] = BUF2;
             break;
     }
