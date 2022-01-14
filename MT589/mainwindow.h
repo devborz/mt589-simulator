@@ -3,7 +3,8 @@
 
 #include <QMainWindow>
 #include <QLCDNumber>
-#include <ListModels.h>
+#include <emulator.hpp>
+#include <QListWidgetItem>
 #include <QPushButton>
 #include <QTableWidgetItem>
 #include <QAbstractItemView>
