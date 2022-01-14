@@ -32,7 +32,6 @@ CommandModeWindow::CommandModeWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setupRegs();
-//    fm::programm_data data = fm::get_data("");
     QStringList verlist;
 
     for (size_t i = 0; i < mk.ram.size; ++i) {
@@ -46,7 +45,6 @@ CommandModeWindow::CommandModeWindow(QWidget *parent) :
     for (size_t i = 0; i < mk.ram.size; ++i) {
             QTableWidgetItem* item = new QTableWidgetItem();
             items.push_back(std::shared_ptr<QTableWidgetItem>(item));
-            //item->setData(Qt::ItemDataRole::EditRole, 0);
             ui->ramWidget->setItem(i, 0, item);
     }
     loaded = true;
@@ -74,47 +72,21 @@ CommandModeWindow::~CommandModeWindow()
 
 void CommandModeWindow::on_open_rom_triggered()
 {
-
     romWindow.show();
     romWindow.mk = mk;
     romWindow.setupItems();
 }
 
-
-void CommandModeWindow::on_save_triggered()
-{
-
-//    if (model.current_filename.empty()) {
-//        QString filename = QFileDialog::getSaveFileName(this, tr("Save project"),
-//                                   "~/prog.rom",
-//                                   tr("*.rom"));
-//       fm::save(filename.toStdString(), this->mk, model.startPoint.row, model.startPoint.col, MT::microcommand);
-//       model.current_filename = filename.toStdString();
-//    } else {
-//        fm::save(model.current_filename, this->mk, model.startPoint.row, model.startPoint.col, MT::microcommand);
-//    }
-}
-
-
-void CommandModeWindow::on_save_as_triggered()
-{
-
-    //    QString filename = QFileDialog::getSaveFileName(this, tr("Save project"),
-    //                               "~/prog.rom",
-    //                               tr("*.rom"));
-    //   fm::save(filename.toStdString(), this->mk, model.startPoint.row, model.startPoint.col, MT::microcommand);
-    //   model.current_filename = filename.toStdString();
-}
-
-
 void CommandModeWindow::on_open_triggered()
 {
-    QString filename = QFileDialog::getOpenFileName(this, tr("Open project"),
+    std::string filename = QFileDialog::getOpenFileName(this, tr("Open ROM"),
                                                     "~/Desktop/prog.rom",
-                                                    tr("*.rom"));
-
-
+                                                    tr("*.rom")).toStdString();
+    fm::programm_data data = fm::get_data(filename);
+    this->mk = data.mk;
+    PC = mk.MEM;
 }
+
 void CommandModeWindow::setupRegs() {
    regLCDs.push_back(std::shared_ptr<QLCDNumber>(ui->reg0));
    regLCDs.push_back(std::shared_ptr<QLCDNumber>(ui->reg1));
@@ -169,7 +141,6 @@ void CommandModeWindow::on_open_microcommand_mode_triggered()
     window->fillInputs();
 }
 
-
 void CommandModeWindow::on_resetButton_clicked()
 {
     WORD oldRow = *PC;
@@ -179,7 +150,6 @@ void CommandModeWindow::on_resetButton_clicked()
 
     changeCurrentRow(oldRow, *PC);
 }
-
 
 void CommandModeWindow::on_stepButton_clicked()
 {
@@ -233,12 +203,59 @@ void CommandModeWindow::on_stepButton_clicked()
     update_on_cpu_data();
 }
 
-
 void CommandModeWindow::on_runButton_clicked()
 {
+    while (true) {
+        bool is_loadmem_prog_running = true;
+        WORD oldRow = *PC;
+        while (is_loadmem_prog_running) {
+            size_t r = mk.get_row_adr();
+            size_t c = mk.get_col_adr();
+            auto command = mk.rom.read(r, c);
+            if (command.empty) { return; }
+            if (command.CS == 0b1 and command.RW == 0b0 and command.EA == 0b1) {
+                // read
+                command.M = mk.ram.read(mk.MAR);
+            } else {
+                command.M = 0x00;
+            }
 
+            if (command.LD == 0b1) {
+                is_loadmem_prog_running = false;
+            }
+            mk.do_fetch_decode_execute_cycle(command);
+    //        if (command.CS == 0b1 and command.RW == 0b1 and mk.EA == 0b1 and mk.ED == 0b1) {
+    //            // write
+    //            items[mk.A.value()]->setText(toHex(mk.D.value()).c_str());
+    //        }
+        }
+        size_t current_row = mk.get_row_adr();
+        size_t current_col = mk.get_col_adr();
+
+        while (current_row != 0 && current_col != 10) {
+            auto command = mk.rom.read(current_row, current_col);
+            if (command.empty) { break; }
+            if (command.CS == 0b1 and command.RW == 0b0 and command.EA == 0b1) {
+                // read
+                command.M = mk.ram.read(mk.MAR);
+            } else {
+                command.M = 0x00;
+            }
+            mk.do_fetch_decode_execute_cycle(command);
+            if (command.CS == 0b1 and command.RW == 0b1 and mk.EA == 0b1 and mk.ED == 0b1) {
+                // write
+                mkwrite = true;
+                items[mk.A.value()]->setText(toHex(mk.D.value()).c_str());
+                mkwrite = false;
+            }
+            current_row = mk.get_row_adr();
+            current_col = mk.get_col_adr();
+        }
+        WORD newRow = *PC;
+        changeCurrentRow(oldRow, newRow);
+        update_on_cpu_data();
+    }
 }
-
 
 void CommandModeWindow::on_endButton_clicked()
 {
@@ -305,7 +322,6 @@ void CommandModeWindow::on_load_isa_triggered()
     prepareISAWindowText();
 }
 
-
 void CommandModeWindow::on_load_rom_triggered()
 {
     std::string filename = QFileDialog::getOpenFileName(this, tr("Open project"),
@@ -318,8 +334,6 @@ void CommandModeWindow::on_load_rom_triggered()
     mk = data.mk;
     PC = mk.MEM;
 }
-
-
 
 void CommandModeWindow::on_createISAButton_clicked()
 {
@@ -353,4 +367,68 @@ void CommandModeWindow::prepareISAWindowText() {
     }
 }
 
+void CommandModeWindow::on_load_ram_triggered()
+{
+    std::string filename = QFileDialog::getOpenFileName(this, tr("Load RAM"),
+                                                    "~/Desktop/ram.ramdata",
+                                                    tr("*.ramdata")).toStdString();
+    if (filename.empty()) {
+        return;
+    }
+    current_filename = filename;
+
+    auto ram = fm::get_ram(filename);
+    for (size_t i = 0; i < ram.size(); ++i) {
+        items[i]->setText(ram[i].c_str());
+        std::string rowContent = ram[i];
+        if (rowContent.empty()) { continue; }
+        // (mk.EA == 0b1 and mk.ED == 0b1) {
+        if (mkwrite) {
+            auto data = parseHex(rowContent);
+            mk.ram.write(i, data);
+            return;
+        }
+        WORD word = 0;
+        if (i < 200) {
+            word = parseCommand(rowContent);
+            if (!word) {
+                items[i]->setText("");
+            }
+        } else {
+            word = parseHex(rowContent);
+        }
+        mk.ram.write(i, word);
+    }
+    on_resetButton_clicked();
+}
+
+void CommandModeWindow::on_save_triggered()
+{
+    if (current_filename.empty()) {
+        QString filename = QFileDialog::getSaveFileName(this, tr("Save RAM"),
+                                   "~/prog.ramdata",
+                                   tr("*.ramdata"));
+
+       current_filename = filename.toStdString();
+    }
+    std::vector<std::string> vec = {};
+    for (auto item: items) {
+        vec.push_back(item->text().toStdString());
+    }
+    fm::save_ram(current_filename, vec);
+}
+
+void CommandModeWindow::on_save_as_triggered()
+{
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save RAM"),
+                                                   "~/prog.ramdata",
+                                                   tr("*.ramdata"));
+
+    current_filename = filename.toStdString();
+    std::vector<std::string> vec = {};
+    for (auto item: items) {
+        vec.push_back(item->text().toStdString());
+    }
+    fm::save_ram(current_filename, vec);
+}
 

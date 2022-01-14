@@ -61,6 +61,8 @@ private slots:
 
     void on_createISAButton_clicked();
 
+    void on_load_ram_triggered();
+
 private:
     Ui::CommandModeWindow *ui;
 
@@ -104,6 +106,8 @@ private:
     bool mkwrite = false;
 
     std::vector<QLabel*> reg_labels;
+
+    std::string current_filename = "";
 };
 
 #endif // COMMANDMODEWINDOW_H

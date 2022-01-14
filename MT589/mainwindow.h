@@ -47,8 +47,6 @@ public:
 
     void fillInputs();
 
-    void showCurrentCommand();
-
     void setItemColor(Point point);
 
     void configUIMode();
@@ -70,15 +68,7 @@ private slots:
 
     void on_runButton_clicked();
 
-    void on_listWidget_currentRowChanged(int currentRow);
-
     void on_boxCPE_currentIndexChanged(int index);
-
-    void on_boxREG_currentIndexChanged(int index);
-
-    void on_boxFC1_currentIndexChanged(int index);
-
-    void on_boxFC2_currentIndexChanged(int index);
 
     void on_boxJUMP_currentIndexChanged(int index);
 
@@ -123,8 +113,6 @@ private slots:
     void on_save_file_triggered();
 
     void on_open_command_mode_triggered();
-
-    void on_tableWidget_itemChanged(QTableWidgetItem *item);
 
     void on_tableWidget_cellChanged(int row, int column);
 

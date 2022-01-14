@@ -5037,6 +5037,7 @@
      </property>
      <property name="font">
       <font>
+       <weight>50</weight>
        <italic>false</italic>
        <bold>false</bold>
        <underline>false</underline>
@@ -10644,7 +10645,7 @@
     </property>
     <property name="html">
      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;# ISA&lt;/span&gt;&lt;/p&gt;
@@ -10685,7 +10686,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>950</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -10694,6 +10695,7 @@ p, li { white-space: pre-wrap; }
     </property>
     <addaction name="save"/>
     <addaction name="save_as"/>
+    <addaction name="load_ram"/>
     <addaction name="separator"/>
     <addaction name="load_rom"/>
     <addaction name="load_isa"/>
@@ -10725,15 +10727,12 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="save">
    <property name="text">
-    <string>Сохранить</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
+    <string>Сохранить ОЗУ</string>
    </property>
   </action>
   <action name="save_as">
    <property name="text">
-    <string>Сохранить как...</string>
+    <string>Сохранить ОЗУ как...</string>
    </property>
   </action>
   <action name="load_rom">
@@ -10755,6 +10754,11 @@ p, li { white-space: pre-wrap; }
   <action name="load_isa">
    <property name="text">
     <string>Загрузить ISA</string>
+   </property>
+  </action>
+  <action name="load_ram">
+   <property name="text">
+    <string>Загрузить ОЗУ</string>
    </property>
   </action>
  </widget>

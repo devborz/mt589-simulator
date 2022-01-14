@@ -1,5 +1,21 @@
 #include <filemanager.h>
 
+std::vector<std::string> fm::get_ram(const std::string& filename) {
+    json data = json::parse(read_from_file(filename));
+    std::vector<std::string> ram;
+    for (size_t i = 0; i < 256; ++i) {
+        ram.push_back(data[i].get<std::string>());
+    }
+    return ram;
+}
+
+void fm::save_ram(const std::string& filename,
+                                  const std::vector<std::string>& data) {
+    json json_data;
+    for (size_t i = 0; i < 256; ++i) { json_data[i] = data[i]; }
+    fm::write_to_file(filename, json_data);
+}
+
 void fm::save_isa(const std::string& filename, const fm::isa_data& data) {
     json json_data;
 

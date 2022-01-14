@@ -13,19 +13,13 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     setWindowTitle("MT589");
-
     clearInputs();
     setupRegs();
     setLCDsColor();
     setupBoxes();
-//    update_on_cpu_data();
-
     handleInputState();
-
     setupMatrix();
-    loaded = true;
     setupRAM();
-
     configUIMode();
 }
 
@@ -57,6 +51,8 @@ void MainWindow::setupMatrix() {
         }
         matrixItems.push_back(row);
     }
+
+    loaded = true;
 }
 
 void MainWindow::setupRAM() {
@@ -137,11 +133,6 @@ void MainWindow::on_runButton_clicked()
     ui->stepButton->setEnabled(true);
 }
 
-void MainWindow::on_listWidget_currentRowChanged(int currentRow)
-{
-//    selectedCommand = currentRow;
-}
-
 // HELP FUNCTIONS
 
 void MainWindow::setupRegs() {
@@ -149,7 +140,6 @@ void MainWindow::setupRegs() {
     QRegularExpressionValidator* validator = new QRegularExpressionValidator(reg, this);
 
     ui->mLineEdit->setValidator(validator);
-//    ui->kLineEdit->setValidator(validator);
     ui->startAddressEdit->setValidator(validator);
     ui->commandAddressEdit->setValidator(validator);
 
@@ -267,25 +257,6 @@ void MainWindow::on_boxCPE_currentIndexChanged(int index)
     ui->kLineEdit->setText(toHex(std::bitset<16>(k+k+k+k+k+k+k+k).to_ulong()).c_str());
 }
 
-
-void MainWindow::on_boxREG_currentIndexChanged(int index)
-{
-
-}
-
-
-void MainWindow::on_boxFC1_currentIndexChanged(int index)
-{
-
-}
-
-
-void MainWindow::on_boxFC2_currentIndexChanged(int index)
-{
-
-}
-
-
 void MainWindow::on_boxJUMP_currentIndexChanged(int index)
 {
     std::vector<std::string> acs = {
@@ -329,30 +300,25 @@ void MainWindow::on_commandAddressEdit_textEdited(const QString &arg1)
     handleInputState();
 }
 
-
 void MainWindow::on_iLineEdit_textEdited(const QString &arg1)
 {
     handleInputState();
 }
-
 
 void MainWindow::on_kLineEdit_textEdited(const QString &arg1)
 {
     handleInputState();
 }
 
-
 void MainWindow::on_mLineEdit_textEdited(const QString &arg1)
 {
     handleInputState();
 }
 
-
 void MainWindow::on_riLineEdit_textEdited(const QString &arg1)
 {
     handleInputState();
 }
-
 
 void MainWindow::on_ciLineEdit_textEdited(const QString &arg1)
 {
@@ -440,7 +406,6 @@ void MainWindow::fillInputs() {
     }
 }
 
-
 void MainWindow::on_saveButton_clicked()
 {
     std::bitset<7> f = std::bitset<7>(ui->fLineEdit->text().toStdString().c_str());
@@ -483,7 +448,6 @@ void MainWindow::on_saveButton_clicked()
     }
 
     setItemColor(currentPoint);
-
     handleInputState();
 }
 
@@ -509,13 +473,9 @@ void MainWindow::on_loadButton_clicked()
 {
     std::bitset<8> addr = std::bitset<8>(ui->startAddressEdit->text().toStdString());
     mk.load(addr); // fix load (with X connection, not x from argument);
-
     auto currentStartPoint = model.startPoint;
-
     auto newStartPoint = Point(mk.get_row_adr(), mk.get_col_adr());
-
     model.startPoint = newStartPoint;
-
     setItemColor(currentStartPoint);
     setItemColor(newStartPoint);
     configUIMode();
@@ -524,10 +484,6 @@ void MainWindow::on_loadButton_clicked()
 void MainWindow::on_ramcLineEdit_textEdited(const QString &arg1)
 {
     handleInputState();
-}
-
-void MainWindow::showCurrentCommand() {
-//    items[]
 }
 
 void MainWindow::setItemColor(Point point) {
@@ -604,19 +560,15 @@ void MainWindow::changeCurrentPoint(Point last, Point currentPoint) {
     fillInputs();
 }
 
-
 void MainWindow::on_fLineEdit_textEdited(const QString &arg1)
 {
     handleInputState();
 }
 
-
-
 void MainWindow::on_ramWidget_cellChanged(int row, int column)
 {
     mk.ram.write(row, ramItems[row]->text().toUInt());
 }
-
 
 void MainWindow::on_resetButton_clicked()
 {
@@ -634,7 +586,6 @@ void MainWindow::on_save_file_as_triggered()
    fm::save(filename.toStdString(), this->mk, model.startPoint.row, model.startPoint.col, MT::microcommand);
    model.current_filename = filename.toStdString();
 }
-
 
 void MainWindow::on_open_file_triggered()
 {
@@ -654,7 +605,6 @@ void MainWindow::on_open_file_triggered()
     model.current_filename = filename;
 }
 
-
 void MainWindow::on_save_file_triggered()
 {
     if (model.current_filename.empty()) {
@@ -667,7 +617,6 @@ void MainWindow::on_save_file_triggered()
         fm::save(model.current_filename, this->mk, model.startPoint.col, model.startPoint.row, MT::microcommand);
     }
 }
-
 
 void MainWindow::on_open_command_mode_triggered()
 {
@@ -684,13 +633,6 @@ void MainWindow::setupItems() {
         }
     }
 }
-
-
-void MainWindow::on_tableWidget_itemChanged(QTableWidgetItem *item)
-{
-
-}
-
 
 void MainWindow::on_tableWidget_cellChanged(int row, int column)
 {
